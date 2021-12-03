@@ -1,4 +1,10 @@
+# ---------- mumax3 ----------
+references.bib
+log.txt
+gui
+
 # ---------- Python ----------
+# from github/gitignore
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -140,6 +146,7 @@ dmypy.json
 cython_debug/
 
 # ------------ Go ------------
+# from github/gitignore
 
 # Binaries for programs and plugins
 *.exe
