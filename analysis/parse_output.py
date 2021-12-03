@@ -15,5 +15,4 @@ def get_result(date: str = None):
     results_path = os.path.join(os.path.dirname(__file__), os.pardir, 'results')
     requested_result = date if date is not None else sorted(os.listdir(results_path))[-1]
 
-    return open(os.path.join(results_path, requested_result, 'raw.out/table.txt'),
-                "r", encoding="utf-8")
+    return os.path.join(results_path, requested_result, 'raw.out/table.txt')
