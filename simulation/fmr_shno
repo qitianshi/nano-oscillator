@@ -6,7 +6,7 @@ setGridsize(Nx, Ny, 1)
 setCellsize(cSize, cSize, 5e-9)
 
 // Geometry
-NC_image := imageShape("nanoconstriction.png").inverse()
+NC_image := imageShape("geometries/nanoconstriction.png").inverse()
 setGeom(NC_image)
 defRegion(1, NC_image)
 edgesmooth = 8
