@@ -1,6 +1,6 @@
 Nx := 512
 Ny := 512
-cSize := 2e-9
+cSize := 6e-9
 
 setGridsize(Nx, Ny, 1)
 setCellsize(cSize, cSize, 5e-9)
@@ -73,7 +73,7 @@ tableAddVar(phi, "phi", "degree")
 tableAddVar(f, "f_RF", "GHz")
 tableAutosave(5e-12)
 
-for phi = 0; phi <= 180; phi += 5{
+for phi = 0; phi <= 45; phi += 5{
   for f = 3.0e9; f <= 7.0e9;  f+= 0.5e9 {
 
       B_ext = vector(fieldMag*cos(phi*pi/180), fieldMag*sin(phi*pi/180) + hAmp*sin(2*pi*f*t), 0)
