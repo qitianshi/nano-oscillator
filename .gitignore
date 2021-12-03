@@ -2,6 +2,7 @@
 references.bib
 log.txt
 gui
+*.ovf
 
 # ---------- Python ----------
 # from github/gitignore
