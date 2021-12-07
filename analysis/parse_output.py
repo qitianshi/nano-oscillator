@@ -19,9 +19,20 @@ def get_folder_dir(date: str = None):
 
     return os.path.join(results_path, requested_result)
 
+"""get path for raw data """
 def get_result():
     folder_dir = get_folder_dir()
     return os.path.join(folder_dir, 'raw.out/table.txt')
+
+"""get path for data split by angle"""
+def get_angle(angle):
+    folder_dir = get_folder_dir()
+    return os.path.join(folder_dir, 'split/by_angle/' + str(angle) + '.csv')
+
+"""get path for data split by frequency"""
+def get_freq(freq):
+    folder_dir = get_folder_dir()
+    return os.path.join(folder_dir, 'split/by_angle/' + freq + '.csv')
 
 def split_data_angle():
     filepath = get_result()
@@ -57,6 +68,6 @@ def split_data_freq():
         filtered = data[data["f_RF (GHz)"] == i]
         filtered.to_csv(split_path, sep=",")
 
-split_data_freq()
+
 
 
