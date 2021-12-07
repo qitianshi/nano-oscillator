@@ -25,17 +25,20 @@ def get_result():
 def split_data_angle():
     filepath = get_result()
     folder_dir = get_folder_dir()
+    start_angle = 0
+    end_angle = 360
     angle_step = 30
 
     data = pd.read_csv(filepath, sep="\t")
 
-    for i in range(0, 390, angle_step):
+    for i in range(start_angle, end_angle + 30, angle_step):
 
         split_name = str(i) + '.csv'
         split_path = os.path.join(folder_dir,'split/by_angle/', split_name)
 
         filtered = data[data["phi (degree)"] == i]
         filtered.to_csv(split_path, sep=",")
+
 
 split_data_angle()
 
