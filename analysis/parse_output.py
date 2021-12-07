@@ -29,7 +29,7 @@ def split_data_angle():
 
     data = pd.read_csv(filepath, sep="\t")
 
-    for i in range(0, 360, angle_step):
+    for i in range(0, 390, angle_step):
 
         split_name = str(i) + '.csv'
         split_path = os.path.join(folder_dir,'split/', split_name)
