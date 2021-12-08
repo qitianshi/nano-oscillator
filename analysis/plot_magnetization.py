@@ -16,7 +16,6 @@ def plot_angle():
     start_angle = 0
     end_angle = 360
     angle_step = 5
-    index = 0
 
     for i in range(start_angle, end_angle + angle_step, angle_step):
         folder_dir = get_folder_dir()
@@ -31,7 +30,6 @@ def plot_angle():
         graph = plt.plot(data['# t (s)'], data["my ()"])
         graph = plt.plot(data['# t (s)'], data["mz ()"])
         plt.setp(graph, linewidth=0.5)
-        index += 1
 
         plt.xlabel("t (s)")
         plt.ylabel("mx, my and mz")
