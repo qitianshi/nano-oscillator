@@ -18,11 +18,14 @@ tSim := 40e-9
 // Values taken from M.Dvornik et al., PHYSICAL REVIEW APPLIED 9, 014017 (2018)
 Msat   = 600e3//589e3
 Aex    = 10e-12//13e-12
-alpha  = 0.02
+alpha  = 0.02 //damping constant
 gammaLL = 1.855e11
 
 // Absorbing BC
 // Set up Absorbing boundary layers (ABL).
+// to mimic the real world conditions. In actuality, the real physical dimension is around 10 microns by 5 microns
+// but since the dimension we use for the simulation is smaller, spin waves will reflect off the boundary and mess with the nanoconstriction
+//the ABLs help to mimic the real nanoconstriction as it contains of around 30 layers with an increasing damping constant so that the spin waves dont reflect off
 xEnd := Nx*cSize/2
 yEnd := Ny*cSize/2
 alStart := 0.02
