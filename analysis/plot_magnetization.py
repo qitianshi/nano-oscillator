@@ -20,8 +20,8 @@ def plot_angle():
     for i in range(start_angle, end_angle + angle_step, angle_step):
         folder_dir = get_folder_dir()
         filepath = get_angle(i)
-        filename = 'mx, my and mz against time for ' + str(i) + '°'
-        graph_path = os.path.join(folder_dir, 'plots/split_plots/by_angle/', filename + '.png')
+        filename = str(i) + 'deg'
+        graph_path = os.path.join(folder_dir, 'plots/split_plots/by_angle/', filename + '.pdf')
 
         data = pd.read_csv(filepath, sep=",")
 
@@ -35,7 +35,7 @@ def plot_angle():
         plt.ylabel("mx, my and mz")
         plt.title(filename)
 
-        plt.savefig(graph_path)
+        plt.savefig(graph_path, format='pdf')
         # plt.show()
 
 plot_angle()
