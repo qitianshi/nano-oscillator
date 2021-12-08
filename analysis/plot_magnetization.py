@@ -15,7 +15,7 @@ from parse_output import get_freq
 def plot_angle():
     start_angle = 0
     end_angle = 360
-    angle_step = 30
+    angle_step = 5
     index = 0
 
     for i in range(start_angle, end_angle + angle_step, angle_step):
