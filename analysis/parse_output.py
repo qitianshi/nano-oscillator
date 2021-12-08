@@ -41,7 +41,7 @@ def split_data_angle():
     folder_dir = get_folder_dir()
     start_angle = 0
     end_angle = 360
-    angle_step = 30
+    angle_step = 5
 
     data = pd.read_csv(filepath, sep="\t")
 
@@ -71,6 +71,5 @@ def split_data_freq():
         filtered = data[data["f_RF (GHz)"] == i]
         filtered.to_csv(split_path, sep=",")
 
-
-
+split_data_angle()
 
