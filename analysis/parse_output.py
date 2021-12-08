@@ -34,6 +34,8 @@ def get_freq(freq):
     folder_dir = get_folder_dir()
     return os.path.join(folder_dir, 'split/by_angle/' + freq + '.csv')
 
+""""split data by angle"""
+
 def split_data_angle():
     filepath = get_result()
     folder_dir = get_folder_dir()
@@ -51,6 +53,7 @@ def split_data_angle():
         filtered = data[data["phi (degree)"] == i]
         filtered.to_csv(split_path, sep=",")
 
+"""split data by freq"""
 def split_data_freq():
     filepath = get_result()
     folder_dir = get_folder_dir()
