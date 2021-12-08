@@ -21,7 +21,7 @@ def plot_angle():
         folder_dir = get_folder_dir()
         filepath = get_angle(i)
         filename = str(i) + 'deg'
-        graph_path = os.path.join(folder_dir, 'plots/split_plots/by_angle/', filename + '.pdf')
+        graph_path = os.path.join(folder_dir, 'plots/split_plots/by_phi/', filename + '.pdf')
 
         data = pd.read_csv(filepath, sep=",")
 

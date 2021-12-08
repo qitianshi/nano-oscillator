@@ -27,12 +27,12 @@ def get_result():
 """get path for data split by angle"""
 def get_angle(angle):
     folder_dir = get_folder_dir()
-    return os.path.join(folder_dir, 'split/by_angle/' + str(angle) + '.csv')
+    return os.path.join(folder_dir, 'split/by_phi/' + str(angle) + '.csv')
 
 """get path for data split by frequency"""
 def get_freq(freq):
     folder_dir = get_folder_dir()
-    return os.path.join(folder_dir, 'split/by_angle/' + freq + '.csv')
+    return os.path.join(folder_dir, 'split/by_phi/' + freq + '.csv')
 
 """"split data by angle"""
 def split_data_angle():
@@ -47,7 +47,7 @@ def split_data_angle():
     for i in range(start_angle, end_angle + angle_step, angle_step):
 
         split_name = str(i) + '.csv'
-        split_path = os.path.join(folder_dir,'split/by_angle/', split_name)
+        split_path = os.path.join(folder_dir,'split/by_phi/', split_name)
 
         filtered = data[data["phi (degree)"] == i]
         filtered.to_csv(split_path, sep=",")
