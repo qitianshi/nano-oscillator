@@ -54,21 +54,35 @@ def split_data_angle():
 
 """split data by freq"""
 def split_data_freq():
-    filepath = get_result()
     folder_dir = get_folder_dir()
     start_freq = 3e+09
     end_freq =7e+09
     freq_step = 0.5e+09
+    start_angle = 0
+    end_angle = 360
+    angle_step = 5
 
-    data = pd.read_csv(filepath, sep="\t")
+    for i in range(start_angle, end_angle + angle_step, angle_step):
 
-    for i in np.arange(start_freq, end_freq + freq_step, freq_step):
+        filename = str(i) + '.csv'
+        filepath = os.path.join(folder_dir, 'split/by_phi/', filename)
 
-        split_name = str(i)[0] + '.' + str(i)[1] + 'GHz.csv'
-        split_path = os.path.join(folder_dir,'split/by_freq/', split_name)
+        data = pd.read_csv(filepath, sep=",")
 
-        filtered = data[data["f_RF (GHz)"] == i]
-        filtered.to_csv(split_path, sep=",")
+        for j in np.arange(start_freq, end_freq + freq_step, freq_step):
+            target_path = os.path.join(folder_dir,'split/by_phi_freq/')
+            new_folder = target_path + str(i) + 'deg'
 
-split_data_angle()
+            if not os.path.exists(new_folder):
+                os.mkdir(new_folder)
+
+
+            split_name = str(j)[0] + '.' + str(j)[1] + 'GHz.csv'
+            split_path = os.path.join(new_folder, split_name)
+
+
+            filtered = data[data["f_RF (GHz)"] == j]
+            filtered.to_csv(split_path, sep=",")
+
+split_data_freq()
 
