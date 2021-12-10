@@ -1,6 +1,6 @@
 """Parses output data from mumax3 in the results directory."""
 
-import os
+from os.path import join
 import pandas as pd
 
 import readresults
@@ -37,12 +37,12 @@ def split_phi(date: str = None, reset_t: bool = True):
 
     split_datasets = __split_variable(
         readresults.read_table(readresults.find_data(date)), "phi", reset_t)
-    destination = os.path.join(readresults.find_result(date), "split", "phi")
+    destination = join(readresults.find_result(date), "split", "phi")
 
     readresults.prep_dir(destination)
 
     for phi, data in split_datasets.items():
-        data.to_csv(os.path.join(destination, f"{phi:03}deg.tsv"), sep='\t', index=False)
+        data.to_csv(join(destination, f"{phi:03}deg.tsv"), sep='\t', index=False)
 
 
 def split_phi_fRF(date: str = None, reset_t: bool = True):
@@ -50,18 +50,18 @@ def split_phi_fRF(date: str = None, reset_t: bool = True):
 
     split_datasets_phi = __split_variable(
         readresults.read_table(readresults.find_data(date)), "phi", reset_t)
-    base_destination = os.path.join(readresults.find_result(date), "split", "phi, f_RF")
+    base_destination = join(readresults.find_result(date), "split", "phi, f_RF")
 
     readresults.prep_dir(base_destination)
 
     for phi, data in split_datasets_phi.items():
 
         split_datasets_phi_fRF = __split_variable(data, "f_RF", reset_t)
-        destination = os.path.join(base_destination, f"{phi:03}" + "deg")
+        destination = join(base_destination, f"{phi:03}" + "deg")
 
         readresults.prep_dir(destination)
 
         for fRF, split_data in split_datasets_phi_fRF.items():
             split_data.to_csv(
-                os.path.join(destination, f"{phi:03}deg, {fRF / 10**9}GHz.tsv"),
+                join(destination, f"{phi:03}deg, {fRF / 10**9}GHz.tsv"),
                 sep='\t', index=False)
