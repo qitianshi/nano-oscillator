@@ -40,7 +40,7 @@ def split_phi(date: str = None, reset_t: bool = True):
     readresults.prep_dir(destination)
 
     for phi, data in split_datasets.items():
-        data.to_csv(os.path.join(destination, f"{phi:03}" + "deg.tsv"), sep='\t')
+        data.to_csv(os.path.join(destination, f"{phi:03}deg.tsv"), sep='\t', index=False)
 
 def split_phi_freq(date: str = None, reset_t: bool = True):
     """Splits data by phi, then f_RF."""
@@ -61,5 +61,6 @@ def split_phi_freq(date: str = None, reset_t: bool = True):
 
         for freq, split_data in split_datasets_phi_freq.items():
             split_data.to_csv(os.path.join(destination,
-                                     str(phi) + "deg, " + f"{freq / 10**9}" + "GHz.tsv"),
-                              sep='\t')
+                                     f"{phi:03}deg, {freq / 10**9}GHz.tsv"),
+                              sep='\t',
+                              index=False)
