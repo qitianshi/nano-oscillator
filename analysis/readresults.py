@@ -60,7 +60,7 @@ def convert_raw(date: str = None):
     result_dir = find_result_dir(date)
 
     results = read_table(table_dir)
-    results.to_csv(os.path.join(result_dir, "raw.out", "table.tsv"), sep='\t')
+    results.to_csv(os.path.join(result_dir, "raw.out", "table.tsv"), sep='\t', index=False)
 
     # Removes original table.txt
     os.remove(table_dir)
