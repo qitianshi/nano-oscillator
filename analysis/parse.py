@@ -32,7 +32,7 @@ def __split_variable(dataset: pd.DataFrame,
 def split_phi(date: str = None, reset_t: bool = True):
     """"Splits data by phi."""
 
-    split_datasets = __split_variable(readresults.read_table(readresults.find_raw(date)),
+    split_datasets = __split_variable(readresults.read_table(readresults.find_data(date)),
                                       "phi",
                                       reset_t)
     destination = os.path.join(readresults.find_result(date), "split", "phi")
@@ -45,7 +45,7 @@ def split_phi(date: str = None, reset_t: bool = True):
 def split_phi_freq(date: str = None, reset_t: bool = True):
     """Splits data by phi, then f_RF."""
 
-    split_datasets_phi = __split_variable(readresults.read_table(readresults.find_raw(date)),
+    split_datasets_phi = __split_variable(readresults.read_table(readresults.find_data(date)),
                                           "phi",
                                           reset_t)
     base_destination = os.path.join(readresults.find_result(date), "split", "phi, f_RF")

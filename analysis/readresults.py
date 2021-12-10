@@ -32,7 +32,7 @@ def find_result(date: str = None) -> str:
 
     return os.path.join(results_path, requested_result)
 
-def find_data(vals: dict[str, str] = None, date: str = None) -> str:
+def find_data(date: str = None, vals: dict[str, str] = None) -> str:
     """Returns the path of the dataset, split by the requested variables.
 
     Args:
@@ -72,7 +72,7 @@ def read_table(path: str) -> pd.DataFrame:
 def convert_raw(date: str = None):
     """Converts raw table.txt output from mumax3 to tsv format."""
 
-    table_dir = find_raw(date)
+    table_dir = find_data(date)
     result_dir = find_result(date)
 
     results = read_table(table_dir)
