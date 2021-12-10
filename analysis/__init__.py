@@ -1,2 +1,1 @@
-# run_analysis.py
-# Runs all analyses.
+"""Runs data analysis and plotting functions for output from mumax3."""
