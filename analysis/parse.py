@@ -35,7 +35,7 @@ def split_phi(date: str = None, reset_t: bool = True):
     split_datasets = __split_variable(readresults.read_table(readresults.find_raw(date)),
                                       "phi",
                                       reset_t)
-    destination = os.path.join(readresults.find_result_dir(date), "split", "phi")
+    destination = os.path.join(readresults.find_result(date), "split", "phi")
 
     readresults.prep_dir(destination)
 
@@ -48,7 +48,7 @@ def split_phi_freq(date: str = None, reset_t: bool = True):
     split_datasets_phi = __split_variable(readresults.read_table(readresults.find_raw(date)),
                                           "phi",
                                           reset_t)
-    base_destination = os.path.join(readresults.find_result_dir(date), "split", "phi, f_RF")
+    base_destination = os.path.join(readresults.find_result(date), "split", "phi, f_RF")
 
     readresults.prep_dir(base_destination)
 
