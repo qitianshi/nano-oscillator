@@ -35,14 +35,21 @@ def find_result_dir(date: str = None) -> str:
 def find_raw(date: str = None) -> str:
     """Returns the path of the raw data for the requested simulation."""
 
-    return os.path.join(find_result_dir(date), 'raw.out/table.txt')
+    try:
+        return os.path.join(find_result_dir(date), 'raw.out/table.tsv')
 
-def find_split_phi(phi: int, date: str = None) -> str:
+    # If table.tsv is not found, table.txt has likely not been converted yet.
+    # Otherwise, convert_raw will raise FileNotFoundError as expected.
+    except FileNotFoundError:
+        convert_raw(date)
+        return os.path.join(find_result_dir(date), 'raw.out/table.tsv')
+
+def find_phi(phi: int, date: str = None) -> str:
     """Returns the path of the data for the requested value of phi."""
 
     return os.path.join(find_result_dir(date), 'split/by_phi/' + str(phi) + '.csv')
 
-def read_table(path: str) -> pd.DataFrame:
+def read_table(path: str = find_raw()) -> pd.DataFrame:
     """Reads the raw table.txt output from mumax3 into a DataFrame."""
 
     with open(path, 'r', encoding="utf-8") as file:
@@ -51,7 +58,7 @@ def read_table(path: str) -> pd.DataFrame:
         names = [sub(r"[\(].*?[\)]", "", i) for i in names]    # Removes units in brackets.
         names = [i.strip() for i in names]
 
-        return pd.read_csv(path, sep='\t', comment='#', names=names)
+        return pd.read_csv(path, sep='\t', skiprows=1, names=names)
 
 def convert_raw(date: str = None):
     """Converts raw table.txt output from mumax3 to tsv format."""
