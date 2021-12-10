@@ -5,6 +5,7 @@ from re import sub
 from shutil import rmtree
 import pandas as pd
 
+
 def prep_dir(path):
     """Prepares the destination directory for output files."""
 
@@ -14,6 +15,7 @@ def prep_dir(path):
         rmtree(path)
 
     os.mkdir(path)
+
 
 def find_result(date: str = None) -> str:
     """Returns the path of the results folder from the requested simulation.
@@ -31,6 +33,7 @@ def find_result(date: str = None) -> str:
     requested_result = date if date is not None else sorted(os.listdir(results_path))[-1]
 
     return os.path.join(results_path, requested_result)
+
 
 def find_data(date: str = None, vals: dict[str, str] = None) -> str:
     """Returns the path of the dataset, split by the requested variables.
@@ -58,6 +61,7 @@ def find_data(date: str = None, vals: dict[str, str] = None) -> str:
             ", ".join(vals.values()) + ".tsv"
         )
 
+
 def read_table(path: str) -> pd.DataFrame:
     """Reads the raw table.txt output from mumax3 into a DataFrame."""
 
@@ -68,6 +72,7 @@ def read_table(path: str) -> pd.DataFrame:
         names = [i.strip() for i in names]
 
         return pd.read_csv(path, sep='\t', skiprows=1, names=names)
+
 
 def convert_raw(date: str = None):
     """Converts raw table.txt output from mumax3 to tsv format."""

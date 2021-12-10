@@ -5,11 +5,12 @@ import pandas as pd
 
 import readresults
 
+
 def __split_variable(
-            dataset: pd.DataFrame,
-            var: str,
-            reset_t: bool = True
-        ) -> dict[float, pd.DataFrame]:
+    dataset: pd.DataFrame,
+    var: str,
+    reset_t: bool = True
+) -> dict[float, pd.DataFrame]:
     """"Splits a dataframe by a variable."""
 
     #FIXME: This code will group all rows with the same value of var together;
@@ -30,14 +31,12 @@ def __split_variable(
 
     return extracted_datasets
 
+
 def split_phi(date: str = None, reset_t: bool = True):
     """"Splits data by phi."""
 
     split_datasets = __split_variable(
-        readresults.read_table(readresults.find_data(date)),
-        "phi",
-        reset_t
-    )
+        readresults.read_table(readresults.find_data(date)), "phi", reset_t)
     destination = os.path.join(readresults.find_result(date), "split", "phi")
 
     readresults.prep_dir(destination)
@@ -45,14 +44,12 @@ def split_phi(date: str = None, reset_t: bool = True):
     for phi, data in split_datasets.items():
         data.to_csv(os.path.join(destination, f"{phi:03}deg.tsv"), sep='\t', index=False)
 
+
 def split_phi_freq(date: str = None, reset_t: bool = True):
     """Splits data by phi, then f_RF."""
 
     split_datasets_phi = __split_variable(
-        readresults.read_table(readresults.find_data(date)),
-        "phi",
-        reset_t
-    )
+        readresults.read_table(readresults.find_data(date)), "phi", reset_t)
     base_destination = os.path.join(readresults.find_result(date), "split", "phi, f_RF")
 
     readresults.prep_dir(base_destination)
@@ -67,6 +64,4 @@ def split_phi_freq(date: str = None, reset_t: bool = True):
         for freq, split_data in split_datasets_phi_freq.items():
             split_data.to_csv(
                 os.path.join(destination, f"{phi:03}deg, {freq / 10**9}GHz.tsv"),
-                sep='\t',
-                index=False
-            )
+                sep='\t', index=False)
