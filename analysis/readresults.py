@@ -6,7 +6,7 @@ from shutil import rmtree
 import pandas as pd
 
 
-def prep_dir(path):
+def prep_dir(path: str):
     """Prepares the destination directory for output files."""
 
     # If a previous output was already generated, it is deleted so that the new
