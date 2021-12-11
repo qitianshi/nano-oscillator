@@ -1,10 +1,11 @@
-"""Plots magnetization vector directions (x, y, z) generated from mumax3."""
+"""Plots data."""
 
 from os.path import join
 
 import matplotlib.pyplot as plt
 
 import readresults
+
 
 def plot_xy(
     data_path: str,
