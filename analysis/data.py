@@ -38,8 +38,8 @@ def split_phi(date: str = None, reset_t: bool = True):
     """"Splits data by phi."""
 
     split_data = __split_variable(
-        readresults.read_data(readresults.find_data(date)), "phi", reset_t)
-    destination = join(readresults.find_result(date), "split", "phi")
+        readresults.read_data(readresults.data_path(date)), "phi", reset_t)
+    destination = join(readresults.result_dir(date), "split", "phi")
 
     readresults.prep_dir(destination)
 
@@ -51,8 +51,8 @@ def split_phi_fRF(date: str = None, reset_t: bool = True):
     """Splits data by phi, then f_RF."""
 
     split_data_phi = __split_variable(
-        readresults.read_data(readresults.find_data(date)), "phi", reset_t)
-    base_destination = join(readresults.find_result(date), "split", "phi, f_RF")
+        readresults.read_data(readresults.data_path(date)), "phi", reset_t)
+    base_destination = join(readresults.result_dir(date), "split", "phi, f_RF")
 
     readresults.prep_dir(base_destination)
 
@@ -72,11 +72,11 @@ def split_phi_fRF(date: str = None, reset_t: bool = True):
 def convert_raw_txt(date: str = None):
     """Converts raw table.txt output from mumax3 to tsv format."""
 
-    raw_dir = readresults.find_dataset(date, None)
+    raw_dir = readresults.dataset_dir(date, None)
     table_txt_path = join(raw_dir, "table.txt")
 
     data = readresults.read_data(table_txt_path)
-    data.to_csv(join(raw_dir, "table.tsv"), sep='\t', index=False)
+    data.to_csv(readresults.data_path(date, None), sep='\t', index=False)
 
     # Removes original table.txt
     remove(table_txt_path)

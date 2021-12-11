@@ -18,7 +18,7 @@ def prep_dir(path: str):
     os.mkdir(path)
 
 
-def find_result(date: str = None) -> str:
+def result_dir(date: str = None) -> str:
     """Returns the path of the requested result.
 
     Args:
@@ -35,7 +35,7 @@ def find_result(date: str = None) -> str:
     return os.path.join(results_path, requested_result)
 
 
-def find_dataset(date: str = None, vals: dict[str, str] = None) -> tuple[str, tuple[str]]:
+def dataset_dir(date: str = None, vals: dict[str, str] = None) -> tuple[str, tuple[str]]:
     """Returns the path of the dataset split by the requested variables.
 
     Args:
@@ -50,25 +50,25 @@ def find_dataset(date: str = None, vals: dict[str, str] = None) -> tuple[str, tu
     """
 
     if vals is None:
-        return os.path.join(find_result(date), "raw.out")
+        return os.path.join(result_dir(date), "raw.out")
     else:
         return os.path.join(
-            find_result(date),
+            result_dir(date),
             "split",
             ", ".join(vals.keys()),
             *list(vals.values())[:-1]
         )
 
 
-def find_data(date: str = None, vals: dict[str, str] = None) -> str:
+def data_path(date: str = None, vals: dict[str, str] = None) -> str:
     """Returns the path of the data split by the requested variables and
     values.
     """
 
     if vals is None:
-        return os.path.join(find_dataset(date, vals), "table.tsv")
+        return os.path.join(dataset_dir(date, vals), "table.tsv")
     else:
-        return os.path.join(find_dataset(date, vals), ", ".join(vals.values()) + ".tsv")
+        return os.path.join(dataset_dir(date, vals), ", ".join(vals.values()) + ".tsv")
 
 
 def read_data(path: str) -> pd.DataFrame:
