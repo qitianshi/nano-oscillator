@@ -1,7 +1,8 @@
 """Splits data by variables."""
 
-from os.path import join
 from os import remove
+from os.path import join
+
 import pandas as pd
 
 import readresults
@@ -71,12 +72,11 @@ def split_phi_fRF(date: str = None, reset_t: bool = True):
 def convert_raw_txt(date: str = None):
     """Converts raw table.txt output from mumax3 to tsv format."""
 
-    table_txt_path = readresults.find_data(date)
-    result_dir = readresults.find_result(date)
+    raw_dir = readresults.find_dataset(date, None)
+    table_txt_path = join(raw_dir, "table.txt")
 
     data = readresults.read_data(table_txt_path)
-    data.to_csv(join(result_dir, "raw.out",
-                "table.tsv"), sep='\t', index=False)
+    data.to_csv(join(raw_dir, "table.tsv"), sep='\t', index=False)
 
     # Removes original table.txt
     remove(table_txt_path)
