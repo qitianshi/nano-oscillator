@@ -34,23 +34,8 @@ def find_result(date: str = None) -> str:
     return os.path.join(results_path, requested_result)
 
 
-def find_dataset(date: str = None, var: list[str] = None) -> tuple[str, tuple[str]]:
+def find_dataset(date: str = None, vals: dict[str, str] = None) -> tuple[str, tuple[str]]:
     """Returns the path of the dataset split by the requested variables.
-
-    Args:
-        date (str): The date and time of the simulation ("YYYY-MM-DD_hhmm").
-          If not given, the latest result is searched.
-        var (list[str]): An ordered list of variables, in order of how the data
-          was split. If not given, the path of the raw dataset is returned.
-
-    Returns:
-        str: The path of the requested dataset.
-    """
-
-
-def find_data(date: str = None, vals: dict[str, str] = None) -> str:
-    """Returns the path of the data split by the requested variables and
-    values.
 
     Args:
         date (str): The date and time of the simulation ("YYYY-MM-DD_hhmm").
@@ -64,15 +49,25 @@ def find_data(date: str = None, vals: dict[str, str] = None) -> str:
     """
 
     if vals is None:
-        return os.path.join(find_result(date), "raw.out", "table.tsv")
+        return os.path.join(find_result(date), "raw.out")
     else:
         return os.path.join(
             find_result(date),
             "split",
             ", ".join(vals.keys()),
-            *list(vals.values())[:-1],
-            ", ".join(vals.values()) + ".tsv"
+            *list(vals.values())[:-1]
         )
+
+
+def find_data(date: str = None, vals: dict[str, str] = None) -> str:
+    """Returns the path of the data split by the requested variables and
+    values.
+    """
+
+    if vals is None:
+        return os.path.join(find_dataset(date, vals), "table.tsv")
+    else:
+        return os.path.join(find_dataset(date, vals), ", ".join(vals.values()) + ".tsv")
 
 
 def read_data(path: str) -> pd.DataFrame:
