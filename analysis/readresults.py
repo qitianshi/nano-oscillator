@@ -90,11 +90,11 @@ def read_data(path: str) -> pd.DataFrame:
 def convert_raw_txt(date: str = None):
     """Converts raw table.txt output from mumax3 to tsv format."""
 
-    table_dir = find_data(date)
+    table_txt_path = find_data(date)
     result_dir = find_result(date)
 
-    results = read_data(table_dir)
-    results.to_csv(os.path.join(result_dir, "raw.out", "table.tsv"), sep='\t', index=False)
+    data = read_data(table_txt_path)
+    data.to_csv(os.path.join(result_dir, "raw.out", "table.tsv"), sep='\t', index=False)
 
     # Removes original table.txt
-    os.remove(table_dir)
+    os.remove(table_txt_path)

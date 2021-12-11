@@ -1,7 +1,5 @@
 """Plots data."""
 
-from os.path import join
-
 import matplotlib.pyplot as plt
 
 import readresults
