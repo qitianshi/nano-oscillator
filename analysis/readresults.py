@@ -1,4 +1,4 @@
-"""Reads and writes data and datasets."""
+"""Finds and reads data and datasets from results."""
 
 import os
 from re import sub
@@ -85,16 +85,3 @@ def read_data(path: str) -> pd.DataFrame:
         names = [i.strip() for i in names]
 
         return pd.read_csv(path, sep='\t', skiprows=1, names=names)
-
-
-def convert_raw_txt(date: str = None):
-    """Converts raw table.txt output from mumax3 to tsv format."""
-
-    table_txt_path = find_data(date)
-    result_dir = find_result(date)
-
-    data = read_data(table_txt_path)
-    data.to_csv(os.path.join(result_dir, "raw.out", "table.tsv"), sep='\t', index=False)
-
-    # Removes original table.txt
-    os.remove(table_txt_path)
