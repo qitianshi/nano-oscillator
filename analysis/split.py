@@ -1,4 +1,4 @@
-"""Parses output data from mumax3 in the results directory."""
+"""Splits data by variables."""
 
 from os.path import join
 import pandas as pd
@@ -11,7 +11,7 @@ def __split_variable(
     var: str,
     reset_t: bool = True
 ) -> dict[float, pd.DataFrame]:
-    """"Splits a dataframe by a variable."""
+    """"Splits data by a variable."""
 
     #FIXME: This code will group all rows with the same value of var together;
     #       expected behavior is that different groups should be separated.
@@ -36,7 +36,7 @@ def split_phi(date: str = None, reset_t: bool = True):
     """"Splits data by phi."""
 
     split_datasets = __split_variable(
-        readresults.read_table(readresults.find_data(date)), "phi", reset_t)
+        readresults.read_data(readresults.find_data(date)), "phi", reset_t)
     destination = join(readresults.find_result(date), "split", "phi")
 
     readresults.prep_dir(destination)
@@ -49,7 +49,7 @@ def split_phi_fRF(date: str = None, reset_t: bool = True):
     """Splits data by phi, then f_RF."""
 
     split_datasets_phi = __split_variable(
-        readresults.read_table(readresults.find_data(date)), "phi", reset_t)
+        readresults.read_data(readresults.find_data(date)), "phi", reset_t)
     base_destination = join(readresults.find_result(date), "split", "phi, f_RF")
 
     readresults.prep_dir(base_destination)

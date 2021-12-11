@@ -11,4 +11,6 @@ Terminology used in this package:
   follows the convention "YYYY-MM-DD_hhmm".
 * split: Breaking raw data into several smaller data files, which are then
   saved to disk in the appropriate result folder.
+* variable: A variable from the mumax3 simulation. Used to identify columns
+  in data.
 """
