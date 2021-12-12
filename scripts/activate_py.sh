@@ -1,21 +1,21 @@
-#! /bin/sh
+#!/bin/sh
 
 # Checks OS, then activates Python venv.
 case "$OSTYPE" in
 
-    "darwin"*)
+    "darwin"* )
         echo "I'm a Mac."
         source env/bin/activate ;;
 
-    "msys"*)
+    "msys"* )
         echo "I'm a PC."
         .\venv\Scripts\activate ;;
 
-    "linux-gnu"*)
+    "linux-gnu"* )
         echo "I'm Linux."
         source env/bin/activate ;;
 
-    *)
+    * )
         echo "I'm confused: $OSTYPE"
         exit ;;
 
