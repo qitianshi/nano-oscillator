@@ -14,3 +14,7 @@ Terminology used in this package:
 * variable: A variable from the mumax3 simulation. Used to identify columns
   in data.
 """
+
+from .plot import *
+from .readresults import *
+from .split import *
