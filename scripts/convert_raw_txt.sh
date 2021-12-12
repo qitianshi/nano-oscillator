@@ -9,7 +9,7 @@ fi
 
 source scripts/activate_py.sh
 
-python - << 'PYSCRIPT'
+python - $1 << PYSCRIPT
 import sys
 from analysis.readresults import convert_raw_txt
 convert_raw_txt(sys.argv[1])
