@@ -20,3 +20,5 @@ case "$OSTYPE" in
         exit ;;
 
 esac
+
+export PYTHONPATH="${PYTHONPATH}:./analysis"
