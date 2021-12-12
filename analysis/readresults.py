@@ -81,3 +81,16 @@ def read_data(path: str) -> pd.DataFrame:
         names = [i.strip() for i in names]
 
         return pd.read_csv(path, sep='\t', skiprows=1, names=names)
+
+
+def convert_raw_txt(date: str = None):
+    """Converts raw table.txt output from mumax3 to tsv format."""
+
+    raw_dir = dataset_dir(date, None)
+    table_txt_path = os.path.join(raw_dir, "table.txt")
+
+    data = read_data(table_txt_path)
+    data.to_csv(data_path(date, None), sep='\t', index=False)
+
+    # Removes original table.txt
+    os.remove(table_txt_path)
