@@ -1,10 +1,9 @@
-"""Plots magnetization vector directions (x, y, z) generated from mumax3."""
-
-from os.path import join
+"""Plots data."""
 
 import matplotlib.pyplot as plt
 
 import readresults
+
 
 def plot_xy(
     data_path: str,
@@ -19,12 +18,11 @@ def plot_xy(
     """Plots a number of dependent variables against an independent variable.
 
     Args:
-        data_path (str): The path to the data from which to read. Should be a
-          file in tsv format, compatible with `read_table`.
+        data_path (str): The path to the data from which to read.
         x_var (str): The name of the independent variable (on the x-axis).
-          Should correspond to a column name in the data file.
+          Should correspond to a variable in the data file.
         y-vars (list[str]): The names of the dependent variables (on the
-          y-axis). Should correspond to column names in the data file.
+          y-axis). Should correspond to a variable in the data file.
         xlabel (str): The label on the x-axis. If not given, defaults to
           `x-var`.
         ylabel (str): The label on the y-axis. If not given, defaults to comma-
@@ -32,12 +30,14 @@ def plot_xy(
         title (str): The title of the graph. If not given, defaults to
           "`ylabel` against `xlabel`".
         save_to (str): The full path to which the resultant graph shall be
-          saved. If not given, the graph will not be saved, and will be shown
-          instead.
-        show_plot (bool): Whether to show the graph.
+          saved. The default format is pdf; provide a different extension to
+          save as a different format. See matplotlib documentation for a list
+          of compatible formats. If not given, the graph will not be saved, and
+          will be shown instead.
+        show_plot (bool): Whether to show (`matplotlib.pyplot.show`) the graph.
     """
 
-    data = readresults.read_table(data_path)
+    data = readresults.read_data(data_path)
 
     fig = plt.figure(figsize=(10, 5))
     ax = fig.add_subplot(1, 1, 1)
