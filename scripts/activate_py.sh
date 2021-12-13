@@ -9,7 +9,7 @@ case "$OSTYPE" in
 
     "msys"* )
         echo "I'm a PC."
-        .\venv\Scripts\activate ;;
+        source env/Scripts/activate ;;
 
     "linux-gnu"* )
         echo "I'm Linux."
