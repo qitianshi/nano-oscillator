@@ -14,8 +14,8 @@ def prep_dir(path: str):
 
     if os.path.exists(path):
         rmtree(path)
+    os.makedirs(path)
 
-    os.mkdir(path)
 
 
 def result_dir(date: str = None) -> str:
