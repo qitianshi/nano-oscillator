@@ -39,10 +39,9 @@ def plot_xy(
         title (str): The title of the graph. If not given, defaults to
           "`ylabel` against `xlabel`".
         save_to (str): The full path to which the resultant graph shall be
-          saved. The default format is "pdf"; provide a different extension to
-          save as a different format. See matplotlib documentation for a list
-          of compatible formats. If not given, the graph will not be saved, and
-          will be shown instead.
+          saved. Specify format using the extension; see matplotlib docs for a
+          list of compatible formats. If not given, the graph will not be
+          saved, and will be shown instead.
         show_plot (bool): Whether to show (`matplotlib.pyplot.show`) the graph.
     """
 
@@ -67,7 +66,8 @@ def plot_xy(
         ax.set_ylim(ylim)
 
     if save_to is not None:
-        fig.savefig(save_to, format='pdf')
+        _, save_type = os.path.splitext(save_to)
+        fig.savefig(save_to, format=save_type.strip('.'))
 
     if save_to is None or show_plot:
         plt.show()
@@ -95,8 +95,8 @@ def plot_dataset_xy(
         save_to_root (str): The root directory to which the resultant graphs
           shall be saved. Files will be named following the convention defined
           in readresults.dataset_dir and readresults.data_path.
-        format (str): The format of the resultant graph. See matplotlib
-          documentation for a list of compatible formats.
+        plot_format (str): The format of the resultant graph. See matplotlib
+          docs for a list of compatible formats.
         (See plot_xy docs for other parameters.)
     """
 
