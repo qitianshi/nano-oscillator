@@ -14,8 +14,8 @@ def prep_dir(path: str):
 
     if os.path.exists(path):
         rmtree(path)
-    os.makedirs(path)
 
+    os.makedirs(path)
 
 
 def result_dir(date: str = None) -> str:
@@ -43,10 +43,12 @@ def dataset_dir(date: str = None, vals: dict[str, str] = None) -> tuple[str, tup
           If not given, the latest result is searched.
         vals (dict[str, str]): An ordered dict of variable names and their
           values, in order of how the data was split. If not given, the path
-          of the raw data is returned.
+          of the raw data is returned. The path that is returned stops at the
+          first item whose value is `None`.
 
     Returns:
-        str: The path of the requested dataset.
+        str: The path of the requested dataset. The path stops at the first
+          item in `vals` whose value is `None`.
     """
 
     if vals is None:
@@ -56,7 +58,7 @@ def dataset_dir(date: str = None, vals: dict[str, str] = None) -> tuple[str, tup
             result_dir(date),
             "split",
             ", ".join(vals.keys()),
-            *list(vals.values())[:-1]
+            *[i for i in vals.values() if i is not None]
         )
 
 
@@ -84,6 +86,24 @@ def read_data(path: str) -> pd.DataFrame:
         names = [i.strip() for i in names]
 
         return pd.read_csv(path, sep='\t', skiprows=1, names=names)
+
+
+def read_dataset(path: str) -> dict[str, pd.DataFrame]:
+    """Reads a dataset into a dict of Pandas DataFrames.
+
+    Returns:
+        dict[str, pd.DataFrame]: A dict, whose keys are the names of the data
+          files, in the format returned from data_path.
+    """
+
+    data_paths = {}
+
+    for root, _, files in os.walk(path):
+        for file in files:
+            if file.endswith(".tsv"):
+                data_paths[file.removesuffix(".tsv")] = read_data(os.path.join(root, file))
+
+    return data_paths
 
 
 def convert_raw_txt(date: str = None):
