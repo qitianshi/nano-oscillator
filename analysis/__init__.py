@@ -4,7 +4,8 @@ results from mumax3.
 Terminology used in this package:
 * data: A single `*.tsv` file containing either mumax3 output or calculated
   data.
-* dataset: A folder, in any location, containing zero, one, or more data files.
+* dataset: A folder, in any location, containing zero, one, or more data files,
+  or zero, one, or more subdirectories containing the same.
 * raw: Raw output from mumax3, either in its original `table.txt` form or in
   the converted `table.tsv` form.
 * result: A folder at the top level of the `results` directory. Its name
