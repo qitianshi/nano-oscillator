@@ -22,8 +22,8 @@ def find_amp(
     ))
 
     # Super rudimentary way of determining amplitude
-    amplitude = (waveform.loc[waveform["t"] > timeskip, var].max() -
-        waveform.loc[waveform["t"] > timeskip, var].min())/2
+    amplitude = (waveform.loc[waveform["t"] > timeskip, var].max() -         #pylint: disable=E1136
+        waveform.loc[waveform["t"] > timeskip, var].min()) / 2         #pylint: disable=E1101,E1136
 
     return amplitude
 
