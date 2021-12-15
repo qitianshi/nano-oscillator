@@ -5,7 +5,7 @@ import os
 import matplotlib.pyplot as plt
 import pandas as pd
 
-import readresults
+from . import readresults
 
 
 def plot_xy(
