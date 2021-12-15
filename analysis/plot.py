@@ -5,7 +5,7 @@ import os
 import matplotlib.pyplot as plt
 import pandas as pd
 
-from readresults import prep_dir
+import readresults
 
 
 def plot_xy(
@@ -61,6 +61,8 @@ def plot_xy(
     if save_to is None or show_plot:
         plt.show()
 
+    plt.close()
+
 
 def plot_dataset_xy(
     data: dict[str, pd.DataFrame],
@@ -84,7 +86,7 @@ def plot_dataset_xy(
         (See plot_xy docs for other parameters.)
     """
 
-    prep_dir(save_to_root)
+    readresults.prep_dir(save_to_root)
 
     for key, val in data.items():
 
@@ -97,7 +99,7 @@ def plot_dataset_xy(
         elif len(split_keys) > 1:
 
             if not os.path.exists(os.path.join(save_to_root, *split_keys[:-1])):
-                os.makedirs(save_to_root, *split_keys[:-1])
+                os.makedirs(os.path.join(save_to_root, *split_keys[:-1]))
 
             save_to = os.path.join(save_to, *split_keys[:-1], key + '.' + plot_format)
 
