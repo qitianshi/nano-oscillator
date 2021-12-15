@@ -1,7 +1,6 @@
 """Find amplitude from dataset"""
 
 import readresults
-import plot
 import pandas as pd
 from os.path import join
 import numpy as np
