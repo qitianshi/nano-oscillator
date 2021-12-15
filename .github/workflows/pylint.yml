@@ -26,7 +26,7 @@ jobs:
       id: cache-venv
       with:
         path: ${{ env.pythonLocation }}
-        key: ${{ runner.os }}-${{ env.pythonLocation }}-${{ hashFiles('**/requirements.txt') }}
+        key: ${{ env.pythonLocation }}-${{ hashFiles('requirements.txt') }}
 
     - name: Install dependencies
       if: steps.cache-venv.outputs.cache-hit != 'true'
