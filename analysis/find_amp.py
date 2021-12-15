@@ -1,9 +1,11 @@
 """Find amplitude from dataset"""
 
-import readresults
 import pandas as pd
-from os.path import join
 import numpy as np
+import readresults
+import matplotlib.pyplot as plt
+import plot
+from os.path import join
 
 def amp(
         date : str = None,
@@ -11,16 +13,12 @@ def amp(
         f_RF : float = None,
         var : str = None
 ):
-    """Finds the amplitudes for one variable
-
-    Args:
-        phi (str): the phi value ("Xdeg")
-    """
+    """Finds the amplitudes for one variable"""
 
     timeskip = 1.5e-9
 
     waveform = readresults.read_data(readresults.data_path(date,
-        {"phi": "00" + phi,
+        {"phi": f"{phi:03}deg",
         "f_RF": f"{f_RF / 10**9}GHz"}
     ))
 
@@ -30,26 +28,25 @@ def amp(
 
     return amp
 
-def amp_phi(
-    date : str = None,
-    phi : str = None,
-    var : str = None
-):
-    """Finds the ampltiude for all the datasets in a given phi value, for one given var"""
+def amp_phi_fRF(date : str = None, var : str = None):
+    """Finds the ampltiude for all the split datasets, for one given var"""
 
     data = readresults.read_data(readresults.data_path(date))
-    amplitude = np.empty((0, 2), float) #creates an empty numpy array
 
-    for f_RF in data["f_RF"].unique():
-        row = np.array([f_RF, amp(date, phi, f_RF, var)])
-        amplitude = np.append(amplitude, [row], axis=0)
-    #appends the amplitude and frequency values into the numpy 2D array
+    for phi in data["phi"].unique():
 
-    df = pd.DataFrame(amplitude, columns=["f_RF", "amplitude"])
-    df.to_csv(join(
-        readresults.result_dir(date), 'amplitudes', f"{phi}.tsv"), sep='\t', index=False
-    )
-    #converts the 2D array into a dataframe and csv file
+        amplitude = np.empty((0, 2), float) #creates an empty numpy array
+
+        for f_RF in data["f_RF"].unique():
+            row = np.array([f_RF, amp(date, phi, f_RF, var)])
+            amplitude = np.append(amplitude, [row], axis=0)
+        #appends the amplitude and frequency values into the numpy 2D array
+
+        df = pd.DataFrame(amplitude, columns=["f_RF", "amplitude"])
+        df.to_csv(join(
+            readresults.result_dir(date), 'amplitudes', f"{phi}deg.tsv"), sep='\t', index=False
+        )
+        #converts the 2D array into a dataframe and csv file
 
 
 
