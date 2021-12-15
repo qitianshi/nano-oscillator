@@ -14,6 +14,8 @@ def plot_xy(
     y_vars: list[str],
     xlabel: str = None,
     ylabel: str = None,
+    xlim: list[float, float] = None,
+    ylim: list[float, float] = None,
     title: str = None,
     save_to: str = None,
     show_plot: bool = False
@@ -30,6 +32,10 @@ def plot_xy(
           `x-var`.
         ylabel (str): The label on the y-axis. If not given, defaults to comma-
           separated list of `y-vars`.
+        xlim (list[float, float]): x-axis limits, passed to
+          `matplotlib.axes.Axes.set_xlim`.
+        ylim (list[float, float]): y-axis limits, passed to
+          `matplotlib.axes.Axes.set_ylim`.
         title (str): The title of the graph. If not given, defaults to
           "`ylabel` against `xlabel`".
         save_to (str): The full path to which the resultant graph shall be
@@ -55,6 +61,11 @@ def plot_xy(
     if len(y_vars) > 1:
         ax.legend()
 
+    if xlim is not None:
+        ax.set_xlim(xlim)
+    if ylim is not None:
+        ax.set_ylim(ylim)
+
     if save_to is not None:
         fig.savefig(save_to, format='pdf')
 
@@ -70,6 +81,9 @@ def plot_dataset_xy(
     y_vars: list[str],
     xlabel: str = None,
     ylabel: str = None,
+    xlim: list[float, float] = None,
+    ylim: list[float, float] = None,
+    title: str = None,
     save_to_root: str = None,
     plot_format: str = "pdf"
 ):
@@ -103,4 +117,4 @@ def plot_dataset_xy(
 
             save_to = os.path.join(save_to, *split_keys[:-1], key + '.' + plot_format)
 
-        plot_xy(val, x_var, y_vars, xlabel, ylabel, save_to=save_to)
+        plot_xy(val, x_var, y_vars, xlabel, ylabel, xlim, ylim, title, save_to)

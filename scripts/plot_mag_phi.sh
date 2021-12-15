@@ -21,6 +21,7 @@ plot_dataset_xy(
     x_var="t",
     y_vars=["mx", "my", "mz"],
     xlabel="t (s)",
+    ylim=[-1.0, 1.0],
     save_to_root=join(result_dir(sys.argv[1]), "plots", "phi")
 )
 
