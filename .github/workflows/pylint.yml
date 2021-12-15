@@ -2,6 +2,8 @@ name: Pylint
 
 on:
   push:
+    paths:
+      'analysis/**'
   pull_request:
     branches:
       - main
