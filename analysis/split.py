@@ -4,7 +4,7 @@ from os.path import join
 
 import pandas as pd
 
-import readresults
+from . import readresults
 
 
 def __split_variable(
