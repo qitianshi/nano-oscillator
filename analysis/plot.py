@@ -1,7 +1,11 @@
 """Plots data."""
 
+import os
+
 import matplotlib.pyplot as plt
 import pandas as pd
+
+from readresults import prep_dir
 
 
 def plot_xy(
@@ -29,7 +33,7 @@ def plot_xy(
         title (str): The title of the graph. If not given, defaults to
           "`ylabel` against `xlabel`".
         save_to (str): The full path to which the resultant graph shall be
-          saved. The default format is pdf; provide a different extension to
+          saved. The default format is "pdf"; provide a different extension to
           save as a different format. See matplotlib documentation for a list
           of compatible formats. If not given, the graph will not be saved, and
           will be shown instead.
@@ -64,13 +68,37 @@ def plot_dataset_xy(
     y_vars: list[str],
     xlabel: str = None,
     ylabel: str = None,
-    title: str = None,
-    save_to: str = None,
-    show_plot: bool = False
+    save_to_root: str = None,
+    plot_format: str = "pdf"
 ):
     """Plots a dataset into multiple plots.
 
     Args:
         data (dict[str, pd.DataFrame]): A dictionary of data. See documentation
           at readresults.read_dataset.
+        save_to_root (str): The root directory to which the resultant graphs
+          shall be saved. Files will be named following the convention defined
+          in readresults.dataset_dir and readresults.data_path.
+        format (str): The format of the resultant graph. See matplotlib
+          documentation for a list of compatible formats.
+        (See plot_xy docs for other parameters.)
     """
+
+    prep_dir(save_to_root)
+
+    for key, val in data.items():
+
+        save_to = save_to_root
+        split_keys = key.split(", ")
+
+        if len(split_keys) == 1:
+            save_to = os.path.join(save_to, key + '.' + plot_format)
+
+        elif len(split_keys) > 1:
+
+            if not os.path.exists(os.path.join(save_to_root, *split_keys[:-1])):
+                os.makedirs(save_to_root, *split_keys[:-1])
+
+            save_to = os.path.join(save_to, *split_keys[:-1], key + '.' + plot_format)
+
+        plot_xy(val, x_var, y_vars, xlabel, ylabel, save_to=save_to)
