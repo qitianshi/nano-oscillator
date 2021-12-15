@@ -1,12 +1,11 @@
 """Plots data."""
 
 import matplotlib.pyplot as plt
-
-import readresults
+import pandas as pd
 
 
 def plot_xy(
-    data_path: str,
+    data: pd.DataFrame,
     x_var: str,
     y_vars: list[str],
     xlabel: str = None,
@@ -18,7 +17,7 @@ def plot_xy(
     """Plots a number of dependent variables against an independent variable.
 
     Args:
-        data_path (str): The path to the data from which to read.
+        data (pandas.DataFrame): The data to be plotted.
         x_var (str): The name of the independent variable (on the x-axis).
           Should correspond to a variable in the data file.
         y-vars (list[str]): The names of the dependent variables (on the
@@ -36,8 +35,6 @@ def plot_xy(
           will be shown instead.
         show_plot (bool): Whether to show (`matplotlib.pyplot.show`) the graph.
     """
-
-    data = readresults.read_data(data_path)
 
     fig = plt.figure(figsize=(10, 5))
     ax = fig.add_subplot(1, 1, 1)
@@ -59,3 +56,21 @@ def plot_xy(
 
     if save_to is None or show_plot:
         plt.show()
+
+
+def plot_dataset_xy(
+    data: dict[str, pd.DataFrame],
+    x_var: str,
+    y_vars: list[str],
+    xlabel: str = None,
+    ylabel: str = None,
+    title: str = None,
+    save_to: str = None,
+    show_plot: bool = False
+):
+    """Plots a dataset into multiple plots.
+
+    Args:
+        data (dict[str, pd.DataFrame]): A dictionary of data. See documentation
+          at readresults.read_dataset.
+    """
