@@ -84,7 +84,12 @@ def read_data(path: str) -> pd.DataFrame:
 
 
 def read_dataset(path: str) -> dict[str, pd.DataFrame]:
-    """Reads a dataset into a dict of Pandas DataFrames."""
+    """Reads a dataset into a dict of Pandas DataFrames.
+
+    Returns:
+        dict[str, pd.DataFrame]: A dict, whose keys are the names of the data
+          files, in the format returned from data_path.
+    """
 
     data_paths = {}
 
