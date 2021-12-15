@@ -58,7 +58,7 @@ def dataset_dir(date: str = None, vals: dict[str, str] = None) -> tuple[str, tup
             result_dir(date),
             "split",
             ", ".join(vals.keys()),
-            *[i for i in vals.values() if i is not None]
+            *[i for i in list(vals.values())[:-1] if i is not None]
         )
 
 
@@ -72,11 +72,13 @@ def data_path(date: str = None, vals: dict[str, str] = None) -> str:
     else:
         return os.path.join(dataset_dir(date, vals), ", ".join(vals.values()) + ".tsv")
 
+
 def amplitude_path(date: str = None, phi: str = None):
     """Returns the path of the amplitude data."""
 
     amplitude_dir = os.path.join(result_dir(date), "amplitudes")
     return os.path.join(amplitude_dir, f"{phi}deg.tsv")
+
 
 def read_data(path: str) -> pd.DataFrame:
     """Reads a data file into a Pandas DataFrame."""
