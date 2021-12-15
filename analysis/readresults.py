@@ -43,10 +43,12 @@ def dataset_dir(date: str = None, vals: dict[str, str] = None) -> tuple[str, tup
           If not given, the latest result is searched.
         vals (dict[str, str]): An ordered dict of variable names and their
           values, in order of how the data was split. If not given, the path
-          of the raw data is returned.
+          of the raw data is returned. The path that is returned stops at the
+          first item whose value is `None`.
 
     Returns:
-        str: The path of the requested dataset.
+        str: The path of the requested dataset. The path stops at the first
+          item in `vals` whose value is `None`.
     """
 
     if vals is None:
@@ -56,7 +58,7 @@ def dataset_dir(date: str = None, vals: dict[str, str] = None) -> tuple[str, tup
             result_dir(date),
             "split",
             ", ".join(vals.keys()),
-            *list(vals.values())[:-1]
+            *[i for i in vals.values() if i is not None]
         )
 
 
