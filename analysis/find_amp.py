@@ -7,10 +7,10 @@ import readresults
 
 
 def find_amp(
-        date : str = None,
-        phi : str = None,
-        fRF : float = None,
-        var : str = None
+        date: str = None,
+        phi: str = None,
+        fRF: float = None,
+        var: str = None
 ):
     """Finds the amplitudes for one variable"""
 
@@ -28,7 +28,7 @@ def find_amp(
     return amplitude
 
 
-def amp_phi_fRF(date : str = None, var : str = None):
+def amp_phi_fRF(date: str = None, var: str = None):
     """Finds the ampltiude for all the split datasets, for one given var"""
 
     data = readresults.read_data(readresults.data_path(date))
