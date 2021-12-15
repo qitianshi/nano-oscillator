@@ -1,5 +1,5 @@
 # --------- analysis ---------
-# results/**/split
+results/**/split
 
 # ---------- mumax3 ----------
 references.bib
