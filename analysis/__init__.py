@@ -14,6 +14,8 @@ Terminology used in this package:
   saved to disk in the appropriate result folder.
 * variable: A variable from the mumax3 simulation. Used to identify columns
   in data.
+
+The package requires Python 3.9 or later.
 """
 
 from .plot import *
