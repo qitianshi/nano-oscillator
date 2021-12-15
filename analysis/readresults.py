@@ -83,6 +83,19 @@ def read_data(path: str) -> pd.DataFrame:
         return pd.read_csv(path, sep='\t', skiprows=1, names=names)
 
 
+def read_dataset(path: str) -> dict[str, pd.DataFrame]:
+    """Reads a dataset into a dict of Pandas DataFrames."""
+
+    data_paths = {}
+
+    for root, _, files in os.walk(path):
+        for file in files:
+            if file.endswith(".tsv"):
+                data_paths[file.removesuffix(".tsv")] = read_data(os.path.join(root, file))
+
+    return data_paths
+
+
 def convert_raw_txt(date: str = None):
     """Converts raw table.txt output from mumax3 to tsv format."""
 
