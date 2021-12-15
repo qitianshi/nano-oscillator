@@ -20,5 +20,6 @@ jobs:
         pip install pylint
         pip install -r requirements.txt
     - name: Analysing the code with pylint
+      # Runs Pylint, disables refactor (R) messages and TODO/FIXME warnings (W0511)
       run: |
-        pylint analysis
+        pylint analysis --disable=R --disable=W0511
