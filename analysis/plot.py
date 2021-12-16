@@ -48,8 +48,9 @@ def plot_xy(
     fig = plt.figure(figsize=(10, 5))
     ax = fig.add_subplot(1, 1, 1)
 
-    for var in y_vars:
-        ax.plot(data[x_var], data[var], label=var)
+    colors = plt.get_cmap('gist_rainbow')
+    for i, var in enumerate(y_vars):
+        ax.plot(data[x_var], data[var], label=var, c=colors(i / len(y_vars)))
 
     xlabel = xlabel if xlabel is not None else x_var
     ylabel = ylabel if ylabel is not None else ', '.join(y_vars)
@@ -57,7 +58,10 @@ def plot_xy(
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
     ax.set_title(title if title is not None else f"{ylabel} against {xlabel}")
-    if len(y_vars) > 1:
+
+    if len(y_vars) > 15:
+        ax.legend(ncol=5, fontsize='xx-small')
+    elif len(y_vars) > 1:
         ax.legend()
 
     if xlim is not None:
