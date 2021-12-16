@@ -73,7 +73,8 @@ def data_path(date: str = None, vals: dict[str, str] = None) -> str:
         return os.path.join(dataset_dir(date, vals), ", ".join(vals.values()) + ".tsv")
 
 
-def amplitude_path(date: str = None, phi: str = None):
+def amplitude_path(date: str = None, phi: str = None) -> str:
+
     """Returns the path of the amplitude data."""
 
     amplitude_dir = os.path.join(result_dir(date), "amplitudes")
