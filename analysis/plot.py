@@ -1,6 +1,7 @@
 """Plots data."""
 
 import os
+from amplitude import col_names
 
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -118,3 +119,17 @@ def plot_dataset_xy(
             save_to = os.path.join(save_to, *split_keys[:-1], key + '.' + plot_format)
 
         plot_xy(val, x_var, y_vars, xlabel, ylabel, xlim, ylim, title, save_to)
+
+datapath = os.path.join(readresults.result_dir("2021-12-06_0610"), "amplitudes", "amplitudes.tsv")
+destination = os.path.join(readresults.result_dir("2021-12-06_0610"), "plots", "resonance.pdf")
+plot_xy(
+    readresults.read_data(datapath),
+    "frequency",
+    [col_names("2021-12-06_0610", True)],
+    "frequency",
+    "amplitude",
+    None,
+    None,
+    "amplitude against frequency",
+    destination
+)
