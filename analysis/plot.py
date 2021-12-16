@@ -4,8 +4,9 @@ import os
 
 import matplotlib.pyplot as plt
 import pandas as pd
+from readresults import amplitude_path, read_data
 
-from . import readresults
+import readresults
 
 
 def plot_xy(
@@ -118,3 +119,19 @@ def plot_dataset_xy(
             save_to = os.path.join(save_to, *split_keys[:-1], key + '.' + plot_format)
 
         plot_xy(val, x_var, y_vars, xlabel, ylabel, xlim, ylim, title, save_to)
+
+data = readresults.read_data(readresults.data_path("2021-12-06_0610"))
+
+for phi in data["phi"].unique():
+    plot_xy(
+        read_data(amplitude_path("2021-12-06_0610", str(phi))),
+        "f_RF",
+        ["amplitude"],
+        "freqeuncy",
+        "amplitude",
+        None,
+        None,
+        "Amplitude against frequency for " + f"{phi} deg",
+        os.path.join(readresults.result_dir("2021-12-06_0610"), "plots", "resonance", f"{phi} deg .pdf"),
+        False
+)
