@@ -58,7 +58,7 @@ def dataset_dir(date: str = None, vals: dict[str, str] = None) -> tuple[str, tup
             result_dir(date),
             "split",
             ", ".join(vals.keys()),
-            *[i for i in vals.values() if i is not None]
+            *[i for i in list(vals.values())[:-1] if i is not None]
         )
 
 
@@ -74,6 +74,7 @@ def data_path(date: str = None, vals: dict[str, str] = None) -> str:
 
 
 def amplitude_path(date: str = None, phi: str = None) -> str:
+
     """Returns the path of the amplitude data."""
 
     amplitude_dir = os.path.join(result_dir(date), "amplitudes")
