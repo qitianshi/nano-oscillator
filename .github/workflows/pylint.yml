@@ -25,10 +25,10 @@ jobs:
           ${{ runner.os }}-venv-
 
     - run: python3 -m venv ./venv && . ./venv/bin/activate &&
-           pip install -r requirements.txt && pip install pylint
+           pip install -r requirements.txt && python3 -m pip install pylint
       if: steps.cache-venv.outputs.cache-hit != 'true'
 
     - name: Analysing the code with pylint
       # Runs Pylint, disables refactor (R) messages and TODO/FIXME warnings (W0511)
       run: |
-        ./venv/bin/activate && pylint analysis --disable=R --disable=W0511
+        . ./venv/bin/activate && pylint analysis --disable=R --disable=W0511
