@@ -44,7 +44,7 @@ def col_names(date: str = None, skip: bool = False) -> list[str]:
         names = ["frequency"]
 
     for phi in data["phi"].unique():
-        names.append("amp for " f"{phi}deg")
+        names.append(f"{phi}deg")
 
     return names
 
@@ -56,8 +56,8 @@ def amp_phi_fRF(date: str = None, var: str = None):
     amplitudes = np.empty((data["f_RF"].nunique(), 0), float)
     freq_col = np.empty((0, 1), float)
 
-    for f_RF in data["f_RF"].unique():
-        row = np.array([f_RF])
+    for fRF in data["f_RF"].unique():
+        row = np.array([fRF])
         freq_col = np.append(freq_col, [row], axis=0)
 
     amplitudes = np.column_stack((amplitudes, freq_col))
@@ -66,13 +66,13 @@ def amp_phi_fRF(date: str = None, var: str = None):
 
         col = np.empty((0, 1), float)
 
-        for f_RF in data["f_RF"].unique():
-            row = np.array([calc_amp(date, phi, f_RF, var)])
+        for fRF in data["f_RF"].unique():
+            row = np.array([calc_amp(date, phi, fRF, var)])
             col = np.append(col, [row], axis=0)
 
         amplitudes = np.column_stack((amplitudes, col))
 
-    df = pd.DataFrame(amplitudes, columns=col_names(date))
-    df.to_csv(join(
-            readresults.result_dir(date), 'amplitudes', 'amplitudes.tsv'), sep='\t', index=False
+    amplitude_data = pd.DataFrame(amplitudes, columns=col_names(date))
+    amplitude_data.to_csv(join(
+        readresults.result_dir(date), 'calculated_values', 'amplitudes.tsv'), sep='\t', index=False
     )
