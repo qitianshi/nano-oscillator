@@ -4,9 +4,6 @@ on:
   push:
     paths:
       'analysis/**'
-  pull_request:
-    branches:
-      - main
 
 jobs:
   build:
