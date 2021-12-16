@@ -1,9 +1,6 @@
 name: Pylint
 
-on:
-  push:
-    paths:
-      'analysis/**'
+on: [push]
 
 jobs:
   build:
@@ -23,16 +20,15 @@ jobs:
       id: cache-venv
       with:
         path: ${{ env.pythonLocation }}
-        key: ${{ env.pythonLocation }}-${{ hashFiles('requirements.txt') }}
+        key: ${{ runner.os }}-venv-${{ hashFiles('**/requirements*.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-venv-
 
-    - name: Install dependencies
+    - run: python3 -m venv ./venv && . ./venv/bin/activate &&
+           pip install -r requirements.txt && pip install pylint
       if: steps.cache-venv.outputs.cache-hit != 'true'
-      run: |
-        python -m pip install --upgrade pip
-        pip install pylint
-        pip install --upgrade --upgrade-strategy eager -r requirements.txt
 
     - name: Analysing the code with pylint
       # Runs Pylint, disables refactor (R) messages and TODO/FIXME warnings (W0511)
       run: |
-        pylint analysis --disable=R --disable=W0511
+        ./venv/bin/activate && pylint analysis --disable=R --disable=W0511
