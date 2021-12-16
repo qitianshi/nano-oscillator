@@ -1,6 +1,7 @@
 """Find amplitude from dataset"""
 
 from os.path import join
+
 import pandas as pd
 import numpy as np
 import readresults
@@ -46,20 +47,21 @@ def amp_phi_fRF(date: str = None, var: str = None):
             amp_col = np.append(amp_col, [col], axis=0)
 
 
-    # for phi in data["phi"].unique():
+    for phi in data["phi"].unique():
 
-    #     # Creates an empty numpy array
-    #     amplitude = np.empty((0, 2), float)
+        # Creates an empty numpy array
+        amplitude = np.empty((0, 2), float)
 
-    #     # Appends the amplitude and frequency values into the numpy 2D array
-    #     for fRF in data["f_RF"].unique():
-    #         row = np.array([fRF, calc_amp(date, phi, fRF, var)])
-    #         amplitude = np.append(amplitude, [row], axis=0)
+        # Appends the amplitude and frequency values into the numpy 2D array
+        for fRF in data["f_RF"].unique():
+            row = np.array([fRF, calc_amp(date, phi, fRF, var)])
+            amplitude = np.append(amplitude, [row], axis=0)
 
-    #     # Converts the 2D array into a dataframe and csv file
-    #     output = pd.DataFrame(amplitude, columns=["f_RF", "amplitude"])
-    #     output.to_csv(join(
-    #         readresults.result_dir(date), 'amplitudes', "all amplitudes.tsv"), sep='\t', index=False
-    #     )
+        # Converts the 2D array into a dataframe and csv file
+        output = pd.DataFrame(amplitude, columns=["f_RF", "amplitude"])
+        output.to_csv(join(
+            readresults.result_dir(date), 'amplitudes', "all amplitudes.tsv"),
+            sep='\t', index=False
+        )
 
 amp_phi_fRF("2021-12-06_0610", "my")
