@@ -29,40 +29,50 @@ def calc_amp(
 
     return amplitude
 
+def col_names(date: str = None, skip: bool = False) -> list[str]:
+    """Returns an array of column names.
+
+    Args:
+        skip (bool): if True, it skips the first column name (the frequency column) and
+            just returns the array of the amplitude columns
+    """
+
+    data = readresults.read_data(readresults.data_path(date))
+    if skip:
+        names = []
+    else:
+        names = ["frequency"]
+
+    for phi in data["phi"].unique():
+        names.append("amp for " f"{phi}deg")
+
+    return names
 
 def amp_phi_fRF(date: str = None, var: str = None):
     """Finds the ampltiude for all the split datasets, for one given var."""
 
     data = readresults.read_data(readresults.data_path(date))
 
+    amplitudes = np.empty((data["f_RF"].nunique(), 0), float)
     freq_col = np.empty((0, 1), float)
 
-    for fRF in data["f_RF"].unique():
-        col = np.array([fRF])
-        freq_col = np.append(freq_col, [col], axis=0)
+    for f_RF in data["f_RF"].unique():
+        row = np.array([f_RF])
+        freq_col = np.append(freq_col, [row], axis=0)
 
-    for phi in data["phi"].unique():
-        for fRF in data["f_RF"].unique():
-            amp_col = np.empty((0, 1), float)
-            col = np.array([calc_amp(date, phi, fRF, var)])
-            amp_col = np.append(amp_col, [col], axis=0)
-
+    amplitudes = np.column_stack((amplitudes, freq_col))
 
     for phi in data["phi"].unique():
 
-        # Creates an empty numpy array
-        amplitude = np.empty((0, 2), float)
+        col = np.empty((0, 1), float)
 
-        # Appends the amplitude and frequency values into the numpy 2D array
-        for fRF in data["f_RF"].unique():
-            row = np.array([fRF, calc_amp(date, phi, fRF, var)])
-            amplitude = np.append(amplitude, [row], axis=0)
+        for f_RF in data["f_RF"].unique():
+            row = np.array([calc_amp(date, phi, f_RF, var)])
+            col = np.append(col, [row], axis=0)
 
-        # Converts the 2D array into a dataframe and csv file
-        output = pd.DataFrame(amplitude, columns=["f_RF", "amplitude"])
-        output.to_csv(join(
-            readresults.result_dir(date), 'amplitudes', "all amplitudes.tsv"),
-            sep='\t', index=False
-        )
+        amplitudes = np.column_stack((amplitudes, col))
 
-amp_phi_fRF("2021-12-06_0610", "my")
+    df = pd.DataFrame(amplitudes, columns=col_names(date))
+    df.to_csv(join(
+            readresults.result_dir(date), 'amplitudes', 'amplitudes.tsv'), sep='\t', index=False
+    )
