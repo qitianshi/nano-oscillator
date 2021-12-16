@@ -1,7 +1,6 @@
 """Plots data."""
 
 import os
-from amplitude import col_names
 
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -49,8 +48,9 @@ def plot_xy(
     fig = plt.figure(figsize=(10, 5))
     ax = fig.add_subplot(1, 1, 1)
 
-    for var in y_vars:
-        ax.plot(data[x_var], data[var], label=var)
+    colors = plt.get_cmap('gist_rainbow')
+    for i, var in enumerate(y_vars):
+        ax.plot(data[x_var], data[var], label=var, c=colors(i / len(y_vars)))
 
     xlabel = xlabel if xlabel is not None else x_var
     ylabel = ylabel if ylabel is not None else ', '.join(y_vars)
@@ -58,7 +58,10 @@ def plot_xy(
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
     ax.set_title(title if title is not None else f"{ylabel} against {xlabel}")
-    if len(y_vars) > 1:
+
+    if len(y_vars) > 15:
+        ax.legend(ncol=5, fontsize='xx-small')
+    elif len(y_vars) > 1:
         ax.legend()
 
     if xlim is not None:
@@ -119,17 +122,3 @@ def plot_dataset_xy(
             save_to = os.path.join(save_to, *split_keys[:-1], key + '.' + plot_format)
 
         plot_xy(val, x_var, y_vars, xlabel, ylabel, xlim, ylim, title, save_to)
-
-datapath = os.path.join(readresults.result_dir("2021-12-06_0610"), "amplitudes", "amplitudes.tsv")
-destination = os.path.join(readresults.result_dir("2021-12-06_0610"), "plots", "resonance.pdf")
-plot_xy(
-    readresults.read_data(datapath),
-    "frequency",
-    [col_names("2021-12-06_0610", True)],
-    "frequency",
-    "amplitude",
-    None,
-    None,
-    "amplitude against frequency",
-    destination
-)
