@@ -41,7 +41,7 @@ def col_names(date: str = None, skip: bool = False) -> list[str]:
     if skip:
         names = []
     else:
-        names = ["frequency"]
+        names = ["f_RF"]
 
     for phi in data["phi"].unique():
         names.append(f"{phi}deg")
