@@ -6,6 +6,7 @@ references.bib
 log.txt
 gui
 *.ovf
+simulation/*.out
 
 # ---------- Python ----------
 # from github/gitignore

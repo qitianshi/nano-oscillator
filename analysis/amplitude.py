@@ -49,7 +49,7 @@ def col_names(date: str = None, skip: bool = False) -> list[str]:
     return names
 
 def amp_phi_fRF(date: str = None, var: str = None):
-    """Finds the ampltiude for all the split datasets, for one given var."""
+    """Finds the amplitude for all the split datasets, for one given var."""
 
     data = readresults.read_data(readresults.data_path(date))
 
