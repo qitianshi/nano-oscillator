@@ -88,6 +88,7 @@ def max_amp_phi(date: str = None):
     freq = np.empty((0, 1), float)
     max = np.empty((0, 1), float)
 
+    #create numpy arrays with max amp and phi values
     for val in (data.columns):
         if "deg" in val:
             phi = np.array([val.strip("deg")])
@@ -96,8 +97,9 @@ def max_amp_phi(date: str = None):
             max_amp = np.array([data[val].max()])
             max = np.append(max, [max_amp], axis=0)
 
-
     output = np.column_stack((freq, max))
+
+    #output to panda dataframe and a tsv file
     output_data = pd.DataFrame(output, columns=["phi", "max amplitudes"])
     output_data.to_csv(join(
         readresults.result_dir(date), 'calculated_values', 'max_amplitudes.tsv'),
