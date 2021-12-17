@@ -4,6 +4,7 @@ from os.path import join
 
 import pandas as pd
 import numpy as np
+from readresults import amplitude_dir, read_data
 
 import readresults
 
@@ -56,12 +57,14 @@ def amp_phi_fRF(date: str = None, var: str = None):
     amplitudes = np.empty((data["f_RF"].nunique(), 0), float)
     freq_col = np.empty((0, 1), float)
 
+    #creates a numpy array of all the frequency values
     for fRF in data["f_RF"].unique():
         row = np.array([fRF])
         freq_col = np.append(freq_col, [row], axis=0)
 
     amplitudes = np.column_stack((amplitudes, freq_col))
 
+    #creates a numpy array of all the amplitude data for each phi value
     for phi in data["phi"].unique():
 
         col = np.empty((0, 1), float)
@@ -72,7 +75,31 @@ def amp_phi_fRF(date: str = None, var: str = None):
 
         amplitudes = np.column_stack((amplitudes, col))
 
+    #converts the numpy array into a dataframe
     amplitude_data = pd.DataFrame(amplitudes, columns=col_names(date))
     amplitude_data.to_csv(join(
         readresults.result_dir(date), 'calculated_values', 'amplitudes.tsv'), sep='\t', index=False
+    )
+
+def max_amp_phi(date: str = None):
+    """Finds the maximum amplitudes for each phi value"""
+
+    data = read_data(join(amplitude_dir(date), "amplitudes.tsv"))
+    freq = np.empty((0, 1), float)
+    max = np.empty((0, 1), float)
+
+    for val in (data.columns):
+        if "deg" in val:
+            phi = np.array([val.strip("deg")])
+            freq = np.append(freq, [phi], axis=0)
+
+            max_amp = np.array([data[val].max()])
+            max = np.append(max, [max_amp], axis=0)
+
+
+    output = np.column_stack((freq, max))
+    output_data = pd.DataFrame(output, columns=["phi", "max amplitudes"])
+    output_data.to_csv(join(
+        readresults.result_dir(date), 'calculated_values', 'max_amplitudes.tsv'),
+        sep='\t', index=False
     )
