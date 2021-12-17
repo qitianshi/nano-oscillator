@@ -85,19 +85,19 @@ def max_amp_phi(date: str = None):
     """Finds the maximum amplitudes for each phi value"""
 
     data = read_data(join(amplitude_dir(date), "amplitudes.tsv"))
-    freq = np.empty((0, 1), float)
-    max = np.empty((0, 1), float)
+    phi_col = np.empty((0, 1), float)
+    max_col = np.empty((0, 1), float)
 
     #create numpy arrays with max amp and phi values
     for val in (data.columns):
         if "deg" in val:
             phi = np.array([val.strip("deg")])
-            freq = np.append(freq, [phi], axis=0)
+            phi_col = np.append(phi_col, [phi], axis=0)
 
             max_amp = np.array([data[val].max()])
-            max = np.append(max, [max_amp], axis=0)
+            max_col = np.append(max_col, [max_amp], axis=0)
 
-    output = np.column_stack((freq, max))
+    output = np.column_stack((phi_col, max_col))
 
     #output to panda dataframe and a tsv file
     output_data = pd.DataFrame(output, columns=["phi", "max amplitudes"])
