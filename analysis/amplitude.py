@@ -8,7 +8,7 @@ import numpy as np
 import readresults
 
 
-def calc_amp(date: str, phi: str, fRF: float, var: str) -> float:
+def calc_amp(date: str, phi: str, fRF: float, mag_var: str) -> float:
     """
     Finds the amplitudes for one variable.
 
@@ -24,7 +24,7 @@ def calc_amp(date: str, phi: str, fRF: float, var: str) -> float:
         "f_RF": f"{fRF / 1e9}GHz"}
     ))
 
-    operable_data = data.loc[data["t"] > skip_duration][var]                 #pylint: disable=E1136
+    operable_data = data.loc[data["t"] > skip_duration][mag_var]             #pylint: disable=E1136
 
     #TODO: Find a better way of calculating amplitude of the graphs
     amplitude = (operable_data.max() - operable_data.min()) / 2
@@ -32,9 +32,10 @@ def calc_amp(date: str, phi: str, fRF: float, var: str) -> float:
     return amplitude
 
 
-def amp_phi_fRF(var: str, date: str = None):
+def amp_phi_fRF(mag_var: str, date: str = None):
     """Finds the amplitude for all the split datasets, for one given var."""
 
+    date = date if date is not None else readresults.latest_date()
     data = readresults.read_data(readresults.data_path(date))
 
     amplitudes = np.empty((data["f_RF"].nunique(), 0), float)
@@ -51,13 +52,11 @@ def amp_phi_fRF(var: str, date: str = None):
         col = np.empty((0, 1), float)
 
         for fRF in data["f_RF"].unique():
-            row = np.array([calc_amp(date, phi, fRF, var)])
+            row = np.array([calc_amp(date, phi, fRF, mag_var)])
             col = np.append(col, [row], axis=0)
 
         amplitudes = np.column_stack((amplitudes, col))
 
     amplitude_data = pd.DataFrame(
         amplitudes, columns=["f_RF", *[f"{i}deg" for i in data["phi"].unique()]])
-    amplitude_data.to_csv(join(
-        readresults.result_dir(date), 'calculated_values', 'amplitudes.tsv'), sep='\t', index=False
-    )
+    amplitude_data.to_csv(readresults.amplitude_path(mag_var, date), sep='\t', index=False)
