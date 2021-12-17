@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if  [[ $1 = "-h" ]]; then
+if [[ $1 = "-h" ]]; then
     cat << HELP
 usage: $0 [-h] <expressions>
 HELP
@@ -11,5 +11,7 @@ source scripts/activate_py.sh
 
 python - $1 << PYSCRIPT
 import analysis
+
 $1
+
 PYSCRIPT
