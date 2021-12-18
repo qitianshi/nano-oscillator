@@ -64,27 +64,34 @@ def amp_phi_fRF(mag_var: str, date: str = None):
         amplitudes, columns=["f_RF", *[f"{i}deg" for i in data["phi"].unique()]])
     amplitude_data.to_csv(readresults.amplitude_path(mag_var, date), sep='\t', index=False)
 
-def max_amp_phi(mag_var: str, date: str = None):
+def max_amp_phi(date: str = None, mag_vars: list[str] = ["mx", "my", "mz"]):
     """Finds the maximum amplitudes for each phi value"""
 
-    data = readresults.read_data(readresults.amplitude_path(mag_var, date))
-    phi_col = np.empty((0, 1), float)
-    max_col = np.empty((0, 1), float)
+    date = date if date is not None else readresults.latest_date()
+    data = readresults.read_data(readresults.data_path(date))
 
-    #create numpy arrays with max amp and phi values
-    for val in (data.columns):
-        if "deg" in val:
-            phi = np.array([val.strip("deg")])
-            phi_col = np.append(phi_col, [phi], axis=0)
+    phi_col = np.empty((0, 1), int)
+    for phi in data["phi"].unique():
+        phi = np.array([phi])
+        phi_col = np.append(phi_col, [phi], axis=0)
 
-            max_amp = np.array([data[val].max()])
-            max_col = np.append(max_col, [max_amp], axis=0)
+    for var in mag_vars:
+        data = readresults.read_data(readresults.amplitude_path(var, date))
+        max_col = np.empty((0, 1), float)
 
-    output = np.column_stack((phi_col, max_col))
+        #create numpy arrays with max amp and phi values
+        for val in (data.columns):
+            if "deg" in val:
+                max_amp = np.array([data[val].max()])
+                max_col = np.append(max_col, [max_amp], axis=0)
+
+        phi_col = np.column_stack((phi_col, max_col))
 
     #output to panda dataframe and a tsv file
-    output_data = pd.DataFrame(output, columns=["phi", f"max_amp_{mag_var}"])
+    output_data = pd.DataFrame(phi_col, columns=["phi"] + mag_vars)
     output_data.to_csv(join(
-        readresults.result_dir(date), 'calculated_values', f'max_amp_{mag_var}.tsv'),
+        readresults.result_dir(date), 'calculated_values', 'max_amp.tsv'),
         sep='\t', index=False
     )
+
+max_amp_phi("2021-12-06_0610")

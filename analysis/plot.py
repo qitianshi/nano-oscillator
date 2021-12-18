@@ -4,6 +4,7 @@ import os
 
 import matplotlib.pyplot as plt
 import pandas as pd
+import numpy as np
 
 import readresults
 
@@ -16,7 +17,7 @@ def plot_xy(
     ylabel: str = None,
     xlim: list[float, float] = None,
     ylim: list[float, float] = None,
-    xstep: int = None,
+    xstep: float = None,
     title: str = None,
     save_to: str = None,
     show_plot: bool = False
@@ -37,7 +38,7 @@ def plot_xy(
           `matplotlib.axes.Axes.set_xlim`.
         ylim (list[float, float]): y-axis limits, passed to
           `matplotlib.axes.Axes.set_ylim`.
-        xsteps (int): tick steps for the x-axis, passed to
+        xsteps (float): tick steps for the x-axis, passed to
           `matplotlib.axes.Axes.set_xticks
         title (str): The title of the graph. If not given, defaults to
           "`ylabel` against `xlabel`".
@@ -74,7 +75,7 @@ def plot_xy(
 
     if xstep is not None:
         ticks = []
-        for i in range(data[x_var].iloc[0], data[x_var].iloc[-1] + xstep, xstep):
+        for i in np.arange(data[x_var].iloc[0], data[x_var].iloc[-1] + xstep, xstep):
             ticks.append(i)
 
         ax.set_xticks(ticks)
@@ -132,3 +133,19 @@ def plot_dataset_xy(
             save_to = os.path.join(save_to, *split_keys[:-1], key + '.' + plot_format)
 
         plot_xy(val, x_var, y_vars, xlabel, ylabel, xlim, ylim, title, save_to)
+
+data = readresults.read_data(os.path.join(readresults.result_dir("2021-12-06_0610"), "calculated_values", "max_amp.tsv"))
+destination = os.path.join(readresults.result_dir("2021-12-06_0610"), "plots", "aggregate", "max amp against phi.pdf")
+plot_xy(
+    data,
+    "phi",
+    ["mx", "my", "mz"],
+    "phi (deg)",
+    "max amplitudes",
+    None,
+    None,
+    45.0,
+    None,
+    destination,
+    True
+)
