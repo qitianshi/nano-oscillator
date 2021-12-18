@@ -119,10 +119,20 @@ def convert_raw_txt(date: str = None):
     """Converts raw table.txt output from mumax3 to tsv format."""
 
     raw_dir = dataset_dir(date, None)
-    table_txt_path = os.path.join(raw_dir, "table.txt")
 
-    data = read_data(table_txt_path)
-    data.to_csv(data_path(date, None), sep='\t', index=False)
+    try:
 
-    # Removes original table.txt
-    os.remove(table_txt_path)
+        table_txt_path = os.path.join(raw_dir, "table.txt")
+
+        data = read_data(table_txt_path)
+        data.to_csv(data_path(date, None), sep='\t', index=False)
+
+        # Removes original table.txt
+        os.remove(table_txt_path)
+
+    except FileNotFoundError:
+
+        if os.path.isfile(os.path.join(raw_dir, "table.tsv")):
+            print("Already converted to tsv.")
+        else:
+            print("Raw data not found.")
