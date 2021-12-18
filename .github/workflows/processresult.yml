@@ -1,7 +1,7 @@
 name: Process result
 
 on:
-  workflow-dispatch:
+  workflow_dispatch:
     inputs:
       date:
         description: 'Result date (YYYY-MM-DD_hhmm)'
