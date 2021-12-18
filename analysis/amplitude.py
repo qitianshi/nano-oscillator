@@ -83,7 +83,7 @@ def max_amp_phi(mag_var: str, date: str = None):
     output = np.column_stack((phi_col, max_col))
 
     #output to panda dataframe and a tsv file
-    output_data = pd.DataFrame(output, columns=["phi", "max amplitudes"])
+    output_data = pd.DataFrame(output, columns=["phi", f"max_amp_{mag_var}"])
     output_data.to_csv(join(
         readresults.result_dir(date), 'calculated_values', f'max_amp_{mag_var}.tsv'),
         sep='\t', index=False
