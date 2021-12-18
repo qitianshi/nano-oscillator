@@ -1,5 +1,7 @@
 """Find amplitude from dataset"""
 
+from os.path import join
+
 import pandas as pd
 import numpy as np
 
@@ -39,12 +41,14 @@ def amp_phi_fRF(mag_var: str, date: str = None):
     amplitudes = np.empty((data["f_RF"].nunique(), 0), float)
     freq_col = np.empty((0, 1), float)
 
+    #creates a numpy array of all the frequency values
     for fRF in data["f_RF"].unique():
         row = np.array([fRF])
         freq_col = np.append(freq_col, [row], axis=0)
 
     amplitudes = np.column_stack((amplitudes, freq_col))
 
+    #creates a numpy array of all the amplitude data for each phi value
     for phi in data["phi"].unique():
 
         col = np.empty((0, 1), float)
@@ -55,6 +59,38 @@ def amp_phi_fRF(mag_var: str, date: str = None):
 
         amplitudes = np.column_stack((amplitudes, col))
 
+    #converts the numpy array into a dataframe
     amplitude_data = pd.DataFrame(
         amplitudes, columns=["f_RF", *[f"{i}deg" for i in data["phi"].unique()]])
     amplitude_data.to_csv(readresults.amplitude_path(mag_var, date), sep='\t', index=False)
+
+def max_amp_phi(date: str = None, mag_vars: list[str] = None):
+    """Finds the maximum amplitudes for each phi value"""
+
+    mag_vars = mag_vars if mag_vars is not None else ["mx", "my", "mz"]
+    date = date if date is not None else readresults.latest_date()
+    data = readresults.read_data(readresults.data_path(date))
+
+    phi_col = np.empty((0, 1), int)
+    for phi in data["phi"].unique():
+        phi = np.array([phi])
+        phi_col = np.append(phi_col, [phi], axis=0)
+
+    for var in mag_vars:
+        data = readresults.read_data(readresults.amplitude_path(var, date))
+        max_col = np.empty((0, 1), float)
+
+        #create numpy arrays with max amp and phi values
+        for val in (data.columns):
+            if "deg" in val:
+                max_amp = np.array([data[val].max()])
+                max_col = np.append(max_col, [max_amp], axis=0)
+
+        phi_col = np.column_stack((phi_col, max_col))
+
+    #output to panda dataframe and a tsv file
+    output_data = pd.DataFrame(phi_col, columns=["phi"] + mag_vars)
+    output_data.to_csv(join(
+        readresults.result_dir(date), 'calculated_values', 'max_amp.tsv'),
+        sep='\t', index=False
+    )

@@ -4,6 +4,7 @@ import os
 
 import matplotlib.pyplot as plt
 import pandas as pd
+import numpy as np
 
 import readresults
 
@@ -16,6 +17,7 @@ def plot_xy(
     ylabel: str = None,
     xlim: list[float, float] = None,
     ylim: list[float, float] = None,
+    xstep: float = None,
     title: str = None,
     save_to: str = None,
     show_plot: bool = False
@@ -36,6 +38,8 @@ def plot_xy(
           `matplotlib.axes.Axes.set_xlim`.
         ylim (list[float, float]): y-axis limits, passed to
           `matplotlib.axes.Axes.set_ylim`.
+        xsteps (float): tick steps for the x-axis, passed to
+          `matplotlib.axes.Axes.set_xticks
         title (str): The title of the graph. If not given, defaults to
           "`ylabel` against `xlabel`".
         save_to (str): The full path to which the resultant graph shall be
@@ -68,6 +72,13 @@ def plot_xy(
         ax.set_xlim(xlim)
     if ylim is not None:
         ax.set_ylim(ylim)
+
+    if xstep is not None:
+        ticks = []
+        for i in np.arange(data[x_var].iloc[0], data[x_var].iloc[-1] + xstep, xstep):
+            ticks.append(i)
+
+        ax.set_xticks(ticks)
 
     if save_to is not None:
         _, save_type = os.path.splitext(save_to)
