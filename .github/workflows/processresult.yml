@@ -33,3 +33,6 @@ jobs:
       run: python3 -m venv ./venv && . ./venv/bin/activate &&
            pip install -r requirements.txt && python3 -m pip install pylint
       if: steps.cache-venv.outputs.cache-hit != 'true'
+
+    - name: Run analysis package
+      run: . ./venv/bin/activate && python3 -m analysis
