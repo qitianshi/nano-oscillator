@@ -98,6 +98,7 @@ def plot_dataset_xy(
     ylabel: str = None,
     xlim: list[float, float] = None,
     ylim: list[float, float] = None,
+    xstep: float = None,
     title: str = None,
     save_to_root: str = None,
     plot_format: str = "pdf"
@@ -132,4 +133,4 @@ def plot_dataset_xy(
 
             save_to = os.path.join(save_to, *split_keys[:-1], key + '.' + plot_format)
 
-        plot_xy(val, x_var, y_vars, xlabel, ylabel, xlim, ylim, title, save_to)
+        plot_xy(val, x_var, y_vars, xlabel, ylabel, xlim, ylim, xstep, title, save_to)
