@@ -4,54 +4,38 @@ from os.path import join
 
 import pandas as pd
 import numpy as np
-from readresults import amplitude_dir, read_data
 
 import readresults
 
 
-def calc_amp(
-        date: str = None,
-        phi: str = None,
-        fRF: float = None,
-        var: str = None
-) -> float:
-    """Finds the amplitudes for one variable"""
+def calc_amp(date: str, phi: str, fRF: float, mag_var: str) -> float:
+    """
+    Finds the amplitudes for one variable.
 
-    timeskip = 1.5e-9
+    Args:
+        var (str): The magnetization vector variable to calculate. Acceptable
+          values: "mx", "my", "mz".
+    """
 
-    waveform = readresults.read_data(readresults.data_path(date,
+    skip_duration = 1.5e-9
+
+    data = readresults.read_data(readresults.data_path(date,
         {"phi": f"{phi:03}deg",
         "f_RF": f"{fRF / 1e9}GHz"}
     ))
 
+    operable_data = data.loc[data["t"] > skip_duration][mag_var]             #pylint: disable=E1136
+
     #TODO: Find a better way of calculating amplitude of the graphs
-    amplitude = (waveform.loc[waveform["t"] > timeskip, var].max() -         #pylint: disable=E1136
-        waveform.loc[waveform["t"] > timeskip, var].min()) / 2         #pylint: disable=E1101,E1136
+    amplitude = (operable_data.max() - operable_data.min()) / 2
 
     return amplitude
 
-def col_names(date: str = None, skip: bool = False) -> list[str]:
-    """Returns an array of column names.
 
-    Args:
-        skip (bool): if True, it skips the first column name (the frequency column) and
-            just returns the array of the amplitude columns
-    """
+def amp_phi_fRF(mag_var: str, date: str = None):
+    """Finds the amplitude for all the split datasets, for one given var."""
 
-    data = readresults.read_data(readresults.data_path(date))
-    if skip:
-        names = []
-    else:
-        names = ["frequency"]
-
-    for phi in data["phi"].unique():
-        names.append(f"{phi}deg")
-
-    return names
-
-def amp_phi_fRF(date: str = None, var: str = None):
-    """Finds the ampltiude for all the split datasets, for one given var."""
-
+    date = date if date is not None else readresults.latest_date()
     data = readresults.read_data(readresults.data_path(date))
 
     amplitudes = np.empty((data["f_RF"].nunique(), 0), float)
@@ -70,21 +54,20 @@ def amp_phi_fRF(date: str = None, var: str = None):
         col = np.empty((0, 1), float)
 
         for fRF in data["f_RF"].unique():
-            row = np.array([calc_amp(date, phi, fRF, var)])
+            row = np.array([calc_amp(date, phi, fRF, mag_var)])
             col = np.append(col, [row], axis=0)
 
         amplitudes = np.column_stack((amplitudes, col))
 
     #converts the numpy array into a dataframe
-    amplitude_data = pd.DataFrame(amplitudes, columns=col_names(date))
-    amplitude_data.to_csv(join(
-        readresults.result_dir(date), 'calculated_values', 'amplitudes.tsv'), sep='\t', index=False
-    )
+    amplitude_data = pd.DataFrame(
+        amplitudes, columns=["f_RF", *[f"{i}deg" for i in data["phi"].unique()]])
+    amplitude_data.to_csv(readresults.amplitude_path(mag_var, date), sep='\t', index=False)
 
-def max_amp_phi(date: str = None):
+def max_amp_phi(var: str, date: str = None):
     """Finds the maximum amplitudes for each phi value"""
 
-    data = read_data(join(amplitude_dir(date), "amplitudes.tsv"))
+    data = readresults.read_data(join(readresults.amplitude_path(var, date), "amplitudes.tsv"))
     phi_col = np.empty((0, 1), float)
     max_col = np.empty((0, 1), float)
 

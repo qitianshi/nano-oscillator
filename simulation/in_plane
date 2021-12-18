@@ -77,6 +77,7 @@ hAmp := 0.0005
 
 // Configures table output
 tableAdd(maxAngle)
+tableAdd(now())
 tableAddVar(phi, "phi", "degree")
 tableAddVar(f, "f_RF", "GHz")
 tableAutosave(5e-12)
