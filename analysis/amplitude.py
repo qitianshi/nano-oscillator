@@ -64,9 +64,10 @@ def amp_phi_fRF(mag_var: str, date: str = None):
         amplitudes, columns=["f_RF", *[f"{i}deg" for i in data["phi"].unique()]])
     amplitude_data.to_csv(readresults.amplitude_path(mag_var, date), sep='\t', index=False)
 
-def max_amp_phi(date: str = None, mag_vars: list[str] = ["mx", "my", "mz"]):
+def max_amp_phi(date: str = None, mag_vars: list[str] = None):
     """Finds the maximum amplitudes for each phi value"""
 
+    mag_vars = mag_vars if mag_vars is not None else ["mx", "my", "mz"]
     date = date if date is not None else readresults.latest_date()
     data = readresults.read_data(readresults.data_path(date))
 
@@ -93,5 +94,3 @@ def max_amp_phi(date: str = None, mag_vars: list[str] = ["mx", "my", "mz"]):
         readresults.result_dir(date), 'calculated_values', 'max_amp.tsv'),
         sep='\t', index=False
     )
-
-max_amp_phi("2021-12-06_0610")

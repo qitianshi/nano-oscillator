@@ -133,19 +133,3 @@ def plot_dataset_xy(
             save_to = os.path.join(save_to, *split_keys[:-1], key + '.' + plot_format)
 
         plot_xy(val, x_var, y_vars, xlabel, ylabel, xlim, ylim, title, save_to)
-
-data = readresults.read_data(os.path.join(readresults.result_dir("2021-12-06_0610"), "calculated_values", "max_amp.tsv"))
-destination = os.path.join(readresults.result_dir("2021-12-06_0610"), "plots", "aggregate", "max amp against phi.pdf")
-plot_xy(
-    data,
-    "phi",
-    ["mx", "my", "mz"],
-    "phi (deg)",
-    "max amplitudes",
-    None,
-    None,
-    45.0,
-    None,
-    destination,
-    True
-)
