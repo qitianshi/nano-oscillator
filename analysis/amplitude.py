@@ -64,10 +64,10 @@ def amp_phi_fRF(mag_var: str, date: str = None):
         amplitudes, columns=["f_RF", *[f"{i}deg" for i in data["phi"].unique()]])
     amplitude_data.to_csv(readresults.amplitude_path(mag_var, date), sep='\t', index=False)
 
-def max_amp_phi(var: str, date: str = None):
+def max_amp_phi(mag_var: str, date: str = None):
     """Finds the maximum amplitudes for each phi value"""
 
-    data = readresults.read_data(join(readresults.amplitude_path(var, date), "amplitudes.tsv"))
+    data = readresults.read_data(readresults.amplitude_path(mag_var, date))
     phi_col = np.empty((0, 1), float)
     max_col = np.empty((0, 1), float)
 
@@ -85,6 +85,6 @@ def max_amp_phi(var: str, date: str = None):
     #output to panda dataframe and a tsv file
     output_data = pd.DataFrame(output, columns=["phi", "max amplitudes"])
     output_data.to_csv(join(
-        readresults.result_dir(date), 'calculated_values', 'max_amplitudes.tsv'),
+        readresults.result_dir(date), 'calculated_values', f'max_amp_{mag_var}.tsv'),
         sep='\t', index=False
     )
