@@ -10,18 +10,21 @@ fi
 source scripts/activate_py.sh
 
 python - $1 << PYSCRIPT
+from os.path import join
 import sys
 import analysis as anl
 
 DATE = sys.argv[1]
 
-print("Plotting mx, my, mz against t from data split by phi, f_RF...")
-anl.plot.plot_dataset_xy(
-    data=anl.read.read_dataset(anl.paths.dataset_dir(DATE, {"phi": None, "f_RF": None})),
+RAW_DATA = anl.read.read_data(anl.paths.data_path(DATE))
+
+print("Plotting mx, my, mz against t from raw data...")
+anl.plot.plot_xy(
+    data=RAW_DATA,
     x_var="t",
     y_vars=["mx", "my", "mz"],
     xlabel="t (s)",
-    save_to_root=anl.paths.plots_dir(DATE, ["phi, f_RF"])
+    save_to=join(anl.paths.plots_dir(DATE, ["aggregate"]), "mx, my, mz against t.pdf")
 )
 
 PYSCRIPT

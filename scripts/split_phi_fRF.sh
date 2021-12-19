@@ -11,8 +11,11 @@ source scripts/activate_py.sh
 
 python - $1 << PYSCRIPT
 import sys
-from analysis.split import split_phi_fRF
+import analysis as anl
 
-split_phi_fRF(sys.argv[1])
+DATE = sys.argv[1]
+
+print("Splitting raw data by phi, f_RF...")
+anl.split.split_phi_fRF(DATE)
 
 PYSCRIPT
