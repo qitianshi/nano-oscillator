@@ -21,6 +21,7 @@ anl.plot.plot_dataset_xy(
     x_var="t",
     y_vars=["mx", "my", "mz"],
     xlabel="t (s)",
+    ylim=(-1.0, 1.0),
     save_to_root=anl.paths.plots_dir(DATE, ["phi, f_RF"])
 )
 

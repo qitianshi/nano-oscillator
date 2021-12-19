@@ -21,9 +21,9 @@ anl.plot.plot_xy(
     x_var="phi",
     y_vars=["MaxAmp_mx", "MaxAmp_my", "MaxAmp_mz"],
     xlabel="phi (deg)",
-    ylabel=["MaxAmp"],
+    ylabel="MaxAmp",
     xstep=45,
-    save_to=anl.paths.plots_dir(DATE, ["aggregate"])
+    save_to=join(anl.paths.plots_dir(DATE, ["aggregate"]), "MaxAmp against phi.pdf")
 )
 
 PYSCRIPT
