@@ -81,6 +81,11 @@ def plot_xy(
         ax.set_xticks(ticks)
 
     if save_to is not None:
+
+        save_dir, _ = os.path.split(save_to)
+        if not os.path.exists(save_dir):
+            read.prep_dir(save_dir)
+
         _, save_type = os.path.splitext(save_to)
         fig.savefig(save_to, format=save_type.strip('.'))
 
