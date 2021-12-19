@@ -50,6 +50,7 @@ anl.plot.plot_dataset_xy(
     x_var="t",
     y_vars=["mx", "my", "mz"],
     xlabel="t (s)",
+    ylim=(-1.0, 1.0),
     save_to_root=anl.paths.plots_dir(DATE, ["phi"])
 )
 
@@ -60,6 +61,7 @@ anl.plot.plot_dataset_xy(
     x_var="t",
     y_vars=["mx", "my", "mz"],
     xlabel="t (s)",
+    ylim=(-1.0, 1.0),
     save_to_root=anl.paths.plots_dir(DATE, ["phi, f_RF"])
 )
 
@@ -83,7 +85,7 @@ anl.plot.plot_xy(
     x_var="phi",
     y_vars=["MaxAmp_mx", "MaxAmp_my", "MaxAmp_mz"],
     xlabel="phi (deg)",
-    ylabel=["MaxAmp"],
+    ylabel="MaxAmp",
     xstep=45,
         save_to=join(anl.paths.plots_dir(DATE, ["aggregate"]), "MaxAmp against phi.pdf")
 )
