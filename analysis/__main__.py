@@ -5,6 +5,7 @@ from sys import argv, exit
 
 import analysis as anl
 
+
 try:
     DATE = argv[1]
 except IndexError:
