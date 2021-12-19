@@ -67,7 +67,7 @@ def amp_phi_fRF(date: str = None):
 
         # Outputs amplitude data.
         pd.DataFrame(amplitudes, columns=["f_RF", *[f"{i}deg" for i in data["phi"].unique()]]) \
-            .to_csv(paths.amplitude_path(mag_var, date), sep='\t', index=False)
+            .to_csv(paths.amp_path(mag_var, date), sep='\t', index=False)
 
 
 def max_amp_phi(date: str = None):
@@ -84,7 +84,7 @@ def max_amp_phi(date: str = None):
 
     for var in mag_vars:
 
-        data = read.read_data(paths.amplitude_path(var, date))
+        data = read.read_data(paths.amp_path(var, date))
         max_col = np.empty((0, 1), float)
 
         # Creates numpy arrays with MaxAmp and phi values.
@@ -96,7 +96,9 @@ def max_amp_phi(date: str = None):
         phi_col = np.column_stack((phi_col, max_col))
 
     # Outputs to data file.
-    pd.DataFrame(phi_col, columns=["phi"] + mag_vars).to_csv(join(
-        paths.result_dir(date), 'calculated_values', 'MaxAmp.tsv'),
-        sep='\t', index=False
-    )
+    pd.DataFrame(phi_col, columns=(["phi"] + (f"MaxAmp_{i}" for i in mag_vars))) \
+        .to_csv(
+            join(paths.result_dir(date), 'calculated_values', 'MaxAmp.tsv'),
+            sep='\t',
+            index=False
+        )
