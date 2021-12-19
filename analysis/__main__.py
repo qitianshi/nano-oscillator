@@ -1,12 +1,15 @@
 """Runs all data analyses, including splitting, calculations, and plotting."""
 
 from os.path import join
-import sys
+from sys import argv, exit
 
 import analysis as anl
 
-
-DATE = sys.argv[1]
+try:
+    DATE = argv[1]
+except IndexError:
+    print("Fatal: Missing 'date' parameter.")
+    exit()
 
 print("Converting raw.txt to raw.tsv...")
 anl.read.convert_raw_txt(DATE)
@@ -89,3 +92,5 @@ anl.plot.plot_xy(
     xstep=45,
     save_to=join(anl.paths.plots_dir(DATE, ["aggregate"]), "MaxAmp against phi.pdf")
 )
+
+print("All analysis done.")
