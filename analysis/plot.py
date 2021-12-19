@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 
-import readresults
+from analysis import read
 
 
 def plot_xy(
@@ -116,7 +116,7 @@ def plot_dataset_xy(
         (See plot_xy docs for other parameters.)
     """
 
-    readresults.prep_dir(save_to_root)
+    read.prep_dir(save_to_root)
 
     for key, val in data.items():
 
