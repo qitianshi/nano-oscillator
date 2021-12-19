@@ -8,8 +8,7 @@ import analysis as anl
 try:
     DATE = argv[1]
 except IndexError:
-    print("Fatal: Missing 'date' parameter.")
-    exit()
+    exit("Fatal: Missing 'date' parameter.")
 
 print("Converting raw.txt to raw.tsv...")
 anl.read.convert_raw_txt(DATE)
