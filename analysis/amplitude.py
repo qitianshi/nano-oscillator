@@ -96,7 +96,7 @@ def max_amp_phi(date: str = None):
         phi_col = np.column_stack((phi_col, max_col))
 
     # Outputs to data file.
-    pd.DataFrame(phi_col, columns=(["phi"] + (f"MaxAmp_{i}" for i in mag_vars))) \
+    pd.DataFrame(phi_col, columns=(["phi"] + list(f"MaxAmp_{i}" for i in mag_vars))) \
         .to_csv(
             join(paths.result_dir(date), 'calculated_values', 'MaxAmp.tsv'),
             sep='\t',
