@@ -4,5 +4,8 @@ init-hook="import sys; sys.path.append('./analysis')"
 [FORMAT]
 max-line-length=99
 
+[VARIABLES]
+redefining-builtins-modules=sys
+
 [BASIC]
 good-names-rgxs=.*fRF.*,ax.*

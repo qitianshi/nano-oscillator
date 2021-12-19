@@ -10,7 +10,7 @@ fi
 source scripts/activate_py.sh
 
 python - $1 << PYSCRIPT
-import analysis
+import analysis as anl
 
 $1
 

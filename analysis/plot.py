@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 
-import readresults
+from analysis import read
 
 
 def plot_xy(
@@ -81,6 +81,9 @@ def plot_xy(
         ax.set_xticks(ticks)
 
     if save_to is not None:
+
+        read.prep_dir(os.path.split(save_to)[0], clear=False)
+
         _, save_type = os.path.splitext(save_to)
         fig.savefig(save_to, format=save_type.strip('.'))
 
@@ -98,6 +101,7 @@ def plot_dataset_xy(
     ylabel: str = None,
     xlim: list[float, float] = None,
     ylim: list[float, float] = None,
+    xstep: float = None,
     title: str = None,
     save_to_root: str = None,
     plot_format: str = "pdf"
@@ -106,16 +110,16 @@ def plot_dataset_xy(
 
     Args:
         data (dict[str, pd.DataFrame]): A dictionary of data. See documentation
-          at readresults.read_dataset.
+          at read.read_dataset.
         save_to_root (str): The root directory to which the resultant graphs
           shall be saved. Files will be named following the convention defined
-          in readresults.dataset_dir and readresults.data_path.
+          in read.dataset_dir and read.data_path.
         plot_format (str): The format of the resultant graph. See matplotlib
           docs for a list of compatible formats.
         (See plot_xy docs for other parameters.)
     """
 
-    readresults.prep_dir(save_to_root)
+    read.prep_dir(save_to_root)
 
     for key, val in data.items():
 
@@ -127,9 +131,8 @@ def plot_dataset_xy(
 
         elif len(split_keys) > 1:
 
-            if not os.path.exists(os.path.join(save_to_root, *split_keys[:-1])):
-                os.makedirs(os.path.join(save_to_root, *split_keys[:-1]))
+            read.prep_dir(os.path.join(save_to_root, *split_keys[:-1]), clear=False)
 
             save_to = os.path.join(save_to, *split_keys[:-1], key + '.' + plot_format)
 
-        plot_xy(val, x_var, y_vars, xlabel, ylabel, xlim, ylim, title, save_to)
+        plot_xy(val, x_var, y_vars, xlabel, ylabel, xlim, ylim, xstep, title, save_to)

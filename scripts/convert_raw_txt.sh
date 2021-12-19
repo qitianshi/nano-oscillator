@@ -11,8 +11,11 @@ source scripts/activate_py.sh
 
 python - $1 << PYSCRIPT
 import sys
-from analysis.readresults import convert_raw_txt
+import analysis as anl
 
-convert_raw_txt(sys.argv[1] if len(sys.argv) >= 2 else None)
+DATE = sys.argv[1]
+
+print("Converting raw.txt to raw.tsv...")
+anl.read.convert_raw_txt(DATE)
 
 PYSCRIPT

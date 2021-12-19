@@ -10,19 +10,19 @@ fi
 source scripts/activate_py.sh
 
 python - $1 << PYSCRIPT
-from os.path import join
 import sys
+import analysis as anl
 
-from analysis.plot import plot_dataset_xy
-from analysis.readresults import read_dataset, dataset_dir, result_dir
+DATE = sys.argv[1]
 
-plot_dataset_xy(
-    data=read_dataset(dataset_dir(sys.argv[1], {"phi": None})),
+print("Plotting mx, my, mz against t from data split by phi...")
+anl.plot.plot_dataset_xy(
+    data=anl.read.read_dataset(anl.paths.dataset_dir(DATE, {"phi": None})),
     x_var="t",
     y_vars=["mx", "my", "mz"],
     xlabel="t (s)",
-    ylim=[-1.0, 1.0],
-    save_to_root=join(result_dir(sys.argv[1]), "plots", "phi")
+    ylim=(-1.0, 1.0),
+    save_to_root=anl.paths.plots_dir(DATE, ["phi"])
 )
 
 PYSCRIPT

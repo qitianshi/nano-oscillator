@@ -18,6 +18,8 @@ Terminology used in this package:
 The package requires Python 3.9 or later.
 """
 
-from .plot import *
-from .readresults import *
-from .split import *
+from analysis import amplitude
+from analysis import paths
+from analysis import plot
+from analysis import read
+from analysis import split

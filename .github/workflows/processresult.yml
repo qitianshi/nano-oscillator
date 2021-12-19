@@ -1,0 +1,38 @@
+name: Process result
+
+on:
+  workflow_dispatch:
+    inputs:
+      date:
+        description: 'Result date (YYYY-MM-DD_hhmm)'
+        required: true
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - uses: actions/checkout@v2
+
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.10'
+
+    - uses: actions/cache@v2
+      id: cache-venv
+      with:
+        path: ./venv/
+        key: ${{ runner.os }}-venv-${{ hashFiles('**/requirements*.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-venv-
+
+    - name: Create Python venv and install dependencies
+      run: python3 -m venv ./venv && . ./venv/bin/activate &&
+           pip install -r requirements.txt && python3 -m pip install pylint
+      if: steps.cache-venv.outputs.cache-hit != 'true'
+
+    - name: Run analysis package
+      run: . ./venv/bin/activate && python3 -m analysis
