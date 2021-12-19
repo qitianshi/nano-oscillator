@@ -68,3 +68,9 @@ def amplitude_path(mag_var: str, date: str = None) -> str:
     """Returns the path of the amplitude data."""
 
     return os.path.join(result_dir(date), "calculated_values", f"amplitudes_{mag_var}.tsv")
+
+
+def plots_agg_dir(date: str = None) -> str:
+    """Returns the path of aggregate plots."""
+
+    return os.path.join(result_dir(date), "plots", "aggregate")
