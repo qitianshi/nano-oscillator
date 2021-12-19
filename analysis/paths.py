@@ -53,6 +53,12 @@ def dataset_dir(date: str = None, vals: dict[str, str] = None) -> tuple[str, tup
         )
 
 
+def calcvals_dir(date: str = None):
+    """Returns the path of the calculated_values dataset."""
+
+    return os.path.join(result_dir(date), "calculated_values")
+
+
 def data_path(date: str = None, vals: dict[str, str] = None) -> str:
     """Returns the path of the data split by the requested variables and
     values.
@@ -64,10 +70,16 @@ def data_path(date: str = None, vals: dict[str, str] = None) -> str:
         return os.path.join(dataset_dir(date, vals), ", ".join(vals.values()) + ".tsv")
 
 
-def amplitude_path(mag_var: str, date: str = None) -> str:
+def amp_path(mag_var: str, date: str = None) -> str:
     """Returns the path of the amplitude data."""
 
-    return os.path.join(result_dir(date), "calculated_values", f"amp_{mag_var}.tsv")
+    return os.path.join(calcvals_dir(date), f"amp_{mag_var}.tsv")
+
+
+def maxamp_path(date: str = None) -> str:
+    """Returns the path of the MaxAmp data."""
+
+    return os.path.join(calcvals_dir(date), "MaxAmp.tsv")
 
 
 def plots_dir(date: str = None, subs: list[str] = None) -> str:
