@@ -4,7 +4,7 @@ from os.path import join
 
 import pandas as pd
 
-from analysis import read
+from analysis import read, paths
 
 
 def __split_variable(
@@ -37,8 +37,8 @@ def split_phi(date: str = None, reset_t: bool = True):
     """"Splits data by phi."""
 
     split_data = __split_variable(
-        read.read_data(read.data_path(date)), "phi", reset_t)
-    destination = join(read.result_dir(date), "split", "phi")
+        read.read_data(paths.data_path(date)), "phi", reset_t)
+    destination = join(paths.result_dir(date), "split", "phi")
 
     read.prep_dir(destination)
 
@@ -50,8 +50,8 @@ def split_phi_fRF(date: str = None, reset_t: bool = True):
     """Splits data by phi, then f_RF."""
 
     split_data_phi = __split_variable(
-        read.read_data(read.data_path(date)), "phi", reset_t)
-    base_destination = join(read.result_dir(date), "split", "phi, f_RF")
+        read.read_data(paths.data_path(date)), "phi", reset_t)
+    base_destination = join(paths.result_dir(date), "split", "phi, f_RF")
 
     read.prep_dir(base_destination)
 
