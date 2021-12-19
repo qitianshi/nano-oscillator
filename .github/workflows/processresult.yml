@@ -34,5 +34,15 @@ jobs:
            pip install -r requirements.txt && python3 -m pip install pylint
       if: steps.cache-venv.outputs.cache-hit != 'true'
 
+    - name: Check out new branch
+      run: git checkout -b process-${{ github.event.inputs.date }}
+
     - name: Run analysis package
-      run: . ./venv/bin/activate && python3 -m analysis
+      run: . ./venv/bin/activate && python3 -m analysis ${{ github.event.inputs.date }}
+
+    - name: Commit and push
+      uses: EndBug/add-and-commit@v7
+      with:
+        branch: process-${{ github.event.inputs.date }}
+        default_author: github_actions
+        message: 'Process result from ${{ github.event.inputs.date }}'
