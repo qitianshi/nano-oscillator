@@ -5,7 +5,7 @@ from os.path import join
 import pandas as pd
 import numpy as np
 
-import readresults
+from analysis import read
 
 
 def calc_amp(date: str, phi: str, fRF: float, mag_var: str) -> float:
@@ -19,7 +19,7 @@ def calc_amp(date: str, phi: str, fRF: float, mag_var: str) -> float:
 
     skip_duration = 1.5e-9
 
-    data = readresults.read_data(readresults.data_path(date,
+    data = read.read_data(read.data_path(date,
         {"phi": f"{phi:03}deg",
         "f_RF": f"{fRF / 1e9}GHz"}
     ))
@@ -35,8 +35,8 @@ def calc_amp(date: str, phi: str, fRF: float, mag_var: str) -> float:
 def amp_phi_fRF(mag_var: str, date: str = None):
     """Finds the amplitude for all the split datasets, for one given var."""
 
-    date = date if date is not None else readresults.latest_date()
-    data = readresults.read_data(readresults.data_path(date))
+    date = date if date is not None else read.latest_date()
+    data = read.read_data(read.data_path(date))
 
     amplitudes = np.empty((data["f_RF"].nunique(), 0), float)
     freq_col = np.empty((0, 1), float)
@@ -62,14 +62,14 @@ def amp_phi_fRF(mag_var: str, date: str = None):
     #converts the numpy array into a dataframe
     amplitude_data = pd.DataFrame(
         amplitudes, columns=["f_RF", *[f"{i}deg" for i in data["phi"].unique()]])
-    amplitude_data.to_csv(readresults.amplitude_path(mag_var, date), sep='\t', index=False)
+    amplitude_data.to_csv(read.amplitude_path(mag_var, date), sep='\t', index=False)
 
 def max_amp_phi(date: str = None, mag_vars: list[str] = None):
     """Finds the maximum amplitudes for each phi value"""
 
     mag_vars = mag_vars if mag_vars is not None else ["mx", "my", "mz"]
-    date = date if date is not None else readresults.latest_date()
-    data = readresults.read_data(readresults.data_path(date))
+    date = date if date is not None else read.latest_date()
+    data = read.read_data(read.data_path(date))
 
     phi_col = np.empty((0, 1), int)
     for phi in data["phi"].unique():
@@ -77,7 +77,7 @@ def max_amp_phi(date: str = None, mag_vars: list[str] = None):
         phi_col = np.append(phi_col, [phi], axis=0)
 
     for var in mag_vars:
-        data = readresults.read_data(readresults.amplitude_path(var, date))
+        data = read.read_data(read.amplitude_path(var, date))
         max_col = np.empty((0, 1), float)
 
         #create numpy arrays with max amp and phi values
@@ -91,6 +91,6 @@ def max_amp_phi(date: str = None, mag_vars: list[str] = None):
     #output to panda dataframe and a tsv file
     output_data = pd.DataFrame(phi_col, columns=["phi"] + mag_vars)
     output_data.to_csv(join(
-        readresults.result_dir(date), 'calculated_values', 'max_amp.tsv'),
+        read.result_dir(date), 'calculated_values', 'max_amp.tsv'),
         sep='\t', index=False
     )

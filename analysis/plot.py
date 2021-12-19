@@ -107,10 +107,10 @@ def plot_dataset_xy(
 
     Args:
         data (dict[str, pd.DataFrame]): A dictionary of data. See documentation
-          at readresults.read_dataset.
+          at read.read_dataset.
         save_to_root (str): The root directory to which the resultant graphs
           shall be saved. Files will be named following the convention defined
-          in readresults.dataset_dir and readresults.data_path.
+          in read.dataset_dir and read.data_path.
         plot_format (str): The format of the resultant graph. See matplotlib
           docs for a list of compatible formats.
         (See plot_xy docs for other parameters.)

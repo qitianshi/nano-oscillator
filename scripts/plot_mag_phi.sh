@@ -14,7 +14,7 @@ from os.path import join
 import sys
 
 from analysis.plot import plot_dataset_xy
-from analysis.readresults import read_dataset, dataset_dir, result_dir
+from analysis.read import read_dataset, dataset_dir, result_dir
 
 plot_dataset_xy(
     data=read_dataset(dataset_dir(sys.argv[1], {"phi": None})),
