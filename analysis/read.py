@@ -9,15 +9,15 @@ import pandas as pd
 from analysis import paths
 
 
-def prep_dir(path: str):
-    """Prepares the destination directory for output. Clears existing files and
-    creates an empty directory.
+def prep_dir(path: str, clear: str = True):
+    """Prepares the destination directory for output. Optionally clears
+    existing files and creates an empty directory.
     """
 
-    if os.path.exists(path):
+    if clear and os.path.exists(path):
         rmtree(path)
 
-    os.makedirs(path)
+    os.makedirs(path, exist_ok=True)
 
 
 def read_data(path: str) -> pd.DataFrame:

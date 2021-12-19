@@ -82,9 +82,7 @@ def plot_xy(
 
     if save_to is not None:
 
-        save_dir, _ = os.path.split(save_to)
-        if not os.path.exists(save_dir):
-            read.prep_dir(save_dir)
+        read.prep_dir(os.path.split(save_to)[0], clear=False)
 
         _, save_type = os.path.splitext(save_to)
         fig.savefig(save_to, format=save_type.strip('.'))
@@ -133,8 +131,7 @@ def plot_dataset_xy(
 
         elif len(split_keys) > 1:
 
-            if not os.path.exists(os.path.join(save_to_root, *split_keys[:-1])):
-                os.makedirs(os.path.join(save_to_root, *split_keys[:-1]))
+            read.prep_dir(os.path.join(save_to_root, *split_keys[:-1]), clear=False)
 
             save_to = os.path.join(save_to, *split_keys[:-1], key + '.' + plot_format)
 
