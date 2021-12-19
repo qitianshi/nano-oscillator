@@ -42,8 +42,8 @@ jobs:
       with:
         branch: process-result-${{ github.event.inputs.date }}
         commit-message: 'Process result from ${{ github.event.inputs.date }}'
-        committer: GitHub Actions 41898282+github-actions[bot]@users.noreply.github.com
-        author: GitHub Actions 41898282+github-actions[bot]@users.noreply.github.com
+        committer: GitHub Actions <41898282+github-actions[bot]@users.noreply.github.com>
+        author: GitHub Actions <41898282+github-actions[bot]@users.noreply.github.com>
         base: main
         title: Processed results from ${{ github.event.inputs.date }}
         reviewers: qitianshi, anweiteck
