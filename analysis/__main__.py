@@ -87,5 +87,5 @@ anl.plot.plot_xy(
     xlabel="phi (deg)",
     ylabel="MaxAmp",
     xstep=45,
-        save_to=join(anl.paths.plots_dir(DATE, ["aggregate"]), "MaxAmp against phi.pdf")
+    save_to=join(anl.paths.plots_dir(DATE, ["aggregate"]), "MaxAmp against phi.pdf")
 )
