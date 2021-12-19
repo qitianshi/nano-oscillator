@@ -73,7 +73,7 @@ for mag in ["mx", "my", "mz"]:
         y_vars=AMP_DATA.columns[1:],
         xlabel="f_RF (Hz)",
         ylabel=f"amp_{mag}",
-        save_to=anl.paths.plots_dir(DATE, ["aggregate"])
+        save_to=join(anl.paths.plots_dir(DATE, ["aggregate"]), f"amp_{mag} against f_RF.pdf")
     )
 
 # Plots MaxAmp against phi
@@ -85,5 +85,5 @@ anl.plot.plot_xy(
     xlabel="phi (deg)",
     ylabel=["MaxAmp"],
     xstep=45,
-    save_to=anl.paths.plots_dir(DATE, ["aggregate"])
+        save_to=join(anl.paths.plots_dir(DATE, ["aggregate"]), "MaxAmp against phi.pdf")
 )
