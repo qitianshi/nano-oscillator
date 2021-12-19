@@ -67,7 +67,7 @@ def data_path(date: str = None, vals: dict[str, str] = None) -> str:
 def amplitude_path(mag_var: str, date: str = None) -> str:
     """Returns the path of the amplitude data."""
 
-    return os.path.join(result_dir(date), "calculated_values", f"amplitudes_{mag_var}.tsv")
+    return os.path.join(result_dir(date), "calculated_values", f"amp_{mag_var}.tsv")
 
 
 def plots_dir(date: str = None, subs: list[str] = None) -> str:
