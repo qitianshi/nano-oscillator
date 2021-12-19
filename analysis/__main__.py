@@ -15,8 +15,10 @@ print("Splitting raw data...")
 anl.split.split_phi(DATE)
 anl.split.split_phi_fRF(DATE)
 
-#TODO: Calculate amplitudes
-# print("Calculating amplitude data...")
+# Calculates amplitude data
+print("Calculating amplitude data...")
+anl.amplitude.amp_phi_fRF(DATE)
+anl.amplitude.max_amp_phi(DATE)
 
 RAW_DATA = anl.read.read_data(anl.paths.data_path(DATE))
 
