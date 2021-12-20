@@ -10,6 +10,7 @@ try:
     DATE = argv[1]
 except IndexError:
     DATE = anl.paths.latest_date()
+    print(f"No 'date' parameter provided. Using latest result: {DATE}")
 
 print("Converting raw.txt to raw.tsv...")
 anl.read.convert_raw_txt(DATE)
