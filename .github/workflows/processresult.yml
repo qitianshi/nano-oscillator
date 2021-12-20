@@ -5,7 +5,7 @@ on:
     inputs:
       date:
         description: 'Result date (YYYY-MM-DD_hhmm)'
-        required: true
+        required: false
 
 jobs:
   build:

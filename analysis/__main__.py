@@ -9,7 +9,7 @@ import analysis as anl
 try:
     DATE = argv[1]
 except IndexError:
-    exit("Fatal: Missing 'date' parameter.")
+    DATE = anl.paths.latest_date()
 
 print("Converting raw.txt to raw.tsv...")
 anl.read.convert_raw_txt(DATE)
