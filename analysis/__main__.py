@@ -1,7 +1,7 @@
 """Runs all data analyses, including splitting, calculations, and plotting."""
 
 from os.path import join
-from sys import argv, exit
+from sys import argv
 
 import analysis as anl
 
