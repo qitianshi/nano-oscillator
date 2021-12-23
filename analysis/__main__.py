@@ -86,15 +86,15 @@ anl.plot.plot_dataset_xy(
 
 # Plots amp against f_RF
 print("Plotting amp against f_RF...")
-for mag in ["mx", "my", "mz"]:
-    AMP_DATA = anl.read.read_data(anl.paths.amp_path(mag, DATE))
+for mag_var in ["mx", "my", "mz"]:
+    AMP_DATA = anl.read.read_data(anl.paths.amp_path(mag_var, DATE))
     anl.plot.plot_xy(
         data=AMP_DATA,
         x_var="f_RF",
         y_vars=AMP_DATA.columns[1:],
         xlabel="f_RF (Hz)",
-        ylabel=f"amp_{mag}",
-        save_to=join(anl.paths.plots_dir(DATE, ["aggregate"]), f"amp_{mag} against f_RF.pdf")
+        ylabel=f"amp_{mag_var}",
+        save_to=join(anl.paths.plots_dir(DATE, ["aggregate"]), f"amp_{mag_var} against f_RF.pdf")
     )
 
 # Plots MaxAmp against phi
