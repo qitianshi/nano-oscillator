@@ -1,7 +1,5 @@
 """Curve-fits amplitude data."""
 
-from os.path import join
-
 import numpy as np
 import pandas as pd
 from scipy.optimize import curve_fit
@@ -70,7 +68,7 @@ def fit_cauchy(
 
     pd.DataFrame(results, columns=["f_RF", "x_0", "gamma", "I"]) \
         .to_csv(
-            join(paths.calcvals_dir(date), f"fitted amp_{mag_var}.tsv"),
+            paths.fitted_amp_path(mag_var, date),
             sep='\t',
             index=False
         )
