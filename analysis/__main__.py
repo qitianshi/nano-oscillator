@@ -6,11 +6,17 @@ from sys import argv
 import analysis as anl
 
 
+#region Command line
+
 try:
     DATE = argv[1]
 except IndexError:
     DATE = anl.paths.latest_date()
     print(f"No 'date' parameter provided. Using latest result: {DATE}")
+
+#endregion
+
+#region Splitting and calculations
 
 print("Converting raw.txt to raw.tsv...")
 anl.read.convert_raw_txt(DATE)
@@ -23,6 +29,10 @@ anl.split.split_phi_fRF(DATE)
 print("Calculating amplitude data...")
 anl.amplitude.amp_phi_fRF(DATE)
 anl.amplitude.max_amp_phi(DATE)
+
+#endregion
+
+#region Plotting
 
 RAW_DATA = anl.read.read_data(anl.paths.data_path(DATE))
 
@@ -93,5 +103,7 @@ anl.plot.plot_xy(
     xstep=45,
     save_to=join(anl.paths.plots_dir(DATE, ["aggregate"]), "MaxAmp against phi.pdf")
 )
+
+#endregion
 
 print("All analysis done.")
