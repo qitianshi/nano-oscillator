@@ -1,7 +1,5 @@
 """Splits data by variables."""
 
-from os.path import join
-
 import pandas as pd
 
 from analysis import read, paths
@@ -36,14 +34,17 @@ def __split_variable(
 def split_phi(date: str = None, reset_t: bool = True):
     """"Splits data by phi."""
 
-    split_data = __split_variable(
-        read.read_data(paths.data_path(date)), "phi", reset_t)
-    destination = join(paths.result_dir(date), "split", "phi")
+    split_data = __split_variable(read.read_data(paths.data_path(date)), "phi", reset_t)
+    destination = paths.dataset_dir(date, vals={"phi": None})
 
     read.prep_dir(destination)
 
     for phi, data in split_data.items():
-        data.to_csv(join(destination, f"{phi:03}deg.tsv"), sep='\t', index=False)
+        data.to_csv(
+            paths.data_path(date, {"phi": f"{phi:03}deg"}),
+            sep='\t',
+            index=False
+        )
 
 
 def split_phi_fRF(date: str = None, reset_t: bool = True):
@@ -51,18 +52,18 @@ def split_phi_fRF(date: str = None, reset_t: bool = True):
 
     split_data_phi = __split_variable(
         read.read_data(paths.data_path(date)), "phi", reset_t)
-    base_destination = join(paths.result_dir(date), "split", "phi, f_RF")
 
-    read.prep_dir(base_destination)
+    read.prep_dir(paths.dataset_dir(date, vals={"phi": None, "f_RF": None}))
 
     for phi, data in split_data_phi.items():
 
         split_data_phi_fRF = __split_variable(data, "f_RF", reset_t)
-        destination = join(base_destination, f"{phi:03}" + "deg")
 
-        read.prep_dir(destination)
+        read.prep_dir(paths.dataset_dir(date, vals={"phi": f"{phi:03}deg", "f_RF": None}))
 
         for fRF, split_data in split_data_phi_fRF.items():
             split_data.to_csv(
-                join(destination, f"{phi:03}deg, {fRF / 10**9}GHz.tsv"),
-                sep='\t', index=False)
+                paths.data_path(date, vals={"phi": f"{phi:03}deg", "f_RF": f"{fRF / 10**9}GHz"}),
+                sep='\t',
+                index=False
+            )
