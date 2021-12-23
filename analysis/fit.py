@@ -1,12 +1,13 @@
 """Curve-fits amplitude data."""
 
-from numpy import square
+import numpy as np
+import pandas as pd
 from scipy.optimize import curve_fit
 
 from analysis import read, paths
 
 
-def __cauchy_distribution(x, x_0, gamma, I):                          #pylint: disable=invalid-name
+def __cauchy_distribution(x, x0, gamma, I):                           #pylint: disable=invalid-name
     """Cauchy distribution curve-fitting function.
 
     Args:
@@ -16,7 +17,7 @@ def __cauchy_distribution(x, x_0, gamma, I):                          #pylint: d
         I: Fitting parameter: the height of the peak.
     """
 
-    return I * ( square(gamma) / ( square(x - x_0) + square(gamma) ) )
+    return I * ( np.square(gamma) / ( np.square(x - x0) + np.square(gamma) ) )
 
 
 def fit_cauchy(
@@ -24,7 +25,7 @@ def fit_cauchy(
     xlim: tuple[float],
     p0: tuple[float] = None,                                          #pylint: disable=invalid-name
     date: str = None
-) -> dict[str, tuple[float, float]]:
+) -> pd.DataFrame:
     """Curve-fits magnetization amplitudes to a Cauchy distribution.
 
     Args:
@@ -45,14 +46,26 @@ def fit_cauchy(
     amp_cols = list(amp_data.columns)                                    #pylint: disable=no-member
     amp_cols.remove("f_RF")
 
-    results = {}
+    results = np.empty(shape=(0, 4))
 
     for phi in amp_cols:
-        results[phi] = curve_fit(
-            f=__cauchy_distribution,
-            xdata=extracted_data["f_RF"],
-            ydata=extracted_data[phi],
-            p0=p0
+        results = np.append(
+            arr=results,
+            values=np.reshape(
+                [
+                    phi,
+                    *curve_fit(
+                        f=__cauchy_distribution,
+                        xdata=extracted_data["f_RF"],
+                        ydata=extracted_data[phi],
+                        p0=p0
+                    )[0]
+                ],
+                newshape=(-1, 4)
+            ),
+            axis=0
         )
 
-    return results
+    results_df = pd.DataFrame(results, columns=["f_RF", "x_0", "gamma", "I"])
+
+    return results_df
