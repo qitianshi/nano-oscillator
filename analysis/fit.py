@@ -1,5 +1,7 @@
 """Curve-fits amplitude data."""
 
+from os.path import join
+
 import numpy as np
 import pandas as pd
 from scipy.optimize import curve_fit
@@ -25,7 +27,7 @@ def fit_cauchy(
     xlim: tuple[float],
     p0: tuple[float] = None,                                          #pylint: disable=invalid-name
     date: str = None
-) -> pd.DataFrame:
+):
     """Curve-fits magnetization amplitudes to a Cauchy distribution.
 
     Args:
@@ -66,6 +68,9 @@ def fit_cauchy(
             axis=0
         )
 
-    results_df = pd.DataFrame(results, columns=["f_RF", "x_0", "gamma", "I"])
-
-    return results_df
+    pd.DataFrame(results, columns=["f_RF", "x_0", "gamma", "I"]) \
+        .to_csv(
+            join(paths.calcvals_dir(date), f"fitted amp_{mag_var}.tsv"),
+            sep='\t',
+            index=False
+        )
