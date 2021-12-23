@@ -31,7 +31,7 @@ anl.amplitude.amp_phi_fRF(DATE)
 anl.amplitude.max_amp_phi(DATE)
 
 # Calculates curve-fitting parameters for amplitude
-print("Calculating curve-fit for amplitudes")
+print("Calculating curve-fit for amplitudes...")
 for mag_var in ["mx", "my", "mz"]:
     anl.fit.fit_cauchy(mag_var=mag_var, xlim=[3.5e9, 6.0e9], date=DATE)
 
