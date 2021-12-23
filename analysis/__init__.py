@@ -19,6 +19,7 @@ The package requires Python 3.9 or later.
 """
 
 from analysis import amplitude
+from analysis import fit
 from analysis import paths
 from analysis import plot
 from analysis import read
