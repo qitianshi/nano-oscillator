@@ -1,9 +1,9 @@
 """Find amplitude from dataset"""
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
-from analysis import read, paths
+from analysis import paths, read
 
 
 def __calc_amp(date: str, phi: str, fRF: float, mag_var: str) -> float:

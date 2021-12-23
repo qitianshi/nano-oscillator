@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 from scipy.optimize import curve_fit
 
-from analysis import read, paths
+from analysis import paths, read
 
 
 def __cauchy_distribution(x, x0, gamma, I):                           #pylint: disable=invalid-name

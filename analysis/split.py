@@ -2,7 +2,7 @@
 
 import pandas as pd
 
-from analysis import read, paths
+from analysis import paths, read
 
 
 def __split_variable(
