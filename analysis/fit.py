@@ -1,0 +1,1 @@
+"""Curve-fits amplitude data."""
