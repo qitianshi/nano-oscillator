@@ -64,6 +64,8 @@ def plot_xy(
         show_plot (bool): Whether to show (`matplotlib.pyplot.show`) the graph.
     """
 
+    attr_data = attr_data if isinstance(attr_data, list) else [attr_data]
+
     fig = plt.figure(figsize=(10, 5))
     ax = fig.add_subplot(1, 1, 1)
 
