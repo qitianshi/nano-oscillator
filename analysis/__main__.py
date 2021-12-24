@@ -6,11 +6,17 @@ from sys import argv
 import analysis as anl
 
 
+#region Command line
+
 try:
     DATE = argv[1]
 except IndexError:
     DATE = anl.paths.latest_date()
     print(f"No 'date' parameter provided. Using latest result: {DATE}")
+
+#endregion
+
+#region Splitting and calculations
 
 print("Converting raw.txt to raw.tsv...")
 anl.read.convert_raw_txt(DATE)
@@ -23,6 +29,15 @@ anl.split.split_phi_fRF(DATE)
 print("Calculating amplitude data...")
 anl.amplitude.amp_phi_fRF(DATE)
 anl.amplitude.max_amp_phi(DATE)
+
+# Calculates curve-fitting parameters for amplitude
+print("Calculating curve-fit for amplitudes...")
+for mag_var in ["mx", "my", "mz"]:
+    anl.fit.fit_cauchy(mag_var=mag_var, xlim=[3.5e9, 6.0e9], date=DATE)
+
+#endregion
+
+#region Plotting
 
 RAW_DATA = anl.read.read_data(anl.paths.data_path(DATE))
 
@@ -71,15 +86,15 @@ anl.plot.plot_dataset_xy(
 
 # Plots amp against f_RF
 print("Plotting amp against f_RF...")
-for mag in ["mx", "my", "mz"]:
-    AMP_DATA = anl.read.read_data(anl.paths.amp_path(mag, DATE))
+for mag_var in ["mx", "my", "mz"]:
+    AMP_DATA = anl.read.read_data(anl.paths.amp_path(mag_var, DATE))
     anl.plot.plot_xy(
         data=AMP_DATA,
         x_var="f_RF",
         y_vars=AMP_DATA.columns[1:],
         xlabel="f_RF (Hz)",
-        ylabel=f"amp_{mag}",
-        save_to=join(anl.paths.plots_dir(DATE, ["aggregate"]), f"amp_{mag} against f_RF.pdf")
+        ylabel=f"amp_{mag_var}",
+        save_to=join(anl.paths.plots_dir(DATE, ["aggregate"]), f"amp_{mag_var} against f_RF.pdf")
     )
 
 # Plots MaxAmp against phi
@@ -94,4 +109,22 @@ anl.plot.plot_xy(
     save_to=join(anl.paths.plots_dir(DATE, ["aggregate"]), "MaxAmp against phi.pdf")
 )
 
-print("All analysis done.")
+# Plots curve-fitted amp against f_RF
+print("Plotting curve-fitted amp against f_RF...")
+for mag_var in ["mx", "my", "mz"]:
+    anl.plot.plot_function(
+        data=anl.read.read_data(anl.paths.fitted_amp_path(mag_var)),
+        func=anl.fit.cauchy,
+        params=["x_0", "gamma", "I"],
+        domain=[3.5e9, 6.0e9],
+        xlabel="f_RF (Hz)",
+        ylabel=f"fitted amp_{mag_var}",
+        save_to=join(
+            anl.paths.plots_dir(DATE, ["aggregate"]),
+            f"fitted amp_{mag_var} against f_RF.pdf"
+        )
+    )
+
+#endregion
+
+print("All analyses done.")

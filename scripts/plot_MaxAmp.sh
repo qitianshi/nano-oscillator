@@ -10,6 +10,7 @@ fi
 source scripts/activate_py.sh
 
 python - $1 << PYSCRIPT
+from os.path import join
 import sys
 import analysis as anl
 

@@ -53,11 +53,9 @@ def read_dataset(path: str) -> dict[str, pd.DataFrame]:
 def convert_raw_txt(date: str = None):
     """Converts raw table.txt output from mumax3 to tsv format."""
 
-    raw_dir = paths.dataset_dir(date, None)
-
     try:
 
-        table_txt_path = os.path.join(raw_dir, "table.txt")
+        table_txt_path = os.path.join(paths.dataset_dir(date), "table.txt")
 
         data = read_data(table_txt_path)
         data.to_csv(paths.data_path(date, None), sep='\t', index=False)
@@ -67,7 +65,7 @@ def convert_raw_txt(date: str = None):
 
     except FileNotFoundError:
 
-        if os.path.isfile(os.path.join(raw_dir, "table.tsv")):
+        if os.path.isfile(paths.data_path(date)):
             print("Already converted to tsv.")
         else:
             print("Raw data not found.")

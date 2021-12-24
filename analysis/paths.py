@@ -82,6 +82,12 @@ def maxamp_path(date: str = None) -> str:
     return os.path.join(calcvals_dir(date), "MaxAmp.tsv")
 
 
+def fitted_amp_path(mag_var: str, date: str = None) -> str:
+    """Returns the path of the curve-fitted amplitude data."""
+
+    return os.path.join(calcvals_dir(date), f"fitted amp_{mag_var}.tsv")
+
+
 def plots_dir(date: str = None, subs: list[str] = None) -> str:
     """Returns the path of aggregate plots."""
 

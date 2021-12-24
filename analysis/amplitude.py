@@ -1,11 +1,9 @@
 """Find amplitude from dataset"""
 
-from os.path import join
-
-import pandas as pd
 import numpy as np
+import pandas as pd
 
-from analysis import read, paths
+from analysis import paths, read
 
 
 def __calc_amp(date: str, phi: str, fRF: float, mag_var: str) -> float:
@@ -63,7 +61,7 @@ def amp_phi_fRF(date: str = None):
 
             amplitudes = np.column_stack((amplitudes, col))
 
-        read.prep_dir(join(paths.result_dir(date), "calculated_values"), clear=False)
+        read.prep_dir(paths.calcvals_dir(date), clear=False)
 
         # Outputs amplitude data.
         pd.DataFrame(amplitudes, columns=["f_RF", *[f"{i}deg" for i in data["phi"].unique()]]) \
@@ -97,8 +95,4 @@ def max_amp_phi(date: str = None):
 
     # Outputs to data file.
     pd.DataFrame(phi_col, columns=(["phi"] + list(f"MaxAmp_{i}" for i in mag_vars))) \
-        .to_csv(
-            join(paths.result_dir(date), 'calculated_values', 'MaxAmp.tsv'),
-            sep='\t',
-            index=False
-        )
+        .to_csv(paths.maxamp_path(date), sep='\t', index=False)
