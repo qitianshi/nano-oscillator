@@ -118,7 +118,7 @@ for mag_var in ["mx", "my", "mz"]:
         params=["x_0", "gamma", "I"],
         domain=[3.5e9, 6.0e9],
         xlabel="f_RF (Hz)",
-        ylabel="fitted amp_mz",
+        ylabel=f"fitted amp_{mag_var}",
         save_to=join(
             anl.paths.plots_dir(DATE, ["aggregate"]),
             f"fitted amp_{mag_var} against f_RF.pdf"
