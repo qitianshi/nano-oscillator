@@ -31,9 +31,7 @@ class AttributedData:
 
 
 def plot_xy(
-    data: pd.DataFrame,
-    x_var: str,
-    y_vars: list[str],
+    attr_data: list[AttributedData],
     xlabel: str = None,
     ylabel: str = None,
     xlim: list[float, float] = None,
@@ -46,23 +44,19 @@ def plot_xy(
     """Plots a number of dependent variables against an independent variable.
 
     Args:
-        data (pandas.DataFrame): The data to be plotted.
-        x_var (str): The name of the independent variable (on the x-axis).
-          Should correspond to a variable in the data file.
-        y-vars (list[str]): The names of the dependent variables (on the
-          y-axis). Should correspond to a variable in the data file.
+        attr_data (list[AttributedData]): A list of data to plot. The item at
+          index 0 will be treated as the primary data.
         xlabel (str): The label on the x-axis. If not given, defaults to
-          `x-var`.
+          `x-var` of the primary data.
         ylabel (str): The label on the y-axis. If not given, defaults to comma-
-          separated list of `y-vars`.
+          separated list of `y-vars` of the primary data.
         xlim (list[float, float]): x-axis limits, passed to
           `matplotlib.axes.Axes.set_xlim`.
         ylim (list[float, float]): y-axis limits, passed to
           `matplotlib.axes.Axes.set_ylim`.
-        xsteps (float): tick steps for the x-axis, passed to
-          `matplotlib.axes.Axes.set_xticks
+        xsteps (float): Tick steps for the x-axis.
         title (str): The title of the graph. If not given, defaults to
-          "`ylabel` against `xlabel`".
+          "`ylabel` against `xlabel`" of the primary data.
         save_to (str): The full path to which the resultant graph shall be
           saved. Specify format using the extension; see matplotlib docs for a
           list of compatible formats. If not given, the graph will not be
@@ -74,19 +68,25 @@ def plot_xy(
     ax = fig.add_subplot(1, 1, 1)
 
     colors = plt.get_cmap('gist_rainbow')
-    for i, var in enumerate(y_vars):
-        ax.plot(data[x_var], data[var], label=var, c=colors(i / len(y_vars)))
+    for datum in attr_data:
+        for i, var in enumerate(datum.y_vars):
+            ax.plot(
+                datum.data[datum.x_var],
+                datum.data[var], label=var,
+                fmt=datum.fmt,
+                c=colors(i / len(datum.y_vars))
+            )
 
-    xlabel = xlabel if xlabel is not None else x_var
-    ylabel = ylabel if ylabel is not None else ', '.join(y_vars)
+    xlabel = xlabel if xlabel is not None else attr_data[0].x_var
+    ylabel = ylabel if ylabel is not None else ', '.join(attr_data[0].y_vars)
 
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
     ax.set_title(title if title is not None else f"{ylabel} against {xlabel}")
 
-    if len(y_vars) > 15:
+    if len(attr_data[0].y_vars) > 15:
         ax.legend(ncol=5, fontsize='xx-small')
-    elif len(y_vars) > 1:
+    elif len(attr_data[0].y_vars) > 1:
         ax.legend()
 
     if xlim is not None:
@@ -95,11 +95,8 @@ def plot_xy(
         ax.set_ylim(ylim)
 
     if xstep is not None:
-        ticks = []
-        for i in np.arange(data[x_var].iloc[0], data[x_var].iloc[-1] + xstep, xstep):
-            ticks.append(i)
-
-        ax.set_xticks(ticks)
+        x_vals = attr_data[0].data[attr_data[0].x_var]
+        ax.set_xticks(np.arange(min(x_vals), max(x_vals) + xstep, xstep))
 
     if save_to is not None:
 
