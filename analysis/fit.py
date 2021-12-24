@@ -7,7 +7,7 @@ from scipy.optimize import curve_fit
 from analysis import paths, read
 
 
-def cauchy_distribution(x, x0, gamma, I):                           #pylint: disable=invalid-name
+def cauchy(x, x0, gamma, I):                           #pylint: disable=invalid-name
     """Cauchy distribution curve-fitting function.
 
     Args:
@@ -55,7 +55,7 @@ def fit_cauchy(
                 [
                     phi,
                     *curve_fit(
-                        f=cauchy_distribution,
+                        f=cauchy,
                         xdata=extracted_data["f_RF"],
                         ydata=extracted_data[phi],
                         p0=p0
