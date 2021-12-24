@@ -2,6 +2,7 @@
 
 from os.path import join
 from sys import argv
+from time import time
 
 import analysis as anl
 
@@ -15,6 +16,8 @@ except IndexError:
     print(f"No 'date' parameter provided. Using latest result: {DATE}")
 
 #endregion
+
+t0 = time()
 
 #region Splitting and calculations
 
@@ -135,4 +138,6 @@ for mag_var in ["mx", "my", "mz"]:
 
 #endregion
 
-print("All analyses done.")
+t1 = time()
+
+print(f"Finished analyses in {t1 - t0:.1f}s.")
