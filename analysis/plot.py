@@ -143,6 +143,7 @@ def plot_function(
     func,
     params: list[str],
     domain: list[float, float],
+    rows: list[str] = None,
     xlabel: str = None,
     ylabel: str = None,
     xlim: list[float, float] = None,
@@ -167,15 +168,16 @@ def plot_function(
 
     steps = 100
     x_vals = np.linspace(*domain, steps)
+    ind_var = data.columns[0]
 
     result = np.zeros(shape=(steps, 0))
     result = np.append(result, np.reshape(x_vals, newshape=(-1, 1)), axis=1)
 
-    for _, row in data.iterrows():
+    for _, row in (data.iterrows() if rows is None else data.loc[data[ind_var].isin(rows)]):
         y_vals = func(x_vals, *[row[i] for i in params])
         result = np.append(result, np.reshape(y_vals, newshape=(-1, 1)), axis=1)
 
-    df_result = pd.DataFrame(result, columns=("x_vals", *(data["f_RF"])))
+    df_result = pd.DataFrame(result, columns=("x_vals", *(data[ind_var])))
 
-    plot_xy(df_result, "x_vals", data["f_RF"], xlabel, ylabel, xlim, ylim, xstep, title, save_to,
+    plot_xy(df_result, "x_vals", data[ind_var], xlabel, ylabel, xlim, ylim, xstep, title, save_to,
         show_plot)
