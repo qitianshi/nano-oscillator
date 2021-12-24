@@ -74,8 +74,9 @@ def plot_xy(
         for i, var in enumerate(datum.y_vars):
             ax.plot(
                 datum.data[datum.x_var],
-                datum.data[var], label=var,
-                fmt=datum.fmt,
+                datum.data[var],
+                datum.fmt,
+                label=var,
                 c=colors(i / len(datum.y_vars))
             )
 
