@@ -1,4 +1,4 @@
-"""Curve-fits amplitude data."""
+"""Calculates curve-fitting values for amplitude data."""
 
 import numpy as np
 import pandas as pd
@@ -7,7 +7,7 @@ from scipy.optimize import curve_fit
 from analysis import paths, read
 
 
-def cauchy(x, x0, gamma, I):                           #pylint: disable=invalid-name
+def cauchy(x, x0, gamma, I):                                          #pylint: disable=invalid-name
     """Cauchy distribution curve-fitting function.
 
     Args:
@@ -37,7 +37,7 @@ def fit_cauchy(
           distribution: (x_0, gamma, I).
     """
 
-    p0 = p0 if p0 is not None else [4.5e9, 0.5e9, 0.004]
+    p0 = p0 if p0 is not None else [4.5e9, 0.5e9, 0.004]             # Values are tuned for amp_mz.
     date = date if date is not None else paths.latest_date()
 
     amp_data = read.read_data(paths.amp_path(mag_var, date))
