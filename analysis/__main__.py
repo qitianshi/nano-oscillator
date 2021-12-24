@@ -44,9 +44,11 @@ RAW_DATA = anl.read.read_data(anl.paths.data_path(DATE))
 # Plots mx, my, mz against t
 print("Plotting mx, my, mz against t from raw data...")
 anl.plot.plot_xy(
-    data=RAW_DATA,
-    x_var="t",
-    y_vars=["mx", "my", "mz"],
+    attr_data=anl.plot.AttributedData(
+        data=RAW_DATA,
+        x_var="t",
+        y_vars=["mx", "my", "mz"]
+    ),
     xlabel="t (s)",
     save_to=join(anl.paths.plots_dir(DATE, ["aggregate"]), "mx, my, mz against t.pdf")
 )
@@ -54,9 +56,11 @@ anl.plot.plot_xy(
 # Plots MaxAngle against t
 print("Plotting MaxAngle against t from raw data...")
 anl.plot.plot_xy(
-    data=RAW_DATA,
-    x_var="t",
-    y_vars=["MaxAngle"],
+    attr_data=anl.plot.AttributedData(
+        data=RAW_DATA,
+        x_var="t",
+        y_vars=["MaxAngle"]
+    ),
     xlabel="t (s)",
     ylabel="MaxAngle (rad)",
     save_to=join(anl.paths.plots_dir(DATE, ["aggregate"]), "MaxAngle against t.pdf")
@@ -89,9 +93,11 @@ print("Plotting amp against f_RF...")
 for mag_var in ["mx", "my", "mz"]:
     AMP_DATA = anl.read.read_data(anl.paths.amp_path(mag_var, DATE))
     anl.plot.plot_xy(
-        data=AMP_DATA,
-        x_var="f_RF",
-        y_vars=AMP_DATA.columns[1:],
+        attr_data=anl.plot.AttributedData(
+            data=AMP_DATA,
+            x_var="f_RF",
+            y_vars=AMP_DATA.columns[1:]
+        ),
         xlabel="f_RF (Hz)",
         ylabel=f"amp_{mag_var}",
         save_to=join(anl.paths.plots_dir(DATE, ["aggregate"]), f"amp_{mag_var} against f_RF.pdf")
@@ -100,9 +106,11 @@ for mag_var in ["mx", "my", "mz"]:
 # Plots MaxAmp against phi
 print("Plotting MaxAmp against phi...")
 anl.plot.plot_xy(
-    data=anl.read.read_data(anl.paths.maxamp_path(DATE)),
-    x_var="phi",
-    y_vars=["MaxAmp_mx", "MaxAmp_my", "MaxAmp_mz"],
+    attr_data=anl.plot.AttributedData(
+        data=anl.read.read_data(anl.paths.maxamp_path(DATE)),
+        x_var="phi",
+        y_vars=["MaxAmp_mx", "MaxAmp_my", "MaxAmp_mz"]
+    ),
     xlabel="phi (deg)",
     ylabel="MaxAmp",
     xstep=45,
