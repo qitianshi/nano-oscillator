@@ -136,3 +136,46 @@ def plot_dataset_xy(
             save_to = os.path.join(save_to, *split_keys[:-1], key + '.' + plot_format)
 
         plot_xy(val, x_var, y_vars, xlabel, ylabel, xlim, ylim, xstep, title, save_to)
+
+
+def plot_function(
+    data: pd.DataFrame,
+    func,
+    params: list[str],
+    domain: list[float, float],
+    xlabel: str = None,
+    ylabel: str = None,
+    xlim: list[float, float] = None,
+    ylim: list[float, float] = None,
+    xstep: float = None,
+    title: str = None,
+    save_to: str = None,
+    show_plot: bool = False
+):
+    """Plots a function over a given domain.
+
+    Args:
+        func (callable): The mathematical function to plot. The first parameter
+          must be the independent variable.
+        params (list[str]): Ordered list of column names in `data` from which
+          parameters for `func` will be read.
+        domain (list[float, float]): The domain over which to plot. A length-2
+          array, where the zeroth value is the lower bound and the first value
+          is the upper bound.
+        (See plot_xy docs for other parameters.)
+    """
+
+    steps = 100
+    x_vals = np.linspace(*domain, steps)
+
+    result = np.zeros(shape=(steps, 0))
+    result = np.append(result, np.reshape(x_vals, newshape=(-1, 1)), axis=1)
+
+    for _, row in data.iterrows():
+        y_vals = func(x_vals, *[row[i] for i in params])
+        result = np.append(result, np.reshape(y_vals, newshape=(-1, 1)), axis=1)
+
+    df_result = pd.DataFrame(result, columns=("x_vals", *(data["f_RF"])))
+
+    plot_xy(df_result, "x_vals", data["f_RF"], xlabel, ylabel, xlim, ylim, xstep, title, save_to,
+        show_plot)
