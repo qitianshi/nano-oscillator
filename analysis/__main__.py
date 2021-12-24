@@ -109,6 +109,22 @@ anl.plot.plot_xy(
     save_to=join(anl.paths.plots_dir(DATE, ["aggregate"]), "MaxAmp against phi.pdf")
 )
 
+# Plots curve-fitted amp against f_RF
+print("Plotting curve-fitted amp against f_RF...")
+for mag_var in ["mx", "my", "mz"]:
+    anl.plot.plot_function(
+        data=anl.read.read_data(anl.paths.fitted_amp_path(mag_var)),
+        func=anl.fit.cauchy,
+        params=["x_0", "gamma", "I"],
+        domain=[3.5e9, 6.0e9],
+        xlabel="f_RF (Hz)",
+        ylabel="fitted amp_mz",
+        save_to=join(
+            anl.paths.plots_dir(DATE, ["aggregate"]),
+            f"fitted amp_{mag_var} against f_RF.pdf"
+        )
+    )
+
 #endregion
 
-print("All analysis done.")
+print("All analyses done.")
