@@ -142,7 +142,6 @@ def plot_function(
     func,
     params: list[str],
     domain: list[float, float],
-    rows: list = None,
     overlay: list[read.AttributedData] = None,
     xlabel: str = None,
     ylabel: str = None,
@@ -166,12 +165,9 @@ def plot_function(
         domain (list[float, float]): The domain over which to plot. A length-2
           array, where the zeroth value is the lower bound and the first value
           is the upper bound.
-        rows (list): A list of values. If set, only rows in `data` whose first
-          value appears in `rows` will be plotted; otherwise all rows will be
-          plotted.
         overlay (list[read.AttributedData]): Other plots which will be
-          overlayed above the functions. Useful for plotting raw data points
-          with curve fits.
+          overlayed on the functions. Useful for plotting raw data points with
+          curve fits.
         (See plot_xy docs for other parameters.)
     """
 
@@ -182,19 +178,19 @@ def plot_function(
     result = np.zeros(shape=(steps, 0))
     result = np.append(result, np.reshape(x_vals, newshape=(-1, 1)), axis=1)
 
-    for _, row in (data if rows is None else data[data[ind_var].isin(rows)]).iterrows():
+    for _, row in data.iterrows():
         y_vals = func(x_vals, *[row[i] for i in params])
         result = np.append(result, np.reshape(y_vals, newshape=(-1, 1)), axis=1)
 
     df_result = pd.DataFrame(
-        result, columns=("x_vals", *(data[ind_var] if rows is None else rows)))
+        result, columns=("x_vals", *data[ind_var]))
 
     plot_xy(
         [
             read.AttributedData(
                 data=df_result,
                 x_var="x_vals",
-                y_vars=(data[ind_var] if rows is None else rows)
+                y_vars=data[ind_var]
             ),
             *(overlay if overlay is not None else [])
         ],

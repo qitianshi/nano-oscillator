@@ -158,11 +158,10 @@ def __plotcheck_fitted_amp():
         domain = (3.5e9, 6.0e9)
 
         anl.plot.plot_function(
-            data=curve_data,
+            data=curve_data[curve_data["phi"].isin(rows)],
             func=anl.fit.cauchy,
             params=["x_0", "gamma", "I"],
             domain=domain,
-            rows=rows,
             overlay=[anl.read.AttributedData(
                 raw_data[(raw_data["f_RF"] >= domain[0]) & (raw_data["f_RF"] <= domain[1])],
                 x_var="f_RF",
