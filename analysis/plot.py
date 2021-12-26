@@ -1,7 +1,6 @@
 """Plots data."""
 
 import os
-from dataclasses import dataclass
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -10,30 +9,8 @@ import pandas as pd
 from analysis import read
 
 
-@dataclass
-class AttributedData:
-    """A set of data with attributes to be plotted.
-
-    Attributes:
-        data (pandas.DataFrame): The data to be plotted.
-        x_var (str): The name of the independent variable (on the x-axis).
-          Should correspond to a variable in the data file.
-        y-vars (list[str]): The names of the dependent variables (on the
-          y-axis). Should correspond to a variable in the data file.
-        fmt (str): The format string for the plot. See matplotlib docs for
-          syntax. Defaults to solid line of default color.
-        title (str): The title of the data.
-    """
-
-    data: pd.DataFrame
-    x_var: str
-    y_vars: list[str]
-    fmt: str = '-'
-    title: str = None
-
-
 def plot_xy(
-    attr_data: list[AttributedData],
+    attr_data: list[read.AttributedData],
     xlabel: str = None,
     ylabel: str = None,
     xlim: list[float, float] = None,
@@ -158,7 +135,7 @@ def plot_dataset_xy(
 
             save_to = os.path.join(save_to, *split_keys[:-1], key + '.' + plot_format)
 
-        plot_xy(AttributedData(val, x_var, y_vars),
+        plot_xy(read.AttributedData(val, x_var, y_vars),
             xlabel, ylabel, xlim, ylim, xstep, title, save_to)
 
 
@@ -209,5 +186,5 @@ def plot_function(
 
     df_result = pd.DataFrame(result, columns=("x_vals", *(data[ind_var])))
 
-    plot_xy(AttributedData(df_result, "x_vals", data[ind_var]),
+    plot_xy(read.AttributedData(df_result, "x_vals", data[ind_var]),
         xlabel, ylabel, xlim, ylim, xstep, title, save_to, show_plot)
