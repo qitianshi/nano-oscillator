@@ -181,7 +181,7 @@ def __plotcheck_fitted_amp():
 
 #region Run analyses
 
-def main():
+def timed_run():
     """Runs all analyses."""
 
     anl_funcs = [
@@ -208,6 +208,6 @@ def main():
 
     print(f"Finished all analyses in {time() - t_init:.1f}s.")
 
-main()
+timed_run()
 
 #endregion
