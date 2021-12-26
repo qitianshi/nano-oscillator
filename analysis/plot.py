@@ -189,6 +189,9 @@ def plot_function(
     df_result = pd.DataFrame(result, columns=("x_vals", *(data[ind_var])))
 
     plot_xy(
-        [read.AttributedData(df_result, x_var="x_vals", y_vars=data[ind_var]), *overlay],
+        [
+            read.AttributedData(df_result, x_var="x_vals", y_vars=data[ind_var]),
+            *(overlay if overlay is not None else [])
+        ],
         xlabel, ylabel, xlim, ylim, xstep, title, save_to, show_plot
     )
