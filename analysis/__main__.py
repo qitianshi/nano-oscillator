@@ -169,7 +169,7 @@ def __plotcheck_fitted_amp():
             ylabel=f"fitted amp_{mag_var}",
             title=f"Curve-fit check for amp_{mag_var}",
             save_to=join(
-                anl.paths.plots_dir(DATE, ["aggregate"]),
+                anl.paths.plots_dir(DATE, ["checks"]),
                 f"check, amp_{mag_var} against f_RF.pdf"
             )
         )
