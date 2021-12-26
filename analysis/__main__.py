@@ -153,18 +153,13 @@ def __plotcheck_fitted_amp():
     for mag_var in ["mx", "my", "mz"]:
 
         curve_data = anl.read.read_data(anl.paths.fitted_amp_path(mag_var))
-        phi_vals = [int("".join(filter(str.isdigit, i))) for i in curve_data["phi"]]
 
         anl.plot.plot_function(
             data=curve_data,
             func=anl.fit.cauchy,
             params=["x_0", "gamma", "I"],
             domain=[3.5e9, 6.0e9],
-            rows=(f"{i}deg" for i in range(                   # Samples 5 rows to plot
-                min(phi_vals),
-                max(phi_vals) + len(phi_vals) // 5,
-                len(phi_vals) // 5)
-            ),
+            rows=curve_data["phi"][::(len(curve_data["phi"]) // 5)],         # Extract sample rows.
             xlabel="f_RF (Hz)",
             ylabel=f"fitted amp_{mag_var}",
             title=f"Curve-fit check for amp_{mag_var}",
@@ -199,12 +194,9 @@ def main():
     t_init = time()
 
     for func in anl_funcs:
-
         t_start = time()
-
         func()
-
-        print(f"    Done in {time() - t_start:.1f}s.")
+        print(f"  Done in {time() - t_start:.1f}s.")
 
     print(f"Finished all analyses in {time() - t_init:.1f}s.")
 
