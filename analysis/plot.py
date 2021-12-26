@@ -165,7 +165,7 @@ def plot_function(
     func,
     params: list[str],
     domain: list[float, float],
-    rows: list[str] = None,
+    rows: list = None,
     xlabel: str = None,
     ylabel: str = None,
     xlim: list[float, float] = None,
@@ -178,6 +178,9 @@ def plot_function(
     """Plots a function over a given domain.
 
     Args:
+        data (pandas.DataFrame): A DataFrame in which each row contains
+          parameters for one line. The first column must be the independent
+          variable, which will be plotted on the horizontal axis.
         func (callable): The mathematical function to plot. The first parameter
           must be the independent variable.
         params (list[str]): Ordered list of column names in `data` from which
@@ -185,12 +188,15 @@ def plot_function(
         domain (list[float, float]): The domain over which to plot. A length-2
           array, where the zeroth value is the lower bound and the first value
           is the upper bound.
+        rows (list): A list of values. If set, only rows in `data` whose first
+          value appears in `rows` will be plotted; otherwise all rows will be
+          plotted.
         (See plot_xy docs for other parameters.)
     """
 
     steps = 100
     x_vals = np.linspace(*domain, steps)
-    ind_var = data.columns[0]
+    ind_var = data.columns[0]           # Independent variable
 
     result = np.zeros(shape=(steps, 0))
     result = np.append(result, np.reshape(x_vals, newshape=(-1, 1)), axis=1)
