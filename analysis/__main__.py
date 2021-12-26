@@ -184,17 +184,17 @@ def timed_run():
     """Runs all analyses."""
 
     anl_funcs = [
-        # __convert_raw_txt,
-        # __split_raw,
-        # __calc_amp,
-        # __calc_mag_fit,
-        # __plot_mag,
-        # __plot_MaxAngle,
-        # __plot_mag_phi,
+        __convert_raw_txt,
+        __split_raw,
+        __calc_amp,
+        __calc_mag_fit,
+        __plot_mag,
+        __plot_MaxAngle,
+        __plot_mag_phi,
         __plot_mag_phi_fRF,
-        # __plot_amp,
-        # __plot_MaxAmp,
-        # __plot_fitted_amp,
+        __plot_amp,
+        __plot_MaxAmp,
+        __plot_fitted_amp,
         __plotcheck_fitted_amp
     ]
 
