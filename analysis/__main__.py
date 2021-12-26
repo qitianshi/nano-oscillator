@@ -72,7 +72,7 @@ anl.plot.plot_xy(
 # Plots mag against t, split by phi
 print("Plotting mx, my, mz against t from data split by phi...")
 anl.plot.plot_dataset_xy(
-    data=anl.read.read_dataset(anl.paths.dataset_dir(DATE, {"phi": None})),
+    attr_data=anl.read.read_dataset(anl.paths.dataset_dir(DATE, {"phi": None})),
     x_var="t",
     y_vars=["mx", "my", "mz"],
     xlabel="t (s)",
@@ -83,7 +83,7 @@ anl.plot.plot_dataset_xy(
 # Plots mag against t, split by phi, f_RF
 print("Plotting mx, my, mz against t from data split by phi, f_RF...")
 anl.plot.plot_dataset_xy(
-    data=anl.read.read_dataset(anl.paths.dataset_dir(DATE, {"phi": None, "f_RF": None})),
+    attr_data=anl.read.read_dataset(anl.paths.dataset_dir(DATE, {"phi": None, "f_RF": None})),
     x_var="t",
     y_vars=["mx", "my", "mz"],
     xlabel="t (s)",
@@ -133,6 +133,36 @@ for mag_var in ["mx", "my", "mz"]:
         save_to=join(
             anl.paths.plots_dir(DATE, ["aggregate"]),
             f"fitted amp_{mag_var} against f_RF.pdf"
+        )
+    )
+
+#endregion
+
+#region Calibration checks
+
+# Checks curve fits for amp against f_RF.
+print("Checks: Plotting curve fit with data points for amp against f_RF...")
+for mag_var in ["mx", "my", "mz"]:
+
+    CURVE_DATA = anl.read.read_data(anl.paths.fitted_amp_path(mag_var))
+    phi_vals = (int("".join(filter(str.isdigit, i))) for i in CURVE_DATA["phi"])
+
+    anl.plot.plot_function(
+        data=CURVE_DATA,
+        func=anl.fit.cauchy,
+        params=["x_0", "gamma", "I"],
+        domain=[3.5e9, 6.0e9],
+        rows=(f"{i}deg" for i in range(                   # Samples 5 rows to plot
+            min(phi_vals),
+            max(phi_vals) + len(phi_vals) // 5,
+            len(phi_vals) // 5)
+        ),
+        xlabel="f_RF (Hz)",
+        ylabel=f"fitted amp_{mag_var}",
+        title=f"Curve-fit check for amp_{mag_var}",
+        save_to=join(
+            anl.paths.plots_dir(DATE, ["aggregate"]),
+            f"check, amp_{mag_var} against f_RF.pdf"
         )
     )
 
