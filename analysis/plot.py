@@ -22,12 +22,14 @@ class AttributedData:
           y-axis). Should correspond to a variable in the data file.
         fmt (str): The format string for the plot. See matplotlib docs for
           syntax. Defaults to solid line of default color.
+        title (str): The title of the data.
     """
 
     data: pd.DataFrame
     x_var: str
     y_vars: list[str]
     fmt: str = '-'
+    title: str = None
 
 
 def plot_xy(
