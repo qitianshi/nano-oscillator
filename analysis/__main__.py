@@ -153,7 +153,7 @@ def __plotcheck_fitted_amp():
     for mag_var in ["mx", "my", "mz"]:
 
         curve_data = anl.read.read_data(anl.paths.fitted_amp_path(mag_var))
-        phi_vals = (int("".join(filter(str.isdigit, i))) for i in curve_data["phi"])
+        phi_vals = [int("".join(filter(str.isdigit, i))) for i in curve_data["phi"]]
 
         anl.plot.plot_function(
             data=curve_data,
