@@ -121,19 +121,19 @@ def plot_dataset_xy(
 
     read.prep_dir(save_to_root)
 
-    for data in attr_data:
+    for datum in attr_data:
 
         save_to = save_to_root
-        split_keys = data.title.split(", ")
+        split_keys = datum.title.split(", ")
 
         if len(split_keys) == 1:
-            save_to = os.path.join(save_to, data.title + '.' + plot_format)
+            save_to = os.path.join(save_to, datum.title + '.' + plot_format)
 
         elif len(split_keys) > 1:
             read.prep_dir(os.path.join(save_to_root, *split_keys[:-1]), clear=False)
-            save_to = os.path.join(save_to, *split_keys[:-1], data.title + '.' + plot_format)
+            save_to = os.path.join(save_to, *split_keys[:-1], datum.title + '.' + plot_format)
 
-        plot_xy(read.AttributedData(data.data, x_var, y_vars),
+        plot_xy(read.AttributedData(datum.data, x_var, y_vars),
             xlabel, ylabel, xlim, ylim, xstep, title, save_to)
 
 
