@@ -130,9 +130,7 @@ def plot_dataset_xy(
             save_to = os.path.join(save_to, data.title + '.' + plot_format)
 
         elif len(split_keys) > 1:
-
             read.prep_dir(os.path.join(save_to_root, *split_keys[:-1]), clear=False)
-
             save_to = os.path.join(save_to, *split_keys[:-1], data.title + '.' + plot_format)
 
         plot_xy(read.AttributedData(data.data, x_var, y_vars),
@@ -145,6 +143,7 @@ def plot_function(
     params: list[str],
     domain: list[float, float],
     rows: list = None,
+    overlay: list[read.AttributedData] = None,
     xlabel: str = None,
     ylabel: str = None,
     xlim: list[float, float] = None,
@@ -170,6 +169,9 @@ def plot_function(
         rows (list): A list of values. If set, only rows in `data` whose first
           value appears in `rows` will be plotted; otherwise all rows will be
           plotted.
+        overlay (list[read.AttributedData]): Other plots which will be
+          overlayed above the functions. Useful for plotting raw data points
+          with curve fits.
         (See plot_xy docs for other parameters.)
     """
 
@@ -186,5 +188,7 @@ def plot_function(
 
     df_result = pd.DataFrame(result, columns=("x_vals", *(data[ind_var])))
 
-    plot_xy(read.AttributedData(df_result, "x_vals", data[ind_var]),
-        xlabel, ylabel, xlim, ylim, xstep, title, save_to, show_plot)
+    plot_xy(
+        [read.AttributedData(df_result, "x_vals", data[ind_var]), *overlay],
+        xlabel, ylabel, xlim, ylim, xstep, title, save_to, show_plot
+    )
