@@ -186,11 +186,16 @@ def plot_function(
         y_vals = func(x_vals, *[row[i] for i in params])
         result = np.append(result, np.reshape(y_vals, newshape=(-1, 1)), axis=1)
 
-    df_result = pd.DataFrame(result, columns=("x_vals", *(data[ind_var])))
+    df_result = pd.DataFrame(
+        result, columns=("x_vals", *(data[ind_var] if rows is None else rows)))
 
     plot_xy(
         [
-            read.AttributedData(df_result, x_var="x_vals", y_vars=data[ind_var]),
+            read.AttributedData(
+                data=df_result,
+                x_var="x_vals",
+                y_vars=(data[ind_var] if rows is None else rows)
+            ),
             *(overlay if overlay is not None else [])
         ],
         xlabel, ylabel, xlim, ylim, xstep, title, save_to, show_plot
