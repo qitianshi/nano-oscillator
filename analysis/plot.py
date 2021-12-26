@@ -182,7 +182,7 @@ def plot_function(
     result = np.zeros(shape=(steps, 0))
     result = np.append(result, np.reshape(x_vals, newshape=(-1, 1)), axis=1)
 
-    for _, row in (data.iterrows() if rows is None else data.loc[data[ind_var].isin(rows)]):
+    for _, row in (data if rows is None else data[data[ind_var].isin(rows)]).iterrows():
         y_vals = func(x_vals, *[row[i] for i in params])
         result = np.append(result, np.reshape(y_vals, newshape=(-1, 1)), axis=1)
 
