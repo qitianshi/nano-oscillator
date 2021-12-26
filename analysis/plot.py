@@ -133,7 +133,7 @@ def plot_dataset_xy(
             read.prep_dir(os.path.join(save_to_root, *split_keys[:-1]), clear=False)
             save_to = os.path.join(save_to, *split_keys[:-1], datum.title + '.' + plot_format)
 
-        plot_xy(read.AttributedData(datum.data, x_var, y_vars),
+        plot_xy(read.AttributedData(datum.data, x_var=x_var, y_vars=y_vars),
             xlabel, ylabel, xlim, ylim, xstep, title, save_to)
 
 
@@ -189,6 +189,6 @@ def plot_function(
     df_result = pd.DataFrame(result, columns=("x_vals", *(data[ind_var])))
 
     plot_xy(
-        [read.AttributedData(df_result, "x_vals", data[ind_var]), *overlay],
+        [read.AttributedData(df_result, x_var="x_vals", y_vars=data[ind_var]), *overlay],
         xlabel, ylabel, xlim, ylim, xstep, title, save_to, show_plot
     )
