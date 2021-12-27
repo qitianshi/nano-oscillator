@@ -1,5 +1,6 @@
 # --------- analysis ---------
 results/**/split
+testbed.py
 
 # ---------- mumax3 ----------
 references.bib
