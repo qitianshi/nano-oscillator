@@ -12,9 +12,11 @@ source scripts/activate_py.sh
 python - $1 << PYSCRIPT
 from os.path import join
 import sys
+from time import time
 import analysis as anl
 
 DATE = sys.argv[1]
+t_init = time()
 
 print("Plotting curve-fitted amp against f_RF...")
 for mag_var in ["mx", "my", "mz"]:
@@ -30,5 +32,7 @@ for mag_var in ["mx", "my", "mz"]:
             f"fitted amp_{mag_var} against f_RF.pdf"
         )
     )
+
+print(f"Done in {time() - t_init:.1f}s.")
 
 PYSCRIPT

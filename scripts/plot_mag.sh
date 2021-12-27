@@ -12,19 +12,23 @@ source scripts/activate_py.sh
 python - $1 << PYSCRIPT
 from os.path import join
 import sys
+from time import time
 import analysis as anl
 
 DATE = sys.argv[1]
-
-RAW_DATA = anl.read.read_data(anl.paths.data_path(DATE))
+t_init = time()
 
 print("Plotting mx, my, mz against t from raw data...")
 anl.plot.plot_xy(
-    data=RAW_DATA,
-    x_var="t",
-    y_vars=["mx", "my", "mz"],
+    attr_data=anl.read.AttributedData(
+        data=anl.read.read_data(anl.paths.data_path(DATE)),
+        x_var="t",
+        y_vars=["mx", "my", "mz"]
+    ),
     xlabel="t (s)",
     save_to=join(anl.paths.plots_dir(DATE, ["aggregate"]), "mx, my, mz against t.pdf")
 )
+
+print(f"Done in {time() - t_init:.1f}s.")
 
 PYSCRIPT

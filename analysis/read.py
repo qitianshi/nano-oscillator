@@ -1,12 +1,41 @@
 """Finds and reads data and datasets from results."""
 
 import os
+from dataclasses import dataclass
 from re import sub
 from shutil import rmtree
 
 import pandas as pd
 
 from analysis import paths
+
+
+@dataclass
+class AttributedData:
+    """A set of data with attributes to be plotted.
+
+    Plotting properties (for `analysis.plot` methods) are also included, but
+    not required.
+
+    Attributes:
+        data (pandas.DataFrame): The data.
+        title (str): The title of the data.
+        x_var (str): The name of the independent variable (on the x-axis).
+          Should correspond to a variable in the data file.
+        y-vars (list[str]): The names of the dependent variables (on the
+          y-axis). Should correspond to a variable in the data file.
+        fmt (str): The format string for the plot. See matplotlib docs for
+          syntax. Defaults to solid line of default color.
+    """
+
+    # Data properties
+    data: pd.DataFrame
+    title: str = None
+
+    # Plot properties
+    x_var: str = None
+    y_vars: list[str] = None
+    fmt: str = '-'
 
 
 def prep_dir(path: str, clear: str = True):
@@ -33,21 +62,22 @@ def read_data(path: str) -> pd.DataFrame:
 
 
 def read_dataset(path: str) -> dict[str, pd.DataFrame]:
-    """Reads a dataset into a dict of Pandas DataFrames.
+    """Reads a dataset into a list of `AttributedData`."""
 
-    Returns:
-        dict[str, pd.DataFrame]: A dict, whose keys are the names of the data
-          files, in the format returned from data_path.
-    """
-
-    data_paths = {}
+    dataset_data = []
 
     for root, _, files in os.walk(path):
         for file in files:
-            if file.endswith(".tsv"):
-                data_paths[file.removesuffix(".tsv")] = read_data(os.path.join(root, file))
+            name, ext = os.path.splitext(file)
+            if ext.endswith("tsv"):
+                dataset_data.append(
+                    AttributedData(
+                        data=read_data(os.path.join(root, file)),
+                        title=name
+                    )
+                )
 
-    return data_paths
+    return dataset_data
 
 
 def convert_raw_txt(date: str = None):

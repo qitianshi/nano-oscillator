@@ -66,7 +66,7 @@ def fit_cauchy(
             axis=0
         )
 
-    pd.DataFrame(results, columns=["f_RF", "x_0", "gamma", "I"]) \
+    pd.DataFrame(results, columns=["phi", "x_0", "gamma", "I"]) \
         .to_csv(
             paths.fitted_amp_path(mag_var, date),
             sep='\t',
