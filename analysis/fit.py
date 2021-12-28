@@ -32,7 +32,8 @@ def fit_cauchy(
         mag_var (str): The magnetization vector variable to calculate.
           Acceptable values: "mx", "my", "mz".
         xlim (tuple[float]): A tuple of two values. The zeroth value is the
-          lower limit and the first value is the upper limit.
+          lower limit and the first value is the upper limit, for reading
+          amplitude data.
         p0 (tuple[float]): Initial guesses of fitting parameters for the Cauchy
           distribution: (x_0, gamma, I).
     """
@@ -46,27 +47,29 @@ def fit_cauchy(
     amp_cols = list(amp_data.columns)                                    #pylint: disable=no-member
     amp_cols.remove("f_RF")
 
-    results = np.empty(shape=(0, 4))
-
+    results = np.empty(shape=(0, 7))
     for phi in amp_cols:
-        results = np.append(
-            arr=results,
-            values=np.reshape(
-                [
-                    phi,
-                    *curve_fit(
+
+        fit = curve_fit(
                         f=cauchy,
                         xdata=extracted_data["f_RF"],
                         ydata=extracted_data[phi],
                         p0=p0
-                    )[0]
-                ],
-                newshape=(-1, 4)
+                    )
+
+        opt, cov = fit[0], np.sqrt(np.diag(fit[1]))
+
+        results = np.append(
+            arr=results,
+            values=np.reshape(
+                [phi, *opt, *cov],
+                newshape=(1, -1)
             ),
             axis=0
         )
 
-    pd.DataFrame(results, columns=["phi", "x_0", "gamma", "I"]) \
+    pd.DataFrame(
+        results, columns=["phi", "x_0", "gamma", "I", "sigma_x_0", "sigma_gamma", "sigma_I"]) \
         .to_csv(
             paths.fitted_amp_path(mag_var, date),
             sep='\t',
