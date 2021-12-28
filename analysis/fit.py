@@ -47,15 +47,16 @@ def fit_cauchy(
     amp_cols = list(amp_data.columns)                                    #pylint: disable=no-member
     amp_cols.remove("f_RF")
 
-    results = np.empty(shape=(0, 7))
+    col_num = len(p0) * 2 + 1
+    results = np.empty(shape=(0, col_num))
     for phi in amp_cols:
 
         fit = curve_fit(
-                        f=cauchy,
-                        xdata=extracted_data["f_RF"],
-                        ydata=extracted_data[phi],
-                        p0=p0
-                    )
+            f=cauchy,
+            xdata=extracted_data["f_RF"],
+            ydata=extracted_data[phi],
+            p0=p0
+        )
 
         opt, cov = fit[0], np.sqrt(np.diag(fit[1]))
 
