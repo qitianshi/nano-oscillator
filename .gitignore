@@ -6,7 +6,6 @@ testbed.py
 references.bib
 log.txt
 gui
-*.ovf
 simulation/*.out
 
 # ---------- Python ----------
