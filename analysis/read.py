@@ -61,7 +61,7 @@ def read_data(path: str) -> pd.DataFrame:
         return pd.read_csv(path, sep='\t', skiprows=1, names=names)
 
 
-def read_dataset(path: str) -> dict[str, pd.DataFrame]:
+def read_dataset(path: str) -> list[pd.DataFrame]:
     """Reads a dataset into a list of `AttributedData`."""
 
     dataset_data = []
