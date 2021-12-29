@@ -128,3 +128,15 @@ def convert_npy(date: str = None):
                 for slices in range(len(fields[filename][component])):
                     pd.DataFrame(fields[filename][component][slices]) \
                         .to_csv(paths.spatial_path(slices, filename, mag_var, date), sep="\t", index=False)
+
+def check_seg(filename: str):
+    with open(paths.ovf_path(filename), 'r', encoding="utf-8") as file:
+
+        line = file.readline()
+        while not line.startswith("# Segment count"):
+            line = file.readline()
+
+        seg_count = int(line.strip().split(":")[1])
+
+        if seg_count > 1:
+            raise NotImplementedError("Segment count is more than 1 🤡")
