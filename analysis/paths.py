@@ -57,7 +57,7 @@ def calcvals_dir(date: str = None):
     return os.path.join(result_dir(date), "calculated_values")
 
 
-def geom_raw_dir(date: str = None):
+def raw_geom_dir(date: str = None):
     """Returns the path of the geom directory under raw.out"""
     return os.path.join(dataset_dir(date), "geom")
 
@@ -79,9 +79,9 @@ def spatial_path(slices: int, filename: str, mag_var: int, date: str = None):
     return os.path.join(geom_dir(filename, date), f"{mag_var}_slice_{slices}.tsv")
 
 
-def ovf_path(filename: str, date: str = None) -> str:
+def geom_ovf_path(geom_num: int, date: str = None) -> str:
     """Returns the path of the ovf file"""
-    return os.path.join(geom_raw_dir(date), f"{filename}.ovf")
+    return os.path.join(raw_geom_dir(date), f"geom{geom_num:06d}.ovf")
 
 
 def data_path(date: str = None, vals: dict[str, str] = None) -> str:
