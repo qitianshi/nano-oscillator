@@ -109,7 +109,7 @@ def convert_npy(date: str = None):
     date = date if date is not None else paths.latest_date()
     mag_vars = ["mz", "my", "mx"]
 
-    for file in os.listdir(paths.geom_raw_dir()):
+    for file in os.listdir(paths.raw_geom_dir()):
 
         fields = {}
 
@@ -121,7 +121,7 @@ def convert_npy(date: str = None):
             if not os.path.isdir(paths.geom_dir(filename, date)):
                 os.mkdir(paths.geom_dir(filename, date))
 
-            fields[filename] = np.load(os.path.join(paths.geom_raw_dir(), file))
+            fields[filename] = np.load(os.path.join(paths.raw_geom_dir(), file))
 
             for component in range(len(fields[filename])):
                 mag_var = mag_vars[component]
@@ -129,14 +129,29 @@ def convert_npy(date: str = None):
                     pd.DataFrame(fields[filename][component][slices]) \
                         .to_csv(paths.spatial_path(slices, filename, mag_var, date), sep="\t", index=False)
 
-def check_seg(filename: str):
-    with open(paths.ovf_path(filename), 'r', encoding="utf-8") as file:
+
+def get_header(date: str = None) -> str:
+
+    with open(paths.geom_ovf_path(0, date), 'r', encoding='utf-8') as file:
 
         line = file.readline()
         while not line.startswith("# Segment count"):
             line = file.readline()
 
-        seg_count = int(line.strip().split(":")[1])
+        seg_count = int(line.split(":")[-1])
 
         if seg_count > 1:
             raise NotImplementedError("Segment count is more than 1 🤡")
+
+        ovf_headers = []
+        line = file.readline()
+        while not line.startswith("# End: Header"):
+            line = file.readline()
+            ovf_headers.append(line.strip("#").strip())
+
+        ovf_headers = ovf_headers[
+            (ovf_headers.index("Begin: Header") + 1)
+            :(ovf_headers.index("End: Header"))
+        ]
+
+    return '\n'.join(ovf_headers)
