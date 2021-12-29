@@ -6,6 +6,7 @@ from re import sub
 from shutil import rmtree
 
 import pandas as pd
+import numpy as np
 
 from analysis import paths
 
@@ -69,6 +70,7 @@ def read_dataset(path: str) -> dict[str, pd.DataFrame]:
     for root, _, files in os.walk(path):
         for file in files:
             name, ext = os.path.splitext(file)
+            #TODO: raise FileNotFound error
             if ext.endswith("tsv"):
                 dataset_data.append(
                     AttributedData(
@@ -99,3 +101,30 @@ def convert_raw_txt(date: str = None):
             print("Already converted to tsv.")
         else:
             print("Raw data not found.")
+
+
+def convert_npy(date: str = None):
+    """Converts all .npy files to .tsv files."""
+
+    date = date if date is not None else paths.latest_date()
+    mag_vars = ["mz", "my", "mx"]
+
+    for file in os.listdir(paths.geom_raw_dir()):
+
+        fields = {}
+
+        if file.endswith(".npy"):
+
+            #TODO raise FileNotFoundError
+
+            filename = os.path.splitext(file)[0]
+            if not os.path.isdir(paths.geom_dir(filename, date)):
+                os.mkdir(paths.geom_dir(filename, date))
+
+            fields[filename] = np.load(os.path.join(paths.geom_raw_dir(), file))
+
+            for component in range(len(fields[filename])):
+                mag_var = mag_vars[component]
+                for slices in range(len(fields[filename][component])):
+                    pd.DataFrame(fields[filename][component][slices]) \
+                        .to_csv(paths.spatial_path(slices, filename, mag_var, date), sep="\t", index=False)
