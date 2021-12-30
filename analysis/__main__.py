@@ -26,9 +26,13 @@ def __convert_raw_txt():
     anl.read.convert_raw_txt(DATE)
 
 
-def __split_raw():
-    print("Splitting raw data...")
+def __split_phi():
+    print("Splitting by phi...")
     anl.split.split_phi(DATE)
+
+
+def __split_phi_fRF():
+    print("Splitting by phi, f_RF...")
     anl.split.split_phi_fRF(DATE)
 
 
@@ -187,13 +191,12 @@ def timed_run():
 
     anl_funcs = [
         __convert_raw_txt,
-        __split_raw,
+        __split_phi,
         __calc_amp,
         __calc_mag_fit,
         __plot_mag,
         __plot_MaxAngle,
         __plot_mag_phi,
-        __plot_mag_phi_fRF,
         __plot_amp,
         __plot_MaxAmp,
         __plot_fitted_amp,
