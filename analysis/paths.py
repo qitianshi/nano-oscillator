@@ -113,4 +113,8 @@ def plots_dir(date: str = None, subs: list[str] = None) -> str:
 
 def plots_spatial_dir(filename: str, mag_var: str, date: str = None) -> str:
     """Returns the path of the spatial plots"""
-    return os.path.join(plots_dir(date), "spatial_distribution",f"{filename}", f"{filename} {mag_var}.pdf")
+    return os.path.join(plots_dir(date),
+        "spatial_distribution",
+        f"{filename}",
+        f"{filename} {mag_var}.pdf"
+    )
