@@ -41,7 +41,7 @@ def convert_npy(date: str = None):
 def preparse_yml(header: list):
     """Parses the header data as yaml."""
 
-    for line_index, line in enumerate(header):
+    for i, line in enumerate(header):
         #removes double whitespaces
         line = re.sub(r"\s\s+" , " ", line)
 
@@ -50,27 +50,27 @@ def preparse_yml(header: list):
             new_val = line.split(":", 1)
             new_val[0] = new_val[0] + ": "
             new_val[1] = " " + new_val[1]
-            header.pop(line_index)
-            header = header[:line_index] + new_val + header[line_index:]
+            header.pop(i)
+            header = header[:i] + new_val + header[i:]
 
     offset = 0
-    for line_index in range(len(header)):
+    for i, _ in enumerate(header):
         #split based on spaces that do not follow a colon
-        line_index += offset
-        if " " in header[line_index][header[line_index].index(": ") + 2:]:
+        i += offset
+        if " " in header[i][header[i].index(": ") + 2:]:
 
             indentation = "" + "- "
-            if header[line_index].split(":")[0].startswith("  "):
+            if header[i].split(":")[0].startswith("  "):
                 indentation = "  " + indentation
 
             new_list = (
-                [header[line_index].split(":")[0] + ":"] +
+                [header[i].split(":")[0] + ":"] +
                 [indentation + string for string in
-                    header[line_index][header[line_index].index(": ") + 2:].split(" ")
+                    header[i][header[i].index(": ") + 2:].split(" ")
                 ]
             )
-            header.pop(line_index)
-            header = header[:line_index] + new_list + header[line_index:]
+            header.pop(i)
+            header = header[:i] + new_list + header[i:]
             offset += len(new_list) - 1
 
     return "\n".join(header)
