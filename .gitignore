@@ -4,9 +4,9 @@ testbed.py
 
 # ---------- mumax3 ----------
 references.bib
+*.ovf
 log.txt
 gui
-*.ovf
 simulation/*.out
 
 # ---------- Python ----------

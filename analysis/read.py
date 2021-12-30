@@ -69,6 +69,7 @@ def read_dataset(path: str) -> list[pd.DataFrame]:
     for root, _, files in os.walk(path):
         for file in files:
             name, ext = os.path.splitext(file)
+            #TODO: raise FileNotFound error
             if ext.endswith("tsv"):
                 dataset_data.append(
                     AttributedData(

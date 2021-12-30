@@ -5,7 +5,6 @@ import os
 
 def latest_date() -> str:
     """Returns the date of the latest result."""
-
     return sorted(os.listdir(os.path.join(os.path.dirname(__file__), os.pardir, 'results')))[-1]
 
 
@@ -55,8 +54,33 @@ def dataset_dir(date: str = None, vals: dict[str, str] = None) -> tuple[str, tup
 
 def calcvals_dir(date: str = None):
     """Returns the path of the calculated_values dataset."""
-
     return os.path.join(result_dir(date), "calculated_values")
+
+
+def spatial_dir(date: str = None) -> str:
+    """Returns the path of the directory with spatial data"""
+    return os.path.join(result_dir(date), "spatial_data")
+
+
+def geom_dir(filename: str, date: str = None) -> str:
+    """Returns the path of the geom directory under spatial_data"""
+    return os.path.join(spatial_dir(date), f"{filename}")
+
+
+def header_path(date: str = None) -> str:
+    """Returns the path of the YAML file"""
+    return os.path.join(spatial_dir(date), "headers.json")
+
+def spatial_path(slices: int, filename: str, mag_var: str, date: str = None):
+    """Returns the path of the spatial data .tsv files"""
+    #TODO: make 0 the default slice value
+    slices = str(slices)
+    return os.path.join(geom_dir(filename, date), f"{mag_var}_slice_{slices}.tsv")
+
+
+def geom_ovf_path(filename: int, date: str = None) -> str:
+    """Returns the path of the ovf file"""
+    return os.path.join(dataset_dir(date), f"{filename}.ovf")
 
 
 def data_path(date: str = None, vals: dict[str, str] = None) -> str:
@@ -72,23 +96,23 @@ def data_path(date: str = None, vals: dict[str, str] = None) -> str:
 
 def amp_path(mag_var: str, date: str = None) -> str:
     """Returns the path of the amplitude data."""
-
     return os.path.join(calcvals_dir(date), f"amp_{mag_var}.tsv")
 
 
 def maxamp_path(date: str = None) -> str:
     """Returns the path of the MaxAmp data."""
-
     return os.path.join(calcvals_dir(date), "MaxAmp.tsv")
 
 
 def fitted_amp_path(mag_var: str, date: str = None) -> str:
     """Returns the path of the curve-fitted amplitude data."""
-
     return os.path.join(calcvals_dir(date), f"fitted amp_{mag_var}.tsv")
 
 
 def plots_dir(date: str = None, subs: list[str] = None) -> str:
     """Returns the path of aggregate plots."""
-
     return os.path.join(result_dir(date), "plots", *(subs if subs is not None else []))
+
+def plots_spatial_dir(filename: str, title = str, date: str = None) -> str:
+    """Returns the path of the spatial plots"""
+    return os.path.join(plots_dir(date), "spatial_distribution",f"{filename}", f"{title}.pdf")
