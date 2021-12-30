@@ -3,7 +3,7 @@
 import numpy as np
 import pandas as pd
 
-from analysis import paths, read
+from analysis import paths, read, write
 
 
 def __calc_amp(date: str, phi: str, fRF: float, mag_var: str) -> float:
@@ -47,7 +47,7 @@ def amp_phi_fRF(date: str = None):
             col = np.array([__calc_amp(date, phi, fRF, mag_var) for fRF in data["f_RF"].unique()])
             amplitudes = np.append(amplitudes, np.reshape(col, newshape=(-1, 1)), axis=1)
 
-        read.prep_dir(paths.calcvals_dir(date), clear=False)
+        write.prep_dir(paths.calcvals_dir(date), clear=False)
 
         # Outputs amplitude data.
         pd.DataFrame(amplitudes, columns=["f_RF", *[f"{i}deg" for i in data["phi"].unique()]]) \

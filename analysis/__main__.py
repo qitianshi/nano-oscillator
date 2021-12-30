@@ -163,7 +163,7 @@ def __plot_spatial():
     print("Plotting all spatial distribution data...")
     for filename in os.listdir(anl.paths.spatial_dir()):
         if not filename.endswith("json"):
-            for mag_var in ["mx", "my", "mz"]:
+            for mag_var in MAG_VARS:
                 try:
                     anl.plot.plot_image(
                         anl.read.read_data(anl.paths.spatial_path(filename, mag_var, date=DATE)),

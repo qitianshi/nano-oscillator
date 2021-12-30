@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from analysis import read, paths
+from analysis import read, paths, write
 
 
 def plot_xy(
@@ -85,7 +85,7 @@ def plot_xy(
 
     if save_to is not None:
 
-        read.prep_dir(os.path.split(save_to)[0], clear=False)
+        write.prep_dir(os.path.split(save_to)[0], clear=False)
 
         _, save_type = os.path.splitext(save_to)
         fig.savefig(save_to, format=save_type.strip('.'))
@@ -122,7 +122,7 @@ def plot_dataset_xy(
         (See plot_xy docs for other parameters.)
     """
 
-    read.prep_dir(save_to_root)
+    write.prep_dir(save_to_root)
 
     for datum in attr_data:
 
@@ -133,7 +133,7 @@ def plot_dataset_xy(
             save_to = os.path.join(save_to, datum.title + '.' + plot_format)
 
         elif len(split_keys) > 1:
-            read.prep_dir(os.path.join(save_to_root, *split_keys[:-1]), clear=False)
+            write.prep_dir(os.path.join(save_to_root, *split_keys[:-1]), clear=False)
             save_to = os.path.join(save_to, *split_keys[:-1], datum.title + '.' + plot_format)
 
         plot_xy(read.AttributedData(datum.data, x_var=x_var, y_vars=y_vars),
@@ -295,7 +295,7 @@ def plot_image(
 
     if save_to is not None:
 
-        read.prep_dir(os.path.split(save_to)[0], clear=False)
+        write.prep_dir(os.path.split(save_to)[0], clear=False)
 
         _, save_type = os.path.splitext(save_to)
         fig.savefig(save_to, format=save_type.strip('.'))
