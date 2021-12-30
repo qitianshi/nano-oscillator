@@ -38,28 +38,14 @@ def amp_phi_fRF(date: str = None):
     date = date if date is not None else paths.latest_date()
     data = read.read_data(paths.data_path(date))
 
-    for mag_var in ["mx", "my", "mz"]:
+    for mag_var in ("mx", "my", "mz"):
 
-        amplitudes = np.empty((data["f_RF"].nunique(), 0), float)
-        freq_col = np.empty((0, 1), float)
+        amplitudes = np.reshape(np.array(data["f_RF"].unique()), newshape=(-1, 1))
 
-        # Creates a numpy array of all the frequency values
-        for fRF in data["f_RF"].unique():
-            row = np.array([fRF])
-            freq_col = np.append(freq_col, [row], axis=0)
-
-        amplitudes = np.column_stack((amplitudes, freq_col))
-
-        # Creates a numpy array of all the amplitude data for each phi value.
+        # Appends the amplitude data for each phi value.
         for phi in data["phi"].unique():
-
-            col = np.empty((0, 1), float)
-
-            for fRF in data["f_RF"].unique():
-                row = np.array([__calc_amp(date, phi, fRF, mag_var)])
-                col = np.append(col, [row], axis=0)
-
-            amplitudes = np.column_stack((amplitudes, col))
+            col = np.array([__calc_amp(date, phi, fRF, mag_var) for fRF in data["f_RF"].unique()])
+            amplitudes = np.append(amplitudes, np.reshape(col, newshape=(-1, 1)), axis=1)
 
         read.prep_dir(paths.calcvals_dir(date), clear=False)
 
