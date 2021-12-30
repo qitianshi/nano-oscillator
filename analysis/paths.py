@@ -71,11 +71,9 @@ def header_path(date: str = None) -> str:
     """Returns the path of the YAML file"""
     return os.path.join(spatial_dir(date), "headers.json")
 
-def spatial_path(slices: int, filename: str, mag_var: str, date: str = None):
+def spatial_path(filename: str, mag_var: str, slices: int = 0, date: str = None):
     """Returns the path of the spatial data .tsv files"""
-    #TODO: make 0 the default slice value
-    slices = str(slices)
-    return os.path.join(geom_dir(filename, date), f"{mag_var}_slice_{slices}.tsv")
+    return os.path.join(geom_dir(filename, date), f"{filename} {mag_var} slice{slices}.tsv")
 
 
 def geom_ovf_path(filename: int, date: str = None) -> str:
@@ -113,6 +111,10 @@ def plots_dir(date: str = None, subs: list[str] = None) -> str:
     """Returns the path of aggregate plots."""
     return os.path.join(result_dir(date), "plots", *(subs if subs is not None else []))
 
-def plots_spatial_dir(filename: str, title = str, date: str = None) -> str:
+def plots_spatial_dir(filename: str, mag_var: str, date: str = None) -> str:
     """Returns the path of the spatial plots"""
-    return os.path.join(plots_dir(date), "spatial_distribution",f"{filename}", f"{title}.pdf")
+    return os.path.join(plots_dir(date),
+        "spatial_distribution",
+        f"{filename}",
+        f"{filename} {mag_var}.pdf"
+    )
