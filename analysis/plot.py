@@ -1,12 +1,13 @@
 """Plots data."""
 
 import os
+import json
 
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from analysis import read
+from analysis import read, paths
 
 
 def plot_xy(
@@ -198,3 +199,107 @@ def plot_function(
         ],
         xlabel, ylabel, xlim, ylim, xstep, title, save_to, show_plot
     )
+
+
+def plot_spatial(
+    xindex: int = None,
+    yindex: int = None,
+    component: str = "mz",
+    filename: str = "geom000000",
+):
+
+    #creates a Pandas dataframe with the B_ext data as a column
+    if yindex is None:
+        #vertical line
+        plot_data = pd.DataFrame(
+            read.read_data(paths.spatial_path(0, filename, component)).iloc[:, xindex]
+        )
+        cell_index = "y"
+
+    elif xindex is None:
+        #horizontal line
+        plot_data = pd.DataFrame(
+            read.read_data(paths.spatial_path(0, filename, component)).iloc[yindex, :]
+        )
+        cell_index = "x"
+
+    else:
+        raise NotImplementedError("Data needs to be either a row or a column")
+
+    #create the list of x coordinates and puts it in the Pandas dataframe
+    with open(paths.header_path(), 'r', encoding='utf-8') as file:
+        headers = json.load(file)
+
+        xvar = np.arange(
+            float(headers[f"{cell_index}min"]),
+            float(headers[f"{cell_index}max"]),
+            float(headers[f"{cell_index}stepsize"])
+        )
+
+        xlabel = f"{cell_index} (" + headers["meshunit"] + ")"
+        for label in headers["valuelabels"]:
+            if "_" + component.strip("m") in label:
+                ylabel = label
+
+        plot_data.insert(0, xlabel, xvar)
+
+    plot_xy(
+        plot_data,
+        xlabel,
+        ylabel,
+        xstep=0.2e-06
+    )
+
+
+def plot_image(
+    data: list[float] = None,
+    xlabel: str = None,
+    ylabel: str = None,
+    xstep: float = 200e-09,
+    ystep: float = 200e-09,
+    cmap_name: str = "winter",
+    title: str = None,
+    save_to: str = None,
+    show_plot: bool = False
+):
+    """Plots an image from a given dataset
+
+    Args:
+        data (list[str]): 2D scalar data, usually taking the form of a 2D array
+        (See plot_xy docs for other paramters.)
+    """
+    fig = plt.figure(figsize=(10, 5))
+    ax = fig.add_subplot(1, 1, 1)
+
+
+    with open(paths.header_path(), 'r', encoding='utf-8') as file:
+        headers = json.load(file)
+
+        xaxis_max = (float(headers["xmax"]) - float(headers["xmin"])) / 2
+        xticks = np.arange(-abs(xaxis_max), xaxis_max, xstep)
+        ax.set_xticks(xticks)
+
+        yaxis_max = (float(headers["ymax"]) - float(headers["ymin"])) / 2
+        yticks = np.arange(-abs(yaxis_max), yaxis_max, ystep)
+        ax.set_yticks(yticks)
+
+    plot = plt.imshow(data, cmap=cmap_name,
+        extent=[xticks.min(), xticks.max(), yticks.min(), yticks.max()]
+    )
+    plt.colorbar(plot).set_label(title)
+
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    ax.set_title(title if title is not None else f"{ylabel} against {xlabel}")
+
+    if save_to is not None:
+
+        read.prep_dir(os.path.split(save_to)[0], clear=False)
+
+        _, save_type = os.path.splitext(save_to)
+        fig.savefig(save_to, format=save_type.strip('.'))
+
+    if save_to is None or show_plot:
+        plt.show()
+
+    plt.close()
