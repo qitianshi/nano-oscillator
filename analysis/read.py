@@ -6,7 +6,6 @@ from re import sub
 from shutil import rmtree
 
 import pandas as pd
-import numpy as np
 
 from analysis import paths
 

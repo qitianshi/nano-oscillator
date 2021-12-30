@@ -43,7 +43,7 @@ def preparse_yml(header: list):
 
     for line_index, line in enumerate(header):
         #removes double whitespaces
-        line = re.sub("\s\s+" , " ", line)
+        line = re.sub(r"\s\s+" , " ", line)
 
         #split based on multiple colons in the same line
         if line.count(":") > 1:
@@ -72,7 +72,7 @@ def preparse_yml(header: list):
             header.pop(line_index)
             header = header[:line_index] + new_list + header[line_index:]
             offset += len(new_list) - 1
-    
+
     return "\n".join(header)
 
 
