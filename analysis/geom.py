@@ -15,7 +15,7 @@ def convert_npy(date: str = None):
     date = date if date is not None else paths.latest_date()
     mag_vars = ["mz", "my", "mx"]
 
-    for file in os.listdir(paths.raw_geom_dir()):
+    for file in os.listdir(paths.dataset_dir()):
 
         fields = {}
 
@@ -27,13 +27,15 @@ def convert_npy(date: str = None):
             if not os.path.isdir(paths.geom_dir(filename, date)):
                 os.mkdir(paths.geom_dir(filename, date))
 
-            fields[filename] = np.load(os.path.join(paths.raw_geom_dir(), file))
+            fields[filename] = np.load(os.path.join(paths.dataset_dir(), file))
 
             for component in range(len(fields[filename])):
                 mag_var = mag_vars[component]
                 for slices in range(len(fields[filename][component])):
                     pd.DataFrame(fields[filename][component][slices]) \
-                        .to_csv(paths.spatial_path(slices, filename, mag_var, date), sep="\t", index=False)
+                        .to_csv(paths.spatial_path(
+                            slices, filename, mag_var, date), sep="\t", index=False
+                        )
 
 
 def preparse_yml(header: list):
