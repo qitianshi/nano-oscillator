@@ -16,6 +16,7 @@ def plot_xy(
     xlim: list[float, float] = None,
     ylim: list[float, float] = None,
     xstep: float = None,
+    cmap_name: str = "gist_rainbow",
     title: str = None,
     save_to: str = None,
     show_plot: bool = False
@@ -34,6 +35,7 @@ def plot_xy(
         ylim (list[float, float]): y-axis limits, passed to
           `matplotlib.axes.Axes.set_ylim`.
         xsteps (float): Tick steps for the x-axis.
+        cmap_name (str): the name of the colomap_instance
         title (str): The title of the graph. If not given, defaults to
           "`ylabel` against `xlabel`" of the primary data.
         save_to (str): The full path to which the resultant graph shall be
@@ -48,7 +50,7 @@ def plot_xy(
     fig = plt.figure(figsize=(10, 5))
     ax = fig.add_subplot(1, 1, 1)
 
-    colors = plt.get_cmap('gist_rainbow')
+    colors = plt.get_cmap(cmap_name)
     for datum in attr_data:
         for i, var in enumerate(datum.y_vars):
             ax.plot(
