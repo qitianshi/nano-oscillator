@@ -13,3 +13,4 @@ def write_json(date: str = None):
 
     with open(paths.header_path(date), 'w', encoding='utf-8') as file:
         json.dump(yaml_data, file, indent=4)
+        file.write("\n")
