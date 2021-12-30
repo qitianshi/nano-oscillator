@@ -29,7 +29,7 @@ def __calc_amp(date: str, phi: str, fRF: float, mag_var: str) -> float:
 
     return amplitude
 
-#TODO: change the way the np array are created
+
 def amp_phi_fRF(date: str = None):
     """Finds the amplitude for all the split datasets, for all magnetization
     components.
