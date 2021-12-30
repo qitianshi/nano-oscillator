@@ -32,7 +32,7 @@ jobs:
 
     - name: Create Python venv and install dependencies
       run: python3 -m venv ./venv && . ./venv/bin/activate &&
-           pip install -r requirements.txt && python3 -m pip install pylint
+           pip install -r requirements.txt
       if: steps.cache-venv.outputs.cache-hit != 'true'
 
     - name: Analysing with pylint
