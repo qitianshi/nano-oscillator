@@ -1,6 +1,8 @@
 # --------- analysis ---------
 results/**/split
 testbed.py
+raw-big.txt
+raw-big.tsv
 
 # ---------- mumax3 ----------
 references.bib
