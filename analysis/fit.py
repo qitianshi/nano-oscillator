@@ -58,21 +58,16 @@ def fit_cauchy(
             p0=p0
         )
 
-        opt, cov = fit[0], np.sqrt(np.diag(fit[1]))
-
         results = np.append(
             arr=results,
-            values=np.reshape(
-                [phi, *opt, *cov],
-                newshape=(1, -1)
-            ),
+            values=np.reshape([phi, *fit[0], *np.sqrt(np.diag(fit[1]))], newshape=(1, -1)),
             axis=0
         )
 
     pd.DataFrame(
-        results, columns=["phi", "x_0", "gamma", "I", "sigma_x_0", "sigma_gamma", "sigma_I"]) \
-        .to_csv(
-            paths.fitted_amp_path(mag_var, date),
-            sep='\t',
-            index=False
-        )
+        results, columns=["phi", "x_0", "gamma", "I", "sigma_x_0", "sigma_gamma", "sigma_I"]
+    ).to_csv(
+        paths.fitted_amp_path(mag_var, date),
+        sep='\t',
+        index=False
+    )

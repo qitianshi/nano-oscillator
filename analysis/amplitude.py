@@ -38,28 +38,14 @@ def amp_phi_fRF(date: str = None):
     date = date if date is not None else paths.latest_date()
     data = read.read_data(paths.data_path(date))
 
-    for mag_var in ["mx", "my", "mz"]:
+    for mag_var in ("mx", "my", "mz"):
 
-        amplitudes = np.empty((data["f_RF"].nunique(), 0), float)
-        freq_col = np.empty((0, 1), float)
+        amplitudes = np.reshape(np.array(data["f_RF"].unique()), newshape=(-1, 1))
 
-        #creates a numpy array of all the frequency values
-        for fRF in data["f_RF"].unique():
-            row = np.array([fRF])
-            freq_col = np.append(freq_col, [row], axis=0)
-
-        amplitudes = np.column_stack((amplitudes, freq_col))
-
-        # Creates a numpy array of all the amplitude data for each phi value.
+        # Appends the amplitude data for each phi value.
         for phi in data["phi"].unique():
-
-            col = np.empty((0, 1), float)
-
-            for fRF in data["f_RF"].unique():
-                row = np.array([__calc_amp(date, phi, fRF, mag_var)])
-                col = np.append(col, [row], axis=0)
-
-            amplitudes = np.column_stack((amplitudes, col))
+            col = np.array([__calc_amp(date, phi, fRF, mag_var) for fRF in data["f_RF"].unique()])
+            amplitudes = np.append(amplitudes, np.reshape(col, newshape=(-1, 1)), axis=1)
 
         read.prep_dir(paths.calcvals_dir(date), clear=False)
 
@@ -69,30 +55,25 @@ def amp_phi_fRF(date: str = None):
 
 
 def max_amp_phi(date: str = None):
-    """Finds the maximum amplitudes for each phi value"""
+    """Finds the maximum amplitudes for each phi value."""
 
-    mag_vars = ["mx", "my", "mz"]
     date = date if date is not None else paths.latest_date()
-    data = read.read_data(paths.data_path(date))
 
-    phi_col = np.empty((0, 1), int)
-    for phi in data["phi"].unique():
-        phi = np.array([phi])
-        phi_col = np.append(phi_col, [phi], axis=0)
+    # .T transposes the ndarray to a column vector.
+    result = np.reshape(
+        np.array( ( read.read_data(paths.data_path(date))["phi"] ).unique() ),
+        newshape=(-1, 1)
+    )
 
+    mag_vars = ("mx", "my", "mz")
     for var in mag_vars:
 
+        # Reads the greatest amp for each value of phi.
         data = read.read_data(paths.amp_path(var, date))
-        max_col = np.empty((0, 1), float)
+        max_col = np.array([data[val].max() for val in data.columns[1:]])
 
-        # Creates numpy arrays with MaxAmp and phi values.
-        for val in (data.columns):
-            if "deg" in val:
-                max_amp = np.array([data[val].max()])
-                max_col = np.append(max_col, [max_amp], axis=0)
-
-        phi_col = np.column_stack((phi_col, max_col))
+        result = np.append(result, np.reshape(max_col, newshape=(-1, 1)), axis=1)
 
     # Outputs to data file.
-    pd.DataFrame(phi_col, columns=(["phi"] + list(f"MaxAmp_{i}" for i in mag_vars))) \
+    pd.DataFrame(result, columns=(["phi"] + list(f"MaxAmp_{i}" for i in mag_vars))) \
         .to_csv(paths.maxamp_path(date), sep='\t', index=False)
