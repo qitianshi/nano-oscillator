@@ -21,7 +21,7 @@ def convert_npy(date: str = None):
 
         if file.endswith(".npy"):
 
-            #TODO raise FileNotFoundError
+            #TODO raise FileNotFoundError, use prep_dir()
 
             filename = os.path.splitext(file)[0]
             if not os.path.isdir(paths.geom_dir(filename, date)):
@@ -72,13 +72,18 @@ def preparse_yml(header: list):
             header.pop(line_index)
             header = header[:line_index] + new_list + header[line_index:]
             offset += len(new_list) - 1
-
+    
     return "\n".join(header)
 
 
 def get_header(date: str = None) -> list[str]:
+    """Returns the list of headers from any .ovf file"""
 
-    with open(paths.geom_ovf_path(0, date), 'r', encoding='utf-8') as file:
+    for file in os.listdir(paths.dataset_dir(date)):
+        if file.endswith(".ovf"):
+            data = paths.geom_ovf_path(file.strip(".ovf"), date)
+
+    with open(data, 'r', encoding='utf-8', errors="surrogateescape") as file:
 
         line = file.readline()
         while not line.startswith("# Segment count"):
