@@ -44,7 +44,7 @@ def __calc_mag_fit():
     for mag in MAG_VARS:
         anl.fit.fit_cauchy(mag_var=mag, xlim=[3.5e9, 6.0e9], date=DATE)
 
-
+        
 def __convert_npy():
     print("Covnerting all .npy files to .tsv files")
     anl.geom.convert_npy(DATE)
@@ -53,7 +53,6 @@ def __convert_npy():
 def __create_json():
     print("Creating the json file...")
     anl.write.write_json(DATE)
-
 
 #endregion
 
@@ -121,6 +120,7 @@ def __plot_amp():
             ),
             xlabel="f_RF (Hz)",
             ylabel=f"amp_{mag}",
+          
             save_to=os.path.join(
                 anl.paths.plots_dir(DATE, ["aggregate"]), f"amp_{mag} against f_RF.pdf")
         )
@@ -151,6 +151,7 @@ def __plot_fitted_amp():
             domain=[3.5e9, 6.0e9],
             xlabel="f_RF (Hz)",
             ylabel=f"fitted amp_{mag}",
+
             save_to=os.path.join(
                 anl.paths.plots_dir(DATE, ["aggregate"]),
                 f"fitted amp_{mag} against f_RF.pdf"
@@ -206,6 +207,7 @@ def __plotcheck_fitted_amp():
             xlabel="f_RF (Hz)",
             ylabel=f"fitted amp_{var}",
             title=f"Curve-fit check for amp_{var}",
+
             save_to=os.path.join(
                 anl.paths.plots_dir(DATE, ["checks"]),
                 f"check amp_{var} against f_RF.pdf"
