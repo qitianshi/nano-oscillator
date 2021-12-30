@@ -205,7 +205,7 @@ def plot_spatial(
     xindex: int = None,
     yindex: int = None,
     component: str = "mz",
-    filename: str = "geom000000",
+    filename: str = None,
 ):
     """Plots the graphs of spatial data against the x or y index of the cells"""
 
@@ -213,21 +213,21 @@ def plot_spatial(
     if yindex is None:
         #vertical line
         plot_data = pd.DataFrame(
-            read.read_data(paths.spatial_path(0, filename, component)).iloc[:, xindex]
+            read.read_data(paths.spatial_path(filename, component)).iloc[:, xindex]
         )
         cell_index = "y"
 
     elif xindex is None:
         #horizontal line
         plot_data = pd.DataFrame(
-            read.read_data(paths.spatial_path(0, filename, component)).iloc[yindex, :]
+            read.read_data(paths.spatial_path(filename, component)).iloc[yindex, :]
         )
         cell_index = "x"
 
     else:
-        raise NotImplementedError("Data needs to be either a row or a column")
+        raise ValueError("`xindex` and `yindex` cannot both be `None`.")
 
-    #create the list of x coordinates and puts it in the Pandas dataframe
+    # create the list of x coordinates and puts it in the Pandas dataframe
     with open(paths.header_path(), 'r', encoding='utf-8') as file:
         headers = json.load(file)
 
