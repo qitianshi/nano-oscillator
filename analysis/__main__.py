@@ -7,13 +7,15 @@ from time import time
 import analysis as anl
 
 
-#region Command line
+#region Setup
 
 try:
     DATE = argv[1]
 except IndexError:
     DATE = anl.paths.latest_date()
     print(f"No 'date' parameter provided. Using latest result: {DATE}")
+
+MAG_VARS = ("mx", "my", "mz")
 
 #endregion
 
@@ -38,8 +40,8 @@ def __calc_amp():
 
 def __calc_mag_fit():
     print("Calculating curve-fit for amplitudes...")
-    for mag_var in ["mx", "my", "mz"]:
-        anl.fit.fit_cauchy(mag_var=mag_var, xlim=[3.5e9, 6.0e9], date=DATE)
+    for mag in MAG_VARS:
+        anl.fit.fit_cauchy(mag_var=mag, xlim=[3.5e9, 6.0e9], date=DATE)
 
 #endregion
 
@@ -97,8 +99,8 @@ def __plot_mag_phi_fRF():
 
 def __plot_amp():
     print("Plotting amp against f_RF...")
-    for mag_var in ["mx", "my", "mz"]:
-        amp_data = anl.read.read_data(anl.paths.amp_path(mag_var, DATE))
+    for mag in MAG_VARS:
+        amp_data = anl.read.read_data(anl.paths.amp_path(mag, DATE))
         anl.plot.plot_xy(
             attr_data=anl.read.AttributedData(
                 data=amp_data,
@@ -106,9 +108,9 @@ def __plot_amp():
                 y_vars=amp_data.columns[1:]
             ),
             xlabel="f_RF (Hz)",
-            ylabel=f"amp_{mag_var}",
+            ylabel=f"amp_{mag}",
             save_to=join(
-                anl.paths.plots_dir(DATE, ["aggregate"]), f"amp_{mag_var} against f_RF.pdf")
+                anl.paths.plots_dir(DATE, ["aggregate"]), f"amp_{mag} against f_RF.pdf")
         )
 
 
@@ -129,17 +131,17 @@ def __plot_MaxAmp():                                                  #pylint: d
 
 def __plot_fitted_amp():
     print("Plotting curve-fitted amp against f_RF...")
-    for mag_var in ["mx", "my", "mz"]:
+    for mag in MAG_VARS:
         anl.plot.plot_function(
-            data=anl.read.read_data(anl.paths.fitted_amp_path(mag_var)),
+            data=anl.read.read_data(anl.paths.fitted_amp_path(mag)),
             func=anl.fit.cauchy,
             params=["x_0", "gamma", "I"],
             domain=[3.5e9, 6.0e9],
             xlabel="f_RF (Hz)",
-            ylabel=f"fitted amp_{mag_var}",
+            ylabel=f"fitted amp_{mag}",
             save_to=join(
                 anl.paths.plots_dir(DATE, ["aggregate"]),
-                f"fitted amp_{mag_var} against f_RF.pdf"
+                f"fitted amp_{mag} against f_RF.pdf"
             )
         )
 
@@ -149,10 +151,10 @@ def __plot_fitted_amp():
 
 def __plotcheck_fitted_amp():
     print("Checks: Plotting curve fit with data points for amp against f_RF...")
-    for mag_var in ["mx", "my", "mz"]:
+    for var in MAG_VARS:
 
-        curve_data = anl.read.read_data(anl.paths.fitted_amp_path(mag_var))
-        raw_data = anl.read.read_data(anl.paths.amp_path(mag_var, DATE))
+        curve_data = anl.read.read_data(anl.paths.fitted_amp_path(var))
+        raw_data = anl.read.read_data(anl.paths.amp_path(var, DATE))
         rows = curve_data["phi"][::(len(curve_data["phi"]) // 4)]     # Extracts a few sample rows.
         domain = (3.5e9, 6.0e9)
 
@@ -168,11 +170,11 @@ def __plotcheck_fitted_amp():
                 fmt='x'
             )],
             xlabel="f_RF (Hz)",
-            ylabel=f"fitted amp_{mag_var}",
-            title=f"Curve-fit check for amp_{mag_var}",
+            ylabel=f"fitted amp_{var}",
+            title=f"Curve-fit check for amp_{var}",
             save_to=join(
                 anl.paths.plots_dir(DATE, ["checks"]),
-                f"check amp_{mag_var} against f_RF.pdf"
+                f"check amp_{var} against f_RF.pdf"
             )
         )
 
