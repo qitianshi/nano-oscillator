@@ -207,6 +207,7 @@ def plot_spatial(
     component: str = "mz",
     filename: str = "geom000000",
 ):
+    """Plots the graphs of spatial data against the x or y index of the cells"""
 
     #creates a Pandas dataframe with the B_ext data as a column
     if yindex is None:
