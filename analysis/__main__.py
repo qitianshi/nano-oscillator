@@ -172,11 +172,11 @@ def __plot_spatial():
                         save_to=anl.paths.plots_spatial_dir(filename, mag_var, date=DATE),
                         show_plot=False
                     )
-                except FileNotFoundError as e:
+                except FileNotFoundError as err:
                     if os.path.isdir(os.path.join(anl.paths.spatial_dir(DATE), filename)):
                         print(f"{mag_var} component not found for {filename}. Component skipped.")
                     else:
-                        raise e
+                        raise err
 
 
 #endregion
