@@ -34,7 +34,7 @@ def convert_npy(date: str = None):
                 for slices in range(len(fields[filename][component])):
                     pd.DataFrame(fields[filename][component][slices]) \
                         .to_csv(paths.spatial_path(
-                            slices, filename, mag_var, date), sep="\t", index=False
+                            filename, mag_var, slices, date), sep="\t", index=False
                         )
 
 
