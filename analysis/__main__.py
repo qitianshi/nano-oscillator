@@ -44,7 +44,7 @@ def __calc_mag_fit():
     for mag in MAG_VARS:
         anl.fit.fit_cauchy(mag_var=mag, xlim=[3.5e9, 6.0e9], date=DATE)
 
-        
+
 def __convert_npy():
     print("Covnerting all .npy files to .tsv files")
     anl.geom.convert_npy(DATE)
@@ -120,7 +120,7 @@ def __plot_amp():
             ),
             xlabel="f_RF (Hz)",
             ylabel=f"amp_{mag}",
-          
+
             save_to=os.path.join(
                 anl.paths.plots_dir(DATE, ["aggregate"]), f"amp_{mag} against f_RF.pdf")
         )
@@ -251,4 +251,4 @@ def timed_run():
 
 timed_run()
 
-#endregions
+#endregion
