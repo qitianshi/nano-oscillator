@@ -122,3 +122,8 @@ def plots_spatial_dir(filename: str, title = str, date: str = None) -> str:
 def raw_ref_path(date: str = None):
     """Returns the path of the raw-ref.txt file."""
     return os.path.join(dataset_dir(date, vals=None), "raw-ref.txt")
+
+
+def raw_txt_path(date: str = None):
+    """Returns the path of the raw.txt file."""
+    return os.path.join(dataset_dir(date, vals=None), "raw.txt")
