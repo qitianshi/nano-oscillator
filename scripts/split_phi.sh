@@ -2,7 +2,7 @@
 
 if [[ $1 = "-h" ]]; then
     cat << HELP
-usage: $0 [-h] <date>
+usage: $0 [-h] [<date>]
 HELP
     exit
 fi
@@ -15,12 +15,17 @@ import sys
 from time import time
 import analysis as anl
 
-DATE = sys.argv[1]
+try:
+    DATE = argv[1]
+except IndexError:
+    DATE = anl.paths.Top.latest_date()
+    print(f"No 'date' parameter provided. Using latest result: {DATE}")
+
+MAG_VARS = ("mx", "my", "mz")
 t_init = time()
 
-print("Splitting raw data...")
+print("Splitting by phi...")
 anl.split.split_phi(DATE)
-anl.split.split_phi_fRF(DATE)
 
 print(f"Done in {time() - t_init:.1f}s.")
 

@@ -24,18 +24,8 @@ except IndexError:
 MAG_VARS = ("mx", "my", "mz")
 t_init = time()
 
-print("Plotting MaxAmp against phi...")
-anl.plot.plot_xy(
-    attr_data=anl.read.AttributedData(
-        data=anl.read.read_data(anl.paths.CalcVals.maxamp_path(DATE)),
-        x_var="phi",
-        y_vars=["MaxAmp_mx", "MaxAmp_my", "MaxAmp_mz"]
-    ),
-    xlabel="phi (deg)",
-    ylabel="MaxAmp",
-    xstep=45,
-    save_to=join(anl.paths.Plots.plot_dir(DATE, ["aggregate"]), "MaxAmp against phi.pdf")
-)
+print("Converting table.txt to table.tsv...")
+anl.read.convert_table_txt(DATE)
 
 print(f"Done in {time() - t_init:.1f}s.")
 
