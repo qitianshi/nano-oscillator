@@ -63,7 +63,10 @@ def split_phi_fRF(date: str = None, reset_t: bool = True):
 
         for fRF, split_data in split_data_phi_fRF.items():
             split_data.to_csv(
-                paths.Data.data_path(date, vals={"phi": f"{phi:03}deg", "f_RF": f"{fRF / 10**9}GHz"}),
+                paths.Data.data_path(
+                    date,
+                    vals={"phi": f"{phi:03}deg", "f_RF": f"{fRF / 10**9}GHz"}
+                ),
                 sep='\t',
                 index=False
             )
