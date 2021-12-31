@@ -176,7 +176,7 @@ def __plot_spatial():
                     )
                 except FileNotFoundError as err:
                     if os.path.isdir(os.path.join(anl.paths.spatial_dir(DATE), filename)):
-                        print(f"{component} component not found for {filename}. Component skipped.")
+                        print(f"{component} not found for {filename}. Component skipped.")
                     else:
                         raise err
 
