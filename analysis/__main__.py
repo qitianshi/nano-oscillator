@@ -16,6 +16,8 @@ except IndexError:
     DATE = anl.paths.Top.latest_date()
     print(f"No 'date' parameter provided. Using latest result: {DATE}")
 
+SKIP_SPATIAL = "--skip-spatial" in argv
+
 MAG_VARS = ("mx", "my", "mz")
 
 #endregion
@@ -59,12 +61,20 @@ def __calc_mag_fit():
 
 def __convert_npy():
     print("Covnerting all .npy files to .tsv files")
-    anl.geom.convert_npy(DATE)
+
+    if not SKIP_SPATIAL:
+        anl.geom.convert_npy(DATE)
+    else:
+        print("Skipped.")
 
 
 def __create_json():
     print("Creating the json file...")
-    anl.write.write_json(DATE)
+
+    if not SKIP_SPATIAL:
+        anl.write.write_json(DATE)
+    else:
+        print("Skipped.")
 
 #endregion
 
@@ -176,25 +186,30 @@ def __plot_fitted_amp():
 
 def __plot_spatial():
     print("Plotting all spatial distribution data...")
-    for filename in os.listdir(anl.paths.Spatial.root()):
-        if not filename.endswith("json"):
-            for component in MAG_VARS:
-                component = component.strip("m")
-                try:
-                    anl.plot.plot_image(
-                        anl.read.read_data(
-                            anl.paths.Spatial.spatial_path(filename, component, date=DATE)),
-                        xlabel="x (m)",
-                        ylabel="y (m)",
-                        title = filename + " (T)",
-                        save_to=anl.paths.Plots.spatial_dir(filename, component, date=DATE),
-                        show_plot=False
-                    )
-                except FileNotFoundError as err:
-                    if os.path.isdir(os.path.join(anl.paths.Spatial.root(DATE), filename)):
-                        print(f"{component} not found for {filename}. Component skipped.")
-                    else:
-                        raise err
+
+    if not SKIP_SPATIAL:
+        for filename in os.listdir(anl.paths.Spatial.root()):
+            if not filename.endswith("json"):
+                for component in MAG_VARS:
+                    component = component.strip("m")
+                    try:
+                        anl.plot.plot_image(
+                            anl.read.read_data(
+                                anl.paths.Spatial.spatial_path(filename, component, date=DATE)),
+                            xlabel="x (m)",
+                            ylabel="y (m)",
+                            title = filename + " (T)",
+                            save_to=anl.paths.Plots.spatial_dir(filename, component, date=DATE),
+                            show_plot=False
+                        )
+                    except FileNotFoundError as err:
+                        if os.path.isdir(os.path.join(anl.paths.Spatial.root(DATE), filename)):
+                            print(f"{component} not found for {filename}. Component skipped.")
+                        else:
+                            raise err
+
+    else:
+        print("Skipped.")
 
 
 #endregion
