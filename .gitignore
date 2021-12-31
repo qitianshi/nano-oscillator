@@ -1,7 +1,7 @@
 # --------- analysis ---------
 results/**/split
+results/**/raw/
 testbed.py
-*-big.*
 
 # ---------- mumax3 ----------
 references.bib
