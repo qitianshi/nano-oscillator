@@ -13,7 +13,7 @@ def convert_npy(date: str = None):
     """Converts all .npy files to .tsv files."""
 
     date = date if date is not None else paths.latest_date()
-    components = ["x", "y", "z"]
+    conversion = ["x", "y", "z"]
 
     for file in os.listdir(paths.dataset_dir()):
 
@@ -28,13 +28,14 @@ def convert_npy(date: str = None):
 
             fields[filename] = np.load(os.path.join(paths.dataset_dir(), file))
 
-            for component in range(len(fields[filename])):
-                mag_var = components[component]
-                for slices in range(len(fields[filename][component])):
-                    pd.DataFrame(fields[filename][component][slices]) \
+            for component_index in range(len(fields[filename])):
+                component = conversion[component_index]
+                for z_index in range(len(fields[filename][component_index])):
+                    pd.DataFrame(np.flip(fields[filename][component_index][z_index])) \
                         .to_csv(paths.spatial_path(
-                            filename, mag_var, slices, date), sep="\t", index=False
+                            filename, component, z_index, date), sep="\t", index=False
                         )
+
 
 
 def preparse_yml(header: list):
