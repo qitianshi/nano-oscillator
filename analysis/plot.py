@@ -116,7 +116,7 @@ def plot_dataset_xy(
           `analysis.read.read_dataset`. See `read_dataset` docs for details.
         save_to_root (str): The root directory to which the resultant graphs
           shall be saved. Files will be named following the convention defined
-          in paths.dataset_dir and paths.data_path.
+          in `paths`.
         plot_format (str): The format of the resultant graph. See matplotlib
           docs for a list of compatible formats.
         (See plot_xy docs for other parameters.)
@@ -213,14 +213,14 @@ def plot_spatial(
     if yindex is None:
         #vertical line
         plot_data = pd.DataFrame(
-            read.read_data(paths.spatial_path(0, filename, component)).iloc[:, xindex]
+            read.read_data(paths.Spatial.spatial_path(0, filename, component)).iloc[:, xindex]
         )
         cell_index = "y"
 
     elif xindex is None:
         #horizontal line
         plot_data = pd.DataFrame(
-            read.read_data(paths.spatial_path(0, filename, component)).iloc[yindex, :]
+            read.read_data(paths.Spatial.spatial_path(0, filename, component)).iloc[yindex, :]
         )
         cell_index = "x"
 
@@ -228,7 +228,7 @@ def plot_spatial(
         raise NotImplementedError("Data needs to be either a row or a column")
 
     #create the list of x coordinates and puts it in the Pandas dataframe
-    with open(paths.header_path(), 'r', encoding='utf-8') as file:
+    with open(paths.Spatial.header_path(), 'r', encoding='utf-8') as file:
         headers = json.load(file)
 
         xvar = np.arange(
@@ -273,7 +273,7 @@ def plot_image(
     ax = fig.add_subplot(1, 1, 1)
 
 
-    with open(paths.header_path(), 'r', encoding='utf-8') as file:
+    with open(paths.Spatial.header_path(), 'r', encoding='utf-8') as file:
         headers = json.load(file)
 
         xaxis_max = (float(headers["xmax"]) - float(headers["xmin"])) / 2

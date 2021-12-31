@@ -86,17 +86,17 @@ def convert_raw_txt(date: str = None):
 
     try:
 
-        table_txt_path = os.path.join(paths.dataset_dir(date), "table.txt")
+        table_txt_path = os.path.join(paths.Data.dataset_dir(date), "table.txt")
 
         data = read_data(table_txt_path)
-        data.to_csv(paths.data_path(date, None), sep='\t', index=False)
+        data.to_csv(paths.Data.data_path(date, None), sep='\t', index=False)
 
         # Removes original table.txt
         os.remove(table_txt_path)
 
     except FileNotFoundError:
 
-        if os.path.isfile(paths.data_path(date)):
+        if os.path.isfile(paths.Data.data_path(date)):
             print("Already converted to tsv.")
         else:
             print("Raw data not found.")

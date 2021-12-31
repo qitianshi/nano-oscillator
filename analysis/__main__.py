@@ -12,7 +12,7 @@ import analysis as anl
 try:
     DATE = argv[1]
 except IndexError:
-    DATE = anl.paths.latest_date()
+    DATE = anl.paths.Top.latest_date()
     print(f"No 'date' parameter provided. Using latest result: {DATE}")
 
 MAG_VARS = ("mx", "my", "mz")
@@ -55,12 +55,12 @@ def __plot_mag():
     print("Plotting mx, my, mz against t from raw data...")
     anl.plot.plot_xy(
         attr_data=anl.read.AttributedData(
-            data=anl.read.read_data(anl.paths.data_path(DATE)),
+            data=anl.read.read_data(anl.paths.Data.data_path(DATE)),
             x_var="t",
             y_vars=["mx", "my", "mz"]
         ),
         xlabel="t (s)",
-        save_to=join(anl.paths.plots_dir(DATE, ["aggregate"]), "mx, my, mz against t.pdf")
+        save_to=join(anl.paths.Plots.plots_dir(DATE, ["aggregate"]), "mx, my, mz against t.pdf")
     )
 
 
@@ -68,43 +68,45 @@ def __plot_MaxAngle():                                                #pylint: d
     print("Plotting MaxAngle against t from raw data...")
     anl.plot.plot_xy(
         attr_data=anl.read.AttributedData(
-            data=anl.read.read_data(anl.paths.data_path(DATE)),
+            data=anl.read.read_data(anl.paths.Data.data_path(DATE)),
             x_var="t",
             y_vars=["MaxAngle"]
         ),
         xlabel="t (s)",
         ylabel="MaxAngle (rad)",
-        save_to=join(anl.paths.plots_dir(DATE, ["aggregate"]), "MaxAngle against t.pdf")
+        save_to=join(anl.paths.Plots.plots_dir(DATE, ["aggregate"]), "MaxAngle against t.pdf")
     )
 
 
 def __plot_mag_phi():
     print("Plotting mx, my, mz against t from data split by phi...")
     anl.plot.plot_dataset_xy(
-        attr_data=anl.read.read_dataset(anl.paths.dataset_dir(DATE, {"phi": None})),
+        attr_data=anl.read.read_dataset(anl.paths.Data.dataset_dir(DATE, {"phi": None})),
         x_var="t",
         y_vars=["mx", "my", "mz"],
         xlabel="t (s)",
         ylim=(-1.0, 1.0),
-        save_to_root=anl.paths.plots_dir(DATE, ["phi"])
+        save_to_root=anl.paths.Plots.plots_dir(DATE, ["phi"])
     )
 
 
 def __plot_mag_phi_fRF():
     print("Plotting mx, my, mz against t from data split by phi, f_RF...")
     anl.plot.plot_dataset_xy(
-        attr_data=anl.read.read_dataset(anl.paths.dataset_dir(DATE, {"phi": None, "f_RF": None})),
+        attr_data=anl.read.read_dataset(
+            anl.paths.Data.dataset_dir(DATE, {"phi": None, "f_RF": None})
+        ),
         x_var="t",
         y_vars=["mx", "my", "mz"],
         xlabel="t (s)",
-        save_to_root=anl.paths.plots_dir(DATE, ["phi, f_RF"])
+        save_to_root=anl.paths.Plots.plots_dir(DATE, ["phi, f_RF"])
     )
 
 
 def __plot_amp():
     print("Plotting amp against f_RF...")
     for mag in MAG_VARS:
-        amp_data = anl.read.read_data(anl.paths.amp_path(mag, DATE))
+        amp_data = anl.read.read_data(anl.paths.CalcVals.amp_path(mag, DATE))
         anl.plot.plot_xy(
             attr_data=anl.read.AttributedData(
                 data=amp_data,
@@ -114,7 +116,7 @@ def __plot_amp():
             xlabel="f_RF (Hz)",
             ylabel=f"amp_{mag}",
             save_to=join(
-                anl.paths.plots_dir(DATE, ["aggregate"]), f"amp_{mag} against f_RF.pdf")
+                anl.paths.Plots.plots_dir(DATE, ["aggregate"]), f"amp_{mag} against f_RF.pdf")
         )
 
 
@@ -122,14 +124,14 @@ def __plot_MaxAmp():                                                  #pylint: d
     print("Plotting MaxAmp against phi...")
     anl.plot.plot_xy(
         attr_data=anl.read.AttributedData(
-            data=anl.read.read_data(anl.paths.maxamp_path(DATE)),
+            data=anl.read.read_data(anl.paths.CalcVals.maxamp_path(DATE)),
             x_var="phi",
             y_vars=["MaxAmp_mx", "MaxAmp_my", "MaxAmp_mz"]
         ),
         xlabel="phi (deg)",
         ylabel="MaxAmp",
         xstep=45,
-        save_to=join(anl.paths.plots_dir(DATE, ["aggregate"]), "MaxAmp against phi.pdf")
+        save_to=join(anl.paths.Plots.plots_dir(DATE, ["aggregate"]), "MaxAmp against phi.pdf")
     )
 
 
@@ -137,14 +139,14 @@ def __plot_fitted_amp():
     print("Plotting curve-fitted amp against f_RF...")
     for mag in MAG_VARS:
         anl.plot.plot_function(
-            data=anl.read.read_data(anl.paths.fitted_amp_path(mag)),
+            data=anl.read.read_data(anl.paths.CalcVals.fitted_amp_path(mag)),
             func=anl.fit.cauchy,
             params=["x_0", "gamma", "I"],
             domain=[3.5e9, 6.0e9],
             xlabel="f_RF (Hz)",
             ylabel=f"fitted amp_{mag}",
             save_to=join(
-                anl.paths.plots_dir(DATE, ["aggregate"]),
+                anl.paths.Plots.plots_dir(DATE, ["aggregate"]),
                 f"fitted amp_{mag} against f_RF.pdf"
             )
         )
@@ -157,8 +159,8 @@ def __plotcheck_fitted_amp():
     print("Checks: Plotting curve fit with data points for amp against f_RF...")
     for var in MAG_VARS:
 
-        curve_data = anl.read.read_data(anl.paths.fitted_amp_path(var))
-        raw_data = anl.read.read_data(anl.paths.amp_path(var, DATE))
+        curve_data = anl.read.read_data(anl.paths.CalcVals.fitted_amp_path(var))
+        raw_data = anl.read.read_data(anl.paths.CalcVals.amp_path(var, DATE))
         rows = curve_data["phi"][::(len(curve_data["phi"]) // 4)]     # Extracts a few sample rows.
         domain = (3.5e9, 6.0e9)
 
@@ -177,7 +179,7 @@ def __plotcheck_fitted_amp():
             ylabel=f"fitted amp_{var}",
             title=f"Curve-fit check for amp_{var}",
             save_to=join(
-                anl.paths.plots_dir(DATE, ["checks"]),
+                anl.paths.Plots.plots_dir(DATE, ["checks"]),
                 f"check amp_{var} against f_RF.pdf"
             )
         )
