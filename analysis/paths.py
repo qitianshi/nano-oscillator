@@ -119,11 +119,11 @@ def plots_spatial_dir(filename: str, title = str, date: str = None) -> str:
     return os.path.join(plots_dir(date), "spatial_distribution",f"{filename}", f"{title}.pdf")
 
 
-def raw_ref_path(date: str = None):
+def table_ref_path(date: str = None):
     """Returns the path of the raw-ref.txt file."""
-    return os.path.join(dataset_dir(date, vals=None), "raw-ref.txt")
+    return os.path.join(dataset_dir(date, vals=None), "table-ref.txt")
 
 
-def raw_txt_path(date: str = None):
+def table_txt_path(date: str = None):
     """Returns the path of the raw.txt file."""
-    return os.path.join(dataset_dir(date, vals=None), "raw.txt")
+    return os.path.join(dataset_dir(date, vals=None), "table.txt")
