@@ -113,6 +113,12 @@ def plots_dir(date: str = None, subs: list[str] = None) -> str:
     """Returns the path of aggregate plots."""
     return os.path.join(result_dir(date), "plots", *(subs if subs is not None else []))
 
+
 def plots_spatial_dir(filename: str, title = str, date: str = None) -> str:
     """Returns the path of the spatial plots"""
     return os.path.join(plots_dir(date), "spatial_distribution",f"{filename}", f"{title}.pdf")
+
+
+def raw_ref_path(date: str = None):
+    """Returns the path of the raw-ref.txt file."""
+    return os.path.join(dataset_dir(date, vals=None), "raw-ref.txt")
