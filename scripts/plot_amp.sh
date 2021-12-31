@@ -2,7 +2,7 @@
 
 if [[ $1 = "-h" ]]; then
     cat << HELP
-usage: $0 [-h] <date>
+usage: $0 [-h] [<date>]
 HELP
     exit
 fi
@@ -11,16 +11,22 @@ source scripts/activate_py.sh
 
 python - $1 << PYSCRIPT
 from os.path import join
-import sys
+from sys import argv
 from time import time
 import analysis as anl
 
-DATE = sys.argv[1]
+try:
+    DATE = argv[1]
+except IndexError:
+    DATE = anl.paths.Top.latest_date()
+    print(f"No 'date' parameter provided. Using latest result: {DATE}")
+
+MAG_VARS = ("mx", "my", "mz")
 t_init = time()
 
 print("Plotting amp against f_RF...")
-for mag_var in ["mx", "my", "mz"]:
-    amp_data = anl.read.read_data(anl.paths.amp_path(mag_var, DATE))
+for mag in MAG_VARS:
+    amp_data = anl.read.read_data(anl.paths.CalcVals.amp_path(mag, DATE))
     anl.plot.plot_xy(
         attr_data=anl.read.AttributedData(
             data=amp_data,
@@ -28,9 +34,9 @@ for mag_var in ["mx", "my", "mz"]:
             y_vars=amp_data.columns[1:]
         ),
         xlabel="f_RF (Hz)",
-        ylabel=f"amp_{mag_var}",
+        ylabel=f"amp_{mag}",
         save_to=join(
-            anl.paths.plots_dir(DATE, ["aggregate"]), f"amp_{mag_var} against f_RF.pdf")
+            anl.paths.Plots.plot_dir(DATE, ["aggregate"]), f"amp_{mag} against f_RF.pdf")
     )
 
 print(f"Done in {time() - t_init:.1f}s.")

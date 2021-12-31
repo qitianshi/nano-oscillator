@@ -39,9 +39,9 @@ def fit_cauchy(
     """
 
     p0 = p0 if p0 is not None else [4.5e9, 0.5e9, 0.004]             # Values are tuned for amp_mz.
-    date = date if date is not None else paths.latest_date()
+    date = date if date is not None else paths.Top.latest_date()
 
-    amp_data = read.read_data(paths.amp_path(mag_var, date))
+    amp_data = read.read_data(paths.CalcVals.amp_path(mag_var, date))
     extracted_data = amp_data.loc[
         (amp_data["f_RF"] <= xlim[1]) & (amp_data["f_RF"] >= xlim[0])]       #pylint: disable=E1136
     amp_cols = list(amp_data.columns)                                    #pylint: disable=no-member
@@ -67,7 +67,7 @@ def fit_cauchy(
     pd.DataFrame(
         results, columns=["phi", "x_0", "gamma", "I", "sigma_x_0", "sigma_gamma", "sigma_I"]
     ).to_csv(
-        paths.fitted_amp_path(mag_var, date),
+        paths.CalcVals.fitted_amp_path(mag_var, date),
         sep='\t',
         index=False
     )

@@ -2,7 +2,7 @@
 
 if [[ $1 = "-h" ]]; then
     cat << HELP
-usage: $0 [-h] <date>
+usage: $0 [-h] [<date>]
 HELP
     exit
 fi
@@ -11,18 +11,24 @@ source scripts/activate_py.sh
 
 python - $1 << PYSCRIPT
 from os.path import join
-import sys
+from sys import argv
 from time import time
 import analysis as anl
 
-DATE = sys.argv[1]
+try:
+    DATE = argv[1]
+except IndexError:
+    DATE = anl.paths.Top.latest_date()
+    print(f"No 'date' parameter provided. Using latest result: {DATE}")
+
+MAG_VARS = ("mx", "my", "mz")
 t_init = time()
 
 print("Checks: Plotting curve fit with data points for amp against f_RF...")
-for mag_var in ["mx", "my", "mz"]:
+for var in MAG_VARS:
 
-    curve_data = anl.read.read_data(anl.paths.fitted_amp_path(mag_var))
-    raw_data = anl.read.read_data(anl.paths.amp_path(mag_var, DATE))
+    curve_data = anl.read.read_data(anl.paths.CalcVals.fitted_amp_path(var))
+    amp_data = anl.read.read_data(anl.paths.CalcVals.amp_path(var, DATE))
     rows = curve_data["phi"][::(len(curve_data["phi"]) // 4)]     # Extracts a few sample rows.
     domain = (3.5e9, 6.0e9)
 
@@ -32,17 +38,17 @@ for mag_var in ["mx", "my", "mz"]:
         params=["x_0", "gamma", "I"],
         domain=domain,
         overlay=[anl.read.AttributedData(
-            raw_data[(raw_data["f_RF"] >= domain[0]) & (raw_data["f_RF"] <= domain[1])],
+            amp_data[(amp_data["f_RF"] >= domain[0]) & (amp_data["f_RF"] <= domain[1])],
             x_var="f_RF",
             y_vars=rows,
             fmt='x'
         )],
         xlabel="f_RF (Hz)",
-        ylabel=f"fitted amp_{mag_var}",
-        title=f"Curve-fit check for amp_{mag_var}",
+        ylabel=f"fitted amp_{var}",
+        title=f"Curve-fit check for amp_{var}",
         save_to=join(
-            anl.paths.plots_dir(DATE, ["checks"]),
-            f"check amp_{mag_var} against f_RF.pdf"
+            anl.paths.Plots.plot_dir(DATE, ["checks"]),
+            f"check amp_{var} against f_RF.pdf"
         )
     )
 

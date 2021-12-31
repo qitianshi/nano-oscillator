@@ -34,14 +34,14 @@ def __split_variable(
 def split_phi(date: str = None, reset_t: bool = True):
     """"Splits data by phi."""
 
-    split_data = __split_variable(read.read_data(paths.data_path(date)), "phi", reset_t)
-    destination = paths.dataset_dir(date, vals={"phi": None})
+    split_data = __split_variable(read.read_data(paths.Data.data_path(date)), "phi", reset_t)
+    destination = paths.Data.dataset_dir(date, vals={"phi": None})
 
     write.prep_dir(destination)
 
     for phi, data in split_data.items():
         data.to_csv(
-            paths.data_path(date, {"phi": f"{phi:03}deg"}),
+            paths.Data.data_path(date, {"phi": f"{phi:03}deg"}),
             sep='\t',
             index=False
         )
@@ -51,19 +51,22 @@ def split_phi_fRF(date: str = None, reset_t: bool = True):
     """Splits data by phi, then f_RF."""
 
     split_data_phi = __split_variable(
-        read.read_data(paths.data_path(date)), "phi", reset_t)
+        read.read_data(paths.Data.data_path(date)), "phi", reset_t)
 
-    write.prep_dir(paths.dataset_dir(date, vals={"phi": None, "f_RF": None}))
+    write.prep_dir(paths.Data.dataset_dir(date, vals={"phi": None, "f_RF": None}))
 
     for phi, data in split_data_phi.items():
 
         split_data_phi_fRF = __split_variable(data, "f_RF", reset_t)
 
-        write.prep_dir(paths.dataset_dir(date, vals={"phi": f"{phi:03}deg", "f_RF": None}))
+        write.prep_dir(paths.Data.dataset_dir(date, vals={"phi": f"{phi:03}deg", "f_RF": None}))
 
         for fRF, split_data in split_data_phi_fRF.items():
             split_data.to_csv(
-                paths.data_path(date, vals={"phi": f"{phi:03}deg", "f_RF": f"{fRF / 10**9}GHz"}),
+                paths.Data.data_path(
+                    date,
+                    vals={"phi": f"{phi:03}deg", "f_RF": f"{fRF / 10**9}GHz"}
+                ),
                 sep='\t',
                 index=False
             )

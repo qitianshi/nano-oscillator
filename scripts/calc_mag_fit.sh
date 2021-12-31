@@ -2,7 +2,7 @@
 
 if [[ $1 = "-h" ]]; then
     cat << HELP
-usage: $0 [-h] <date>
+usage: $0 [-h] [<date>]
 HELP
     exit
 fi
@@ -11,16 +11,22 @@ source scripts/activate_py.sh
 
 python - $1 << PYSCRIPT
 from os.path import join
-import sys
+from sys import argv
 from time import time
 import analysis as anl
 
-DATE = sys.argv[1]
+try:
+    DATE = argv[1]
+except IndexError:
+    DATE = anl.paths.Top.latest_date()
+    print(f"No 'date' parameter provided. Using latest result: {DATE}")
+
+MAG_VARS = ("mx", "my", "mz")
 t_init = time()
 
 print("Calculating curve-fit for amplitudes...")
-for mag_var in ["mx", "my", "mz"]:
-    anl.fit.fit_cauchy(mag_var=mag_var, xlim=[3.5e9, 6.0e9], date=DATE)
+for mag in MAG_VARS:
+    anl.fit.fit_cauchy(mag_var=mag, xlim=[3.5e9, 6.0e9], date=DATE)
 
 print(f"Done in {time() - t_init:.1f}s.")
 
