@@ -163,19 +163,20 @@ def __plot_spatial():
     print("Plotting all spatial distribution data...")
     for filename in os.listdir(anl.paths.spatial_dir()):
         if not filename.endswith("json"):
-            for mag_var in ["mx", "my", "mz"]:
+            for component in MAG_VARS:
+                component = component.strip("m")
                 try:
                     anl.plot.plot_image(
-                        anl.read.read_data(anl.paths.spatial_path(filename, mag_var, date=DATE)),
+                        anl.read.read_data(anl.paths.spatial_path(filename, component, date=DATE)),
                         xlabel="x (m)",
                         ylabel="y (m)",
                         title = filename + " (T)",
-                        save_to=anl.paths.plots_spatial_dir(filename, mag_var, date=DATE),
+                        save_to=anl.paths.plots_spatial_dir(filename, component, date=DATE),
                         show_plot=False
                     )
                 except FileNotFoundError as err:
                     if os.path.isdir(os.path.join(anl.paths.spatial_dir(DATE), filename)):
-                        print(f"{mag_var} component not found for {filename}. Component skipped.")
+                        print(f"{component} not found for {filename}. Component skipped.")
                     else:
                         raise err
 

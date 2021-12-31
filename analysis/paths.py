@@ -71,9 +71,9 @@ def header_path(date: str = None) -> str:
     """Returns the path of the YAML file"""
     return os.path.join(spatial_dir(date), "headers.json")
 
-def spatial_path(filename: str, mag_var: str, slices: int = 0, date: str = None):
+def spatial_path(filename: str, component: str, slices: int = 0, date: str = None):
     """Returns the path of the spatial data .tsv files"""
-    return os.path.join(geom_dir(filename, date), f"{filename} {mag_var} slice{slices}.tsv")
+    return os.path.join(geom_dir(filename, date), f"{filename} {component} slice{slices}.tsv")
 
 
 def geom_ovf_path(filename: int, date: str = None) -> str:

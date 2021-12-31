@@ -2,7 +2,7 @@
 
 import pandas as pd
 
-from analysis import paths, read
+from analysis import paths, read, write
 
 
 def __split_variable(
@@ -37,7 +37,7 @@ def split_phi(date: str = None, reset_t: bool = True):
     split_data = __split_variable(read.read_data(paths.data_path(date)), "phi", reset_t)
     destination = paths.dataset_dir(date, vals={"phi": None})
 
-    read.prep_dir(destination)
+    write.prep_dir(destination)
 
     for phi, data in split_data.items():
         data.to_csv(
@@ -53,13 +53,13 @@ def split_phi_fRF(date: str = None, reset_t: bool = True):
     split_data_phi = __split_variable(
         read.read_data(paths.data_path(date)), "phi", reset_t)
 
-    read.prep_dir(paths.dataset_dir(date, vals={"phi": None, "f_RF": None}))
+    write.prep_dir(paths.dataset_dir(date, vals={"phi": None, "f_RF": None}))
 
     for phi, data in split_data_phi.items():
 
         split_data_phi_fRF = __split_variable(data, "f_RF", reset_t)
 
-        read.prep_dir(paths.dataset_dir(date, vals={"phi": f"{phi:03}deg", "f_RF": None}))
+        write.prep_dir(paths.dataset_dir(date, vals={"phi": f"{phi:03}deg", "f_RF": None}))
 
         for fRF, split_data in split_data_phi_fRF.items():
             split_data.to_csv(

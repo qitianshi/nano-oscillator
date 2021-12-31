@@ -6,14 +6,14 @@ import re
 import pandas as pd
 import numpy as np
 
-from analysis import paths
+from analysis import paths, write
 
 
 def convert_npy(date: str = None):
     """Converts all .npy files to .tsv files."""
 
     date = date if date is not None else paths.latest_date()
-    components = ["z", "y", "x"]
+    conversion = ["x", "y", "z"]
 
     for file in os.listdir(paths.dataset_dir()):
 
@@ -21,21 +21,21 @@ def convert_npy(date: str = None):
 
         if file.endswith(".npy"):
 
-            #TODO raise FileNotFoundError, use prep_dir()
+            #TODO raise FileNotFoundError
 
             filename = os.path.splitext(file)[0]
-            if not os.path.isdir(paths.geom_dir(filename, date)):
-                os.mkdir(paths.geom_dir(filename, date))
+            write.prep_dir(paths.geom_dir(filename, date))
 
             fields[filename] = np.load(os.path.join(paths.dataset_dir(), file))
 
-            for component in range(len(fields[filename])):
-                mag_var = components[component]
-                for slices in range(len(fields[filename][component])):
-                    pd.DataFrame(fields[filename][component][slices]) \
+            for component_index in range(len(fields[filename])):
+                component = conversion[component_index]
+                for z_index in range(len(fields[filename][component_index])):
+                    pd.DataFrame(np.flip(fields[filename][component_index][z_index])) \
                         .to_csv(paths.spatial_path(
-                            filename, mag_var, slices, date), sep="\t", index=False
+                            filename, component, z_index, date), sep="\t", index=False
                         )
+
 
 
 def preparse_yml(header: list):

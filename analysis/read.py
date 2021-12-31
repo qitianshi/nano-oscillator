@@ -3,7 +3,6 @@
 import os
 from dataclasses import dataclass
 from re import sub
-from shutil import rmtree
 
 import pandas as pd
 
@@ -36,17 +35,6 @@ class AttributedData:
     x_var: str = None
     y_vars: list[str] = None
     fmt: str = '-'
-
-
-def prep_dir(path: str, clear: str = True):
-    """Prepares the destination directory for output. Optionally clears
-    existing files and creates an empty directory.
-    """
-
-    if clear and os.path.exists(path):
-        rmtree(path)
-
-    os.makedirs(path, exist_ok=True)
 
 
 def read_data(path: str) -> pd.DataFrame:
