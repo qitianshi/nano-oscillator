@@ -169,7 +169,7 @@ def plot_function(
           array, where the zeroth value is the lower bound and the first value
           is the upper bound.
         overlay (list[read.AttributedData]): Other plots which will be
-          overlayed on the functions. Useful for plotting raw data points with
+          overlayed on the functions. Useful for plotting data points with
           curve fits.
         (See plot_xy docs for other parameters.)
     """

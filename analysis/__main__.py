@@ -21,9 +21,9 @@ MAG_VARS = ("mx", "my", "mz")
 
 #region Splitting and calculations
 
-def __convert_raw_txt():
-    print("Converting raw.txt to raw.tsv...")
-    anl.read.convert_raw_txt(DATE)
+def __convert_table_txt():
+    print("Converting table.txt to table.tsv...")
+    anl.read.convert_table_txt(DATE)
 
 
 def __split_phi():
@@ -52,7 +52,7 @@ def __calc_mag_fit():
 #region Plotting
 
 def __plot_mag():
-    print("Plotting mx, my, mz against t from raw data...")
+    print("Plotting mx, my, mz against t from table data...")
     anl.plot.plot_xy(
         attr_data=anl.read.AttributedData(
             data=anl.read.read_data(anl.paths.Data.data_path(DATE)),
@@ -65,7 +65,7 @@ def __plot_mag():
 
 
 def __plot_MaxAngle():                                                #pylint: disable=invalid-name
-    print("Plotting MaxAngle against t from raw data...")
+    print("Plotting MaxAngle against t from table data...")
     anl.plot.plot_xy(
         attr_data=anl.read.AttributedData(
             data=anl.read.read_data(anl.paths.Data.data_path(DATE)),
@@ -160,7 +160,7 @@ def __plotcheck_fitted_amp():
     for var in MAG_VARS:
 
         curve_data = anl.read.read_data(anl.paths.CalcVals.fitted_amp_path(var))
-        raw_data = anl.read.read_data(anl.paths.CalcVals.amp_path(var, DATE))
+        amp_data = anl.read.read_data(anl.paths.CalcVals.amp_path(var, DATE))
         rows = curve_data["phi"][::(len(curve_data["phi"]) // 4)]     # Extracts a few sample rows.
         domain = (3.5e9, 6.0e9)
 
@@ -170,7 +170,7 @@ def __plotcheck_fitted_amp():
             params=["x_0", "gamma", "I"],
             domain=domain,
             overlay=[anl.read.AttributedData(
-                raw_data[(raw_data["f_RF"] >= domain[0]) & (raw_data["f_RF"] <= domain[1])],
+                amp_data[(amp_data["f_RF"] >= domain[0]) & (amp_data["f_RF"] <= domain[1])],
                 x_var="f_RF",
                 y_vars=rows,
                 fmt='x'
@@ -192,7 +192,7 @@ def timed_run():
     """Runs all analyses."""
 
     anl_funcs = [
-        __convert_raw_txt,
+        __convert_table_txt,
         __split_phi,
         __calc_amp,
         __calc_mag_fit,

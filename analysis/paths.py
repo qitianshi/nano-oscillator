@@ -31,21 +31,21 @@ class Top:
 
 
 class Tables:
-    """Tables in the raw directory."""
+    """Tables in the raw.out directory."""
 
     @staticmethod
     def ref_path(date: str = None):
-        """Returns the path of the raw-ref.txt file."""
+        """Returns the path of the table-ref.txt file."""
         return os.path.join(Data.dataset_dir(date, vals=None), "table-ref.txt")
 
     @staticmethod
     def txt_path(date: str = None):
-        """Returns the path of the raw.txt file."""
+        """Returns the path of the table.txt file."""
         return os.path.join(Data.dataset_dir(date, vals=None), "table.txt")
 
 
 class Data:
-    """Split and raw data."""
+    """Data and datasets."""
 
     @staticmethod
     def dataset_dir(date: str = None, vals: dict[str, str] = None) -> tuple[str, tuple[str]]:
@@ -56,8 +56,8 @@ class Data:
             If not given, the latest result is searched.
             vals (dict[str, str]): An ordered dict of variable names and their
             values, in order of how the data was split. If not given, the path
-            of the raw data is returned. The path that is returned stops at the
-            first item whose value is `None`.
+            of the unsplit data is returned. The path that is returned stops at
+            the first item whose value is `None`.
 
         Returns:
             str: The path of the requested dataset. The path stops at the first

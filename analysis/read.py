@@ -81,8 +81,8 @@ def read_dataset(path: str) -> list[pd.DataFrame]:
     return dataset_data
 
 
-def convert_raw_txt(date: str = None):
-    """Converts raw table.txt output from mumax3 to tsv format."""
+def convert_table_txt(date: str = None):
+    """Converts table.txt to table.tsv."""
 
     try:
 

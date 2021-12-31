@@ -1,4 +1,4 @@
-"""Fetches large raw data files."""
+"""Fetches large table files."""
 
 import requests
 
@@ -47,8 +47,8 @@ def __download_gdrive(drive_id, save_to):
     __save_response_content(response, save_to)
 
 
-def fetch_raw(date: str = None):
-    """Fetches large raw data files."""
+def fetch_table(date: str = None):
+    """Fetches large table files."""
 
     with open(paths.Tables.ref_path(date), "r", encoding="utf-8") as file:
         drive_id = file.read().strip()

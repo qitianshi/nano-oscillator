@@ -6,16 +6,19 @@ Terminology used in this package:
   data.
 * dataset: A folder, in any location, containing zero, one, or more data files,
   or zero, one, or more subdirectories containing the same.
-* raw: Raw output from mumax3, either in its original `table.txt` form or in
-  the converted `table.tsv` form.
+* raw: Full mumax3 output, including tables, spatial data, and other output.
+  Some modifications may be present, such as converting table.txt to table.tsv,
+  or .ovf output to .npy.
 * result: A folder at the top level of the `results` directory. Its name
   follows the convention "YYYY-MM-DD_hhmm".
-* split: Breaking raw data into several smaller data files, which are then
+* split: Breaking table data into several smaller data files, which are then
   saved to disk in the appropriate result folder.
+* table: Table output from mumax3, either in its original `table.txt` form or
+  in the converted `table.tsv` form.
 * variable: A variable from the mumax3 simulation. Used to identify columns
   in data.
 
-The package requires Python 3.9 or later.
+Requires Python 3.9 or later.
 """
 
 from analysis import amplitude, fetch, fit, geom, paths, plot, read, split, write
