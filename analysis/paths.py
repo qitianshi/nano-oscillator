@@ -30,6 +30,20 @@ class Top:
         return os.path.join(results_path, requested_result)
 
 
+class Refs:
+    """References."""
+
+    @staticmethod
+    def ref_path(date: str = None):
+        """Returns the path of the ref file."""
+        return os.path.join(Top.result_dir(date), "raw-ref.txt")
+
+    @staticmethod
+    def raw_zip_path(date: str = None):
+        """Returns the path of the zipped raw date file."""
+        return os.path.join(Top.result_dir(date), "raw.zip")
+
+
 class Tables:
     """Tables in the raw directory."""
 

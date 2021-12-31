@@ -1,5 +1,8 @@
 """Fetches large table files."""
 
+from os import remove
+from zipfile import ZipFile
+
 import requests
 
 from analysis import paths
@@ -49,9 +52,13 @@ def __download_gdrive(drive_id, save_to):
     __save_response_content(response, save_to)
 
 
-def fetch_table(date: str = None):
-    """Fetches large table files."""
+def fetch_raw(date: str = None):
+    """Fetches and downloads all refs in the raw output."""
 
-    with open(paths.Tables.ref_path(date), "r", encoding="utf-8") as file:
-        drive_id = file.read().strip()
-        __download_gdrive(drive_id, paths.Tables.txt_path())
+    with open(paths.Refs.ref_path(date), 'r', encoding="utf-8") as file:
+        __download_gdrive(file.read().strip(), paths.Refs.raw_zip_path(date))
+
+    with ZipFile(paths.Refs.raw_zip_path(date), 'r') as zip_ref:
+        zip_ref.extractall(paths.Data.dataset_dir(date))
+
+    remove(paths.Refs.raw_zip_path())
