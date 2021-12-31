@@ -1,15 +1,15 @@
 """Fetches large table files."""
 
+# __get_confirm_token, __save_response_content, and __download_gdrive adapted from an answer by
+# user:turdus-merula on Stack Overflow: https://stackoverflow.com/a/39225272. Licensed under
+# CC-BY-SA 4.0
+
 from os import remove
 from zipfile import ZipFile
 
 import requests
 
 from analysis import paths
-
-# __get_confirm_token, __save_response_content, and __download_gdrive adapted from an answer by
-# user:turdus-merula on Stack Overflow: https://stackoverflow.com/a/39225272. Licensed under
-# CC-BY-SA 4.0
 
 
 def __get_confirm_token(response):
