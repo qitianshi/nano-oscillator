@@ -1,6 +1,7 @@
 # --------- analysis ---------
-results/**/split
 results/**/raw/
+results/**/split
+results/**/*.zip
 testbed.py
 
 # ---------- mumax3 ----------
