@@ -176,7 +176,7 @@ def __plot_fitted_amp():
 
 def __plot_spatial():
     print("Plotting all spatial distribution data...")
-    for filename in os.listdir(anl.paths.spatial_dir()):
+    for filename in os.listdir(anl.paths.Spatial.root()):
         if not filename.endswith("json"):
             for component in MAG_VARS:
                 component = component.strip("m")
