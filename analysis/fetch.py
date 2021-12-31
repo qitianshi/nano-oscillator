@@ -4,7 +4,9 @@ import requests
 
 from analysis import paths
 
-# Adapted from an answer by @turdus-merula on Stack Overflow: https://stackoverflow.com/a/39225272
+# __get_confirm_token, __save_response_content, and __download_gdrive adapted from an answer by
+# user:turdus-merula on Stack Overflow: https://stackoverflow.com/a/39225272. Licensed under
+# CC-BY-SA 4.0
 
 
 def __get_confirm_token(response):
