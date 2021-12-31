@@ -11,7 +11,7 @@ source scripts/activate_py.sh
 
 python - $1 << PYSCRIPT
 from os.path import join
-import sys
+from sys import argv
 from time import time
 import analysis as anl
 
