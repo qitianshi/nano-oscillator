@@ -19,7 +19,15 @@ MAG_VARS = ("mx", "my", "mz")
 
 #endregion
 
-#region Splitting and calculations
+#region Fetching refs
+
+def __fetch_raw():
+    print("Fetching raw data from Google Drive...")
+    anl.fetch.fetch_raw(DATE)
+
+#endregion
+
+#region Splits and calculations
 
 def __convert_table_txt():
     print("Converting table.txt to table.tsv...")
@@ -49,7 +57,7 @@ def __calc_mag_fit():
 
 #endregion
 
-#region Plotting
+#region Plots
 
 def __plot_mag():
     print("Plotting mx, my, mz against t from table data...")
@@ -192,8 +200,10 @@ def timed_run():
     """Runs all analyses."""
 
     anl_funcs = [
+        __fetch_raw,
         __convert_table_txt,
         __split_phi,
+        __split_phi_fRF,
         __calc_amp,
         __calc_mag_fit,
         __plot_mag,
