@@ -31,7 +31,7 @@ class Top:
 
 
 class Tables:
-    """Tables in the raw.out directory."""
+    """Tables in the raw directory."""
 
     @staticmethod
     def ref_path(date: str = None):
@@ -65,7 +65,7 @@ class Data:
         """
 
         if vals is None:
-            return os.path.join(Top.result_dir(date), "raw.out")
+            return os.path.join(Top.result_dir(date), "raw")
         else:
             return os.path.join(
                 Top.result_dir(date),
