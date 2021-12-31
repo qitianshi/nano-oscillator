@@ -60,7 +60,7 @@ def __plot_mag():
             y_vars=["mx", "my", "mz"]
         ),
         xlabel="t (s)",
-        save_to=join(anl.paths.Plots.plots_dir(DATE, ["aggregate"]), "mx, my, mz against t.pdf")
+        save_to=join(anl.paths.Plots.plot_dir(DATE, ["aggregate"]), "mx, my, mz against t.pdf")
     )
 
 
@@ -74,7 +74,7 @@ def __plot_MaxAngle():                                                #pylint: d
         ),
         xlabel="t (s)",
         ylabel="MaxAngle (rad)",
-        save_to=join(anl.paths.Plots.plots_dir(DATE, ["aggregate"]), "MaxAngle against t.pdf")
+        save_to=join(anl.paths.Plots.plot_dir(DATE, ["aggregate"]), "MaxAngle against t.pdf")
     )
 
 
@@ -86,7 +86,7 @@ def __plot_mag_phi():
         y_vars=["mx", "my", "mz"],
         xlabel="t (s)",
         ylim=(-1.0, 1.0),
-        save_to_root=anl.paths.Plots.plots_dir(DATE, ["phi"])
+        save_to_root=anl.paths.Plots.plot_dir(DATE, ["phi"])
     )
 
 
@@ -99,7 +99,7 @@ def __plot_mag_phi_fRF():
         x_var="t",
         y_vars=["mx", "my", "mz"],
         xlabel="t (s)",
-        save_to_root=anl.paths.Plots.plots_dir(DATE, ["phi, f_RF"])
+        save_to_root=anl.paths.Plots.plot_dir(DATE, ["phi, f_RF"])
     )
 
 
@@ -116,7 +116,7 @@ def __plot_amp():
             xlabel="f_RF (Hz)",
             ylabel=f"amp_{mag}",
             save_to=join(
-                anl.paths.Plots.plots_dir(DATE, ["aggregate"]), f"amp_{mag} against f_RF.pdf")
+                anl.paths.Plots.plot_dir(DATE, ["aggregate"]), f"amp_{mag} against f_RF.pdf")
         )
 
 
@@ -131,7 +131,7 @@ def __plot_MaxAmp():                                                  #pylint: d
         xlabel="phi (deg)",
         ylabel="MaxAmp",
         xstep=45,
-        save_to=join(anl.paths.Plots.plots_dir(DATE, ["aggregate"]), "MaxAmp against phi.pdf")
+        save_to=join(anl.paths.Plots.plot_dir(DATE, ["aggregate"]), "MaxAmp against phi.pdf")
     )
 
 
@@ -146,7 +146,7 @@ def __plot_fitted_amp():
             xlabel="f_RF (Hz)",
             ylabel=f"fitted amp_{mag}",
             save_to=join(
-                anl.paths.Plots.plots_dir(DATE, ["aggregate"]),
+                anl.paths.Plots.plot_dir(DATE, ["aggregate"]),
                 f"fitted amp_{mag} against f_RF.pdf"
             )
         )
@@ -179,7 +179,7 @@ def __plotcheck_fitted_amp():
             ylabel=f"fitted amp_{var}",
             title=f"Curve-fit check for amp_{var}",
             save_to=join(
-                anl.paths.Plots.plots_dir(DATE, ["checks"]),
+                anl.paths.Plots.plot_dir(DATE, ["checks"]),
                 f"check amp_{var} against f_RF.pdf"
             )
         )

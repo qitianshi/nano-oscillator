@@ -47,7 +47,7 @@ def amp_phi_fRF(date: str = None):
             col = np.array([__calc_amp(date, phi, fRF, mag_var) for fRF in data["f_RF"].unique()])
             amplitudes = np.append(amplitudes, np.reshape(col, newshape=(-1, 1)), axis=1)
 
-        read.prep_dir(paths.CalcVals.calcvals_dir(date), clear=False)
+        read.prep_dir(paths.CalcVals.root(date), clear=False)
 
         # Outputs amplitude data.
         pd.DataFrame(amplitudes, columns=["f_RF", *[f"{i}deg" for i in data["phi"].unique()]]) \

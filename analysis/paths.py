@@ -34,12 +34,12 @@ class Tables:
     """Tables in the raw directory."""
 
     @staticmethod
-    def table_ref_path(date: str = None):
+    def ref_path(date: str = None):
         """Returns the path of the raw-ref.txt file."""
         return os.path.join(Data.dataset_dir(date, vals=None), "table-ref.txt")
 
     @staticmethod
-    def table_txt_path(date: str = None):
+    def txt_path(date: str = None):
         """Returns the path of the raw.txt file."""
         return os.path.join(Data.dataset_dir(date, vals=None), "table.txt")
 
@@ -90,34 +90,34 @@ class Plots:
     """Plots."""
 
     @staticmethod
-    def plots_dir(date: str = None, subs: list[str] = None) -> str:
+    def plot_dir(date: str = None, subs: list[str] = None) -> str:
         """Returns the path of aggregate plots."""
         return os.path.join(Top.result_dir(date), "plots", *(subs if subs is not None else []))
 
     @staticmethod
-    def plots_spatial_dir(filename: str, title=str, date: str = None) -> str:
+    def spatial_dir(filename: str, title=str, date: str = None) -> str:
         """Returns the path of the spatial plots"""
         return os.path.join(
-            Plots.plots_dir(date), "spatial_distribution", f"{filename}", f"{title}.pdf")
+            Plots.plot_dir(date), "spatial_distribution", f"{filename}", f"{title}.pdf")
 
 
 class Spatial:
     """Spatial data."""
 
     @staticmethod
-    def spatial_dir(date: str = None) -> str:
+    def root(date: str = None) -> str:
         """Returns the path of the directory with spatial data"""
         return os.path.join(Top.result_dir(date), "spatial_data")
 
     @staticmethod
     def geom_dir(filename: str, date: str = None) -> str:
         """Returns the path of the geom directory under spatial_data"""
-        return os.path.join(Spatial.spatial_dir(date), f"{filename}")
+        return os.path.join(Spatial.root(date), f"{filename}")
 
     @staticmethod
     def header_path(date: str = None) -> str:
         """Returns the path of the YAML file"""
-        return os.path.join(Spatial.spatial_dir(date), "headers.json")
+        return os.path.join(Spatial.root(date), "headers.json")
 
     @staticmethod
     def spatial_path(slices: int, filename: str, mag_var: str, date: str = None):
@@ -136,21 +136,21 @@ class CalcVals:
     """Calculated values."""
 
     @staticmethod
-    def calcvals_dir(date: str = None):
+    def root(date: str = None):
         """Returns the path of the calculated_values dataset."""
         return os.path.join(Top.result_dir(date), "calculated_values")
 
     @staticmethod
     def amp_path(mag_var: str, date: str = None) -> str:
         """Returns the path of the amplitude data."""
-        return os.path.join(CalcVals.calcvals_dir(date), f"amp_{mag_var}.tsv")
+        return os.path.join(CalcVals.root(date), f"amp_{mag_var}.tsv")
 
     @staticmethod
     def maxamp_path(date: str = None) -> str:
         """Returns the path of the MaxAmp data."""
-        return os.path.join(CalcVals.calcvals_dir(date), "MaxAmp.tsv")
+        return os.path.join(CalcVals.root(date), "MaxAmp.tsv")
 
     @staticmethod
     def fitted_amp_path(mag_var: str, date: str = None) -> str:
         """Returns the path of the curve-fitted amplitude data."""
-        return os.path.join(CalcVals.calcvals_dir(date), f"fitted amp_{mag_var}.tsv")
+        return os.path.join(CalcVals.root(date), f"fitted amp_{mag_var}.tsv")

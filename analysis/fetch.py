@@ -50,6 +50,6 @@ def __download_gdrive(drive_id, save_to):
 def fetch_raw(date: str = None):
     """Fetches large raw data files."""
 
-    with open(paths.Tables.table_ref_path(date), "r", encoding="utf-8") as file:
+    with open(paths.Tables.ref_path(date), "r", encoding="utf-8") as file:
         drive_id = file.read().strip()
-        __download_gdrive(drive_id, paths.Tables.table_txt_path())
+        __download_gdrive(drive_id, paths.Tables.txt_path())
