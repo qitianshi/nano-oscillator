@@ -61,4 +61,4 @@ def fetch_raw(date: str = None):
     with ZipFile(paths.Refs.raw_zip_path(date), 'r') as zip_ref:
         zip_ref.extractall(paths.Data.dataset_dir(date))
 
-    remove(paths.Refs.raw_zip_path())
+    remove(paths.Refs.raw_zip_path(date))
