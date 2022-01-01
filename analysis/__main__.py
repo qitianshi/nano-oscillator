@@ -279,7 +279,8 @@ def timed_run():
         func()
         print(f"  Done in {time() - t_start:.1f}s.")
 
-    print(f"Finished all analyses in {time() - t_init:.1f}s.")
+    print(f"Finished {len(anl_funcs)} {'analysis' if len(anl_funcs) == 1 else 'analyses'} in", \
+        f"{time() - t_init:.1f}s.")
 
 timed_run()
 
