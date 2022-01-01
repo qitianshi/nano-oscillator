@@ -18,7 +18,6 @@ def __command_line() -> tuple[str, bool, int, list[str]]:
         "date",
         type=str,
         nargs='?',
-        const=anl.paths.Top.latest_date(),
         default=anl.paths.Top.latest_date(),
         help="the date of the simulation (YYYY-MM-DD_hhmm), defaults to latest"
     )
@@ -346,6 +345,6 @@ def timed_run():
     print(f"Finished {len(anl_funcs)} {'analysis' if len(anl_funcs) == 1 else 'analyses'} in", \
         f"{time() - t_init:.1f}s.")
 
-timed_run()
+# timed_run()
 
 #endregion
