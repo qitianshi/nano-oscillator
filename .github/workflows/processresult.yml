@@ -11,6 +11,9 @@ on:
         type: boolean
         required: false
         default: false
+      cli-args:
+        description: 'Command line arguments'
+        required: false
 
 jobs:
   build:
@@ -43,6 +46,7 @@ jobs:
         . ./venv/bin/activate &&
         python3 -m analysis -d ${{ github.event.inputs.date }}
         ${{ fromJSON('["", "--skip-spatial"]')[github.event.inputs.skip-spatial == 'true'] }}
+        ${{ github.event.inputs.cli-args }}
 
     - name: Commit, push, and create pull request
       uses: peter-evans/create-pull-request@v3
