@@ -2,6 +2,7 @@
 
 import argparse
 import os
+from sys import exit
 from time import time
 
 import analysis as anl
@@ -14,11 +15,12 @@ MAG_VARS = ("mx", "my", "mz")
 cli_parser = argparse.ArgumentParser(prog="analysis", description="Runs all analyses.")
 
 cli_parser.add_argument(
-    "--date",
+    "-d", "--date",
     type=str,
+    nargs='?',
+    const=anl.paths.Top.latest_date(),
     default=anl.paths.Top.latest_date(),
-    required=False,
-    help="the date of the simulation (YYYY-MM-DD_hhmm)"
+    help="the date of the simulation (YYYY-MM-DD_hhmm), defaults to latest"
 )
 
 cli_parser.add_argument(
@@ -31,6 +33,9 @@ cli_parser.add_argument(
 cli_args = cli_parser.parse_args()
 DATE = cli_args.date
 SKIP_SPATIAL = cli_args.skip_spatial
+
+if not os.path.exists(anl.paths.Top.result_dir(DATE)):
+    exit(f"ERROR: No result was found for '{DATE}'.")
 
 print(
     "Running analysis with parameters:",
