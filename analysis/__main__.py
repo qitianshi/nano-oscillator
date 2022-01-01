@@ -10,7 +10,7 @@ import analysis as anl
 
 #region Command line
 
-def __command_line() -> tuple[str, bool, int, list[str]]:
+def __parse_cli_input() -> tuple[str, bool, int, list[str]]:
 
     cli_parser = argparse.ArgumentParser(prog="analysis", description="Runs all analyses.")
 
@@ -65,7 +65,7 @@ def __command_line() -> tuple[str, bool, int, list[str]]:
 
     return (cli_args.date, cli_args.skip_spatial, cli_args.plot_depth, cli_args.mag_vars)
 
-DATE, SKIP_SPATIAL, PLOT_DEPTH, MAG_VARS = __command_line()
+DATE, SKIP_SPATIAL, PLOT_DEPTH, MAG_VARS = __parse_cli_input()
 
 print(
     "Running analysis with parameters:",
