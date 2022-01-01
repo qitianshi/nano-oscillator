@@ -8,39 +8,71 @@ from time import time
 import analysis as anl
 
 
-MAG_VARS = ("mx", "my", "mz")
-
 #region Command line
 
-cli_parser = argparse.ArgumentParser(prog="analysis", description="Runs all analyses.")
+def __parse_cli_input() -> tuple[str, list[str], int, bool]:
 
-cli_parser.add_argument(
-    "-d", "--date",
-    type=str,
-    nargs='?',
-    const=anl.paths.Top.latest_date(),
-    default=anl.paths.Top.latest_date(),
-    help="the date of the simulation (YYYY-MM-DD_hhmm), defaults to latest"
-)
+    cli_parser = argparse.ArgumentParser(prog="analysis", description="Runs all analyses.")
 
-cli_parser.add_argument(
-    "--skip-spatial",
-    dest="skip_spatial",
-    action="store_true",
-    help="skips analysis of spatial data"
-)
+    cli_parser.add_argument(
+        "date",
+        type=str,
+        nargs='?',
+        default=anl.paths.Top.latest_date(),
+        help="the date of the simulation (YYYY-MM-DD_hhmm), defaults to latest"
+    )
 
-cli_args = cli_parser.parse_args()
-DATE = cli_args.date
-SKIP_SPATIAL = cli_args.skip_spatial
+    cli_arg_mag_vars = cli_parser.add_argument(
+        "--mag-vars",
+        dest="mag_vars",
+        type=str,
+        nargs='+',
+        required=False,
+        default=["mx", "my", "mz"],
+        help="magnetization components to plot and analyze, any of: mx my mz, defaults to all"
+    )
 
-if not os.path.exists(anl.paths.Top.result_dir(DATE)):
-    exit(f"ERROR: No result was found for '{DATE}'.")
+    cli_parser.add_argument(
+        "--plot-depth",
+        dest="plot_depth",
+        type=int,
+        required=False,
+        default=1,
+        help="the number of split levels to plot, defaults to 1"
+    )
+
+    cli_parser.add_argument(
+        "--skip-spatial",
+        dest="skip_spatial",
+        action="store_true",
+        help="skips analysis of spatial data"
+    )
+
+    cli_args = cli_parser.parse_args()
+
+    if not os.path.exists(anl.paths.Top.result_dir(cli_args.date)):
+        exit(f"Error: no result was found for '{cli_args.date}'.")
+
+    acceptable_mag_vars = ("mx", "my", "mz")
+    if any(i not in acceptable_mag_vars for i in cli_args.mag_vars):
+        rejected_mag_vars = list(set(cli_args.mag_vars) - set(acceptable_mag_vars))
+        raise argparse.ArgumentError(
+            cli_arg_mag_vars,
+            f"{', '.join(rejected_mag_vars)}"
+            + f" {'does not' if len(rejected_mag_vars) == 1 else 'do not'}"
+            + f" match valid values: {', '.join(acceptable_mag_vars)}"
+        )
+
+    return (cli_args.date, cli_args.mag_vars, cli_args.plot_depth, cli_args.skip_spatial)
+
+DATE, MAG_VARS, PLOT_DEPTH, SKIP_SPATIAL = __parse_cli_input()
 
 print(
     "Running analysis with parameters:",
-    f"date: {DATE}",
-    f"skip-spatial: {SKIP_SPATIAL}",
+    f"date: {DATE.__repr__()}",
+    f"mag-vars: {MAG_VARS.__repr__()}",
+    f"plot-depth: {PLOT_DEPTH.__repr__()}",
+    f"skip-spatial: {SKIP_SPATIAL.__repr__()}",
     sep='\n  ',
     end='\n\n'
 )
@@ -148,15 +180,20 @@ def __plot_mag_phi():
 
 def __plot_mag_phi_fRF():
     print("Plotting mx, my, mz against t from data split by phi, f_RF...")
-    anl.plot.plot_dataset_xy(
-        attr_data=anl.read.read_dataset(
-            anl.paths.Data.dataset_dir(DATE, {"phi": None, "f_RF": None})
-        ),
-        x_var="t",
-        y_vars=["mx", "my", "mz"],
-        xlabel="t (s)",
-        save_to_root=anl.paths.Plots.plot_dir(DATE, ["phi, f_RF"])
-    )
+
+    if PLOT_DEPTH >= 2:
+        anl.plot.plot_dataset_xy(
+            attr_data=anl.read.read_dataset(
+                anl.paths.Data.dataset_dir(DATE, {"phi": None, "f_RF": None})
+            ),
+            x_var="t",
+            y_vars=["mx", "my", "mz"],
+            xlabel="t (s)",
+            save_to_root=anl.paths.Plots.plot_dir(DATE, ["phi, f_RF"])
+        )
+
+    else:
+        print("Skipped.")
 
 
 def __plot_amp():
@@ -290,6 +327,7 @@ def timed_run():
         __plot_mag,
         __plot_MaxAngle,
         __plot_mag_phi,
+        __plot_mag_phi_fRF,
         __plot_amp,
         __plot_MaxAmp,
         __plot_fitted_amp,
@@ -307,6 +345,6 @@ def timed_run():
     print(f"Finished {len(anl_funcs)} {'analysis' if len(anl_funcs) == 1 else 'analyses'} in", \
         f"{time() - t_init:.1f}s.")
 
-timed_run()
+# timed_run()
 
 #endregion
