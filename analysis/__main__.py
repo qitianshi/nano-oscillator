@@ -12,7 +12,7 @@ import analysis as anl
 
 cli_parser = argparse.ArgumentParser(prog="analysis", description="Runs all analyses.")
 
-cli_parser.add_argument(
+cli_arg_date = cli_parser.add_argument(
     "-d", "--date",
     type=str,
     nargs='?',
@@ -21,7 +21,7 @@ cli_parser.add_argument(
     help="the date of the simulation (YYYY-MM-DD_hhmm), defaults to latest"
 )
 
-cli_parser.add_argument(
+cli_arg_mag_vars = cli_parser.add_argument(
     "--mag-vars",
     dest="mag_vars",
     type=str,
@@ -54,7 +54,17 @@ PLOT_DEPTH = cli_args.plot_depth
 MAG_VARS = cli_args.mag_vars
 
 if not os.path.exists(anl.paths.Top.result_dir(DATE)):
-    exit(f"ERROR: No result was found for '{DATE}'.")
+    raise argparse.ArgumentError(cli_arg_date, f"No result was found for '{DATE}'.")
+
+acceptable_mag_vars = ("mx", "my", "mz")
+if any(i not in acceptable_mag_vars for i in MAG_VARS):
+    rejected_mag_vars = list(set(MAG_VARS) - set(acceptable_mag_vars))
+    raise argparse.ArgumentError(
+        cli_arg_mag_vars,
+        f"{', '.join(rejected_mag_vars)}"
+        + f" {'does not' if len(rejected_mag_vars) == 1 else 'do not'}"
+        + f" match valid values: {', '.join(acceptable_mag_vars)}"
+    )
 
 print(
     "Running analysis with parameters:",
