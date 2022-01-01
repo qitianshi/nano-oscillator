@@ -171,7 +171,7 @@ def __plot_fitted_amp():
     print("Plotting curve-fitted amp against f_RF...")
     for mag in MAG_VARS:
         anl.plot.plot_function(
-            data=anl.read.read_data(anl.paths.CalcVals.fitted_amp_path(mag)),
+            data=anl.read.read_data(anl.paths.CalcVals.fitted_amp_path(mag, DATE)),
             func=anl.fit.cauchy,
             params=["x_0", "gamma", "I"],
             domain=[3.5e9, 6.0e9],
@@ -188,18 +188,18 @@ def __plot_spatial():
     print("Plotting all spatial distribution data...")
 
     if not SKIP_SPATIAL:
-        for filename in os.listdir(anl.paths.Spatial.root()):
+        for filename in os.listdir(anl.paths.Spatial.root(DATE)):
             if not filename.endswith("json"):
                 for component in MAG_VARS:
                     component = component.strip("m")
                     try:
                         anl.plot.plot_image(
                             anl.read.read_data(
-                                anl.paths.Spatial.spatial_path(filename, component, date=DATE)),
+                                anl.paths.Spatial.spatial_path(filename, component, DATE)),
                             xlabel="x (m)",
                             ylabel="y (m)",
                             title = filename + " (T)",
-                            save_to=anl.paths.Plots.spatial_dir(filename, component, date=DATE),
+                            save_to=anl.paths.Plots.spatial_dir(filename, component, DATE),
                             show_plot=False
                         )
                     except FileNotFoundError as err:
@@ -220,7 +220,7 @@ def __plotcheck_fitted_amp():
     print("Checks: Plotting curve fit with data points for amp against f_RF...")
     for var in MAG_VARS:
 
-        curve_data = anl.read.read_data(anl.paths.CalcVals.fitted_amp_path(var))
+        curve_data = anl.read.read_data(anl.paths.CalcVals.fitted_amp_path(var, DATE))
         amp_data = anl.read.read_data(anl.paths.CalcVals.amp_path(var, DATE))
         rows = curve_data["phi"][::(len(curve_data["phi"]) // 4)]     # Extracts a few sample rows.
         domain = (3.5e9, 6.0e9)
