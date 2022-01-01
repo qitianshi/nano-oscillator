@@ -28,4 +28,3 @@ def prep_dir(path: str, clear: str = True):
         rmtree(path)
 
     os.makedirs(path, exist_ok=True)
-    
