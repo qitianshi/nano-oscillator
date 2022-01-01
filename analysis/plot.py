@@ -137,7 +137,8 @@ def plot_dataset_xy(
             save_to = os.path.join(save_to, *split_keys[:-1], datum.title + '.' + plot_format)
 
         plot_xy(read.AttributedData(datum.data, x_var=x_var, y_vars=y_vars),
-            xlabel, ylabel, xlim, ylim, xstep, title, save_to)
+            xlabel=xlabel, ylabel=ylabel, xlim=xlim, ylim=ylim, xstep=xstep, title=title,
+            save_to=save_to)
 
 
 def plot_function(
@@ -197,7 +198,8 @@ def plot_function(
             ),
             *(overlay if overlay is not None else [])
         ],
-        xlabel, ylabel, xlim, ylim, xstep, title, save_to, show_plot
+        xlabel=xlabel, ylabel=ylabel, xlim=xlim, ylim=ylim, xstep=xstep, title=title,
+        save_to=save_to, show_plot=show_plot
     )
 
 
@@ -246,8 +248,8 @@ def plot_spatial(
 
     plot_xy(
         plot_data,
-        xlabel,
-        ylabel,
+        xlabel=xlabel,
+        ylabel=ylabel,
         xstep=0.2e-06
     )
 

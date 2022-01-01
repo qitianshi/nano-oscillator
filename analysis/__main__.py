@@ -1,22 +1,44 @@
 """Runs all data analyses, including splitting, calculations, and plotting."""
 
+import argparse
 import os
-
-from sys import argv
 from time import time
 
 import analysis as anl
 
 
-#region Setup
-
-try:
-    DATE = argv[1]
-except IndexError:
-    DATE = anl.paths.Top.latest_date()
-    print(f"No 'date' parameter provided. Using latest result: {DATE}")
-
 MAG_VARS = ("mx", "my", "mz")
+
+#region Command line
+
+cli_parser = argparse.ArgumentParser(prog="analysis", description="Runs all analyses.")
+
+cli_parser.add_argument(
+    "--date",
+    type=str,
+    default=anl.paths.Top.latest_date(),
+    required=False,
+    help="the date of the simulation (YYYY-MM-DD_hhmm)"
+)
+
+cli_parser.add_argument(
+    "--skip-spatial",
+    dest="skip_spatial",
+    action="store_true",
+    help="skips analysis of spatial data"
+)
+
+cli_args = cli_parser.parse_args()
+DATE = cli_args.date
+SKIP_SPATIAL = cli_args.skip_spatial
+
+print(
+    "Running analysis with parameters:",
+    f"date: {DATE}",
+    f"skip-spatial: {SKIP_SPATIAL}",
+    sep='\n  ',
+    end='\n\n'
+)
 
 #endregion
 
@@ -59,12 +81,20 @@ def __calc_mag_fit():
 
 def __convert_npy():
     print("Covnerting all .npy files to .tsv files")
-    anl.geom.convert_npy(DATE)
+
+    if not SKIP_SPATIAL:
+        anl.geom.convert_npy(DATE)
+    else:
+        print("Skipped.")
 
 
 def __create_json():
     print("Creating the json file...")
-    anl.write.write_json(DATE)
+
+    if not SKIP_SPATIAL:
+        anl.write.write_json(DATE)
+    else:
+        print("Skipped.")
 
 #endregion
 
@@ -161,7 +191,7 @@ def __plot_fitted_amp():
     print("Plotting curve-fitted amp against f_RF...")
     for mag in MAG_VARS:
         anl.plot.plot_function(
-            data=anl.read.read_data(anl.paths.CalcVals.fitted_amp_path(mag)),
+            data=anl.read.read_data(anl.paths.CalcVals.fitted_amp_path(mag, DATE)),
             func=anl.fit.cauchy,
             params=["x_0", "gamma", "I"],
             domain=[3.5e9, 6.0e9],
@@ -176,25 +206,30 @@ def __plot_fitted_amp():
 
 def __plot_spatial():
     print("Plotting all spatial distribution data...")
-    for filename in os.listdir(anl.paths.Spatial.root()):
-        if not filename.endswith("json"):
-            for component in MAG_VARS:
-                component = component.strip("m")
-                try:
-                    anl.plot.plot_image(
-                        anl.read.read_data(
-                            anl.paths.Spatial.spatial_path(filename, component, date=DATE)),
-                        xlabel="x (m)",
-                        ylabel="y (m)",
-                        title = filename + " (T)",
-                        save_to=anl.paths.Plots.spatial_dir(filename, component, date=DATE),
-                        show_plot=False
-                    )
-                except FileNotFoundError as err:
-                    if os.path.isdir(os.path.join(anl.paths.Spatial.root(DATE), filename)):
-                        print(f"{component} not found for {filename}. Component skipped.")
-                    else:
-                        raise err
+
+    if not SKIP_SPATIAL:
+        for filename in os.listdir(anl.paths.Spatial.root(DATE)):
+            if not filename.endswith("json"):
+                for component in MAG_VARS:
+                    component = component.strip("m")
+                    try:
+                        anl.plot.plot_image(
+                            anl.read.read_data(
+                                anl.paths.Spatial.spatial_path(filename, component, DATE)),
+                            xlabel="x (m)",
+                            ylabel="y (m)",
+                            title = filename + " (T)",
+                            save_to=anl.paths.Plots.spatial_dir(filename, component, DATE),
+                            show_plot=False
+                        )
+                    except FileNotFoundError as err:
+                        if os.path.isdir(os.path.join(anl.paths.Spatial.root(DATE), filename)):
+                            print(f"{component} not found for {filename}. Component skipped.")
+                        else:
+                            raise err
+
+    else:
+        print("Skipped.")
 
 
 #endregion
@@ -205,7 +240,7 @@ def __plotcheck_fitted_amp():
     print("Checks: Plotting curve fit with data points for amp against f_RF...")
     for var in MAG_VARS:
 
-        curve_data = anl.read.read_data(anl.paths.CalcVals.fitted_amp_path(var))
+        curve_data = anl.read.read_data(anl.paths.CalcVals.fitted_amp_path(var, DATE))
         amp_data = anl.read.read_data(anl.paths.CalcVals.amp_path(var, DATE))
         rows = curve_data["phi"][::(len(curve_data["phi"]) // 4)]     # Extracts a few sample rows.
         domain = (3.5e9, 6.0e9)
@@ -233,7 +268,7 @@ def __plotcheck_fitted_amp():
 
 #endregion
 
-#region Run analyses
+#region Run
 
 def timed_run():
     """Runs all analyses."""
@@ -264,7 +299,8 @@ def timed_run():
         func()
         print(f"  Done in {time() - t_start:.1f}s.")
 
-    print(f"Finished all analyses in {time() - t_init:.1f}s.")
+    print(f"Finished {len(anl_funcs)} {'analysis' if len(anl_funcs) == 1 else 'analyses'} in", \
+        f"{time() - t_init:.1f}s.")
 
 timed_run()
 
