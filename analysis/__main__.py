@@ -8,8 +8,6 @@ from time import time
 import analysis as anl
 
 
-MAG_VARS = ("mx", "my", "mz")
-
 #region Command line
 
 cli_parser = argparse.ArgumentParser(prog="analysis", description="Runs all analyses.")
@@ -24,10 +22,13 @@ cli_parser.add_argument(
 )
 
 cli_parser.add_argument(
-    "--skip-spatial",
-    dest="skip_spatial",
-    action="store_true",
-    help="skips analysis of spatial data"
+    "--mag-vars",
+    dest="mag_vars",
+    type=str,
+    nargs='+',
+    required=False,
+    default=["mx", "my", "mz"],
+    help="magnetization components to plot and analyze, any of: mx my mz, defaults to all"
 )
 
 cli_parser.add_argument(
@@ -39,10 +40,18 @@ cli_parser.add_argument(
     help="the number of split levels to plot, defaults to 1"
 )
 
+cli_parser.add_argument(
+    "--skip-spatial",
+    dest="skip_spatial",
+    action="store_true",
+    help="skips analysis of spatial data"
+)
+
 cli_args = cli_parser.parse_args()
 DATE = cli_args.date
 SKIP_SPATIAL = cli_args.skip_spatial
 PLOT_DEPTH = cli_args.plot_depth
+MAG_VARS = cli_args.mag_vars
 
 if not os.path.exists(anl.paths.Top.result_dir(DATE)):
     exit(f"ERROR: No result was found for '{DATE}'.")
@@ -50,8 +59,9 @@ if not os.path.exists(anl.paths.Top.result_dir(DATE)):
 print(
     "Running analysis with parameters:",
     f"date: {DATE}",
-    f"skip-spatial: {SKIP_SPATIAL}",
+    f"mag-vars: {MAG_VARS}",
     f"plot-depth: {PLOT_DEPTH}",
+    f"skip-spatial: {SKIP_SPATIAL}",
     sep='\n  ',
     end='\n\n'
 )
