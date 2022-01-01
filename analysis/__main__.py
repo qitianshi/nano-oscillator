@@ -2,6 +2,7 @@
 
 import argparse
 import os
+from sys import exit
 from time import time
 
 import analysis as anl
@@ -32,6 +33,9 @@ cli_parser.add_argument(
 cli_args = cli_parser.parse_args()
 DATE = cli_args.date
 SKIP_SPATIAL = cli_args.skip_spatial
+
+if not os.path.exists(anl.paths.Top.result_dir(DATE)):
+    exit(f"ERROR: No result was found for '{DATE}'.")
 
 print(
     "Running analysis with parameters:",
@@ -303,6 +307,6 @@ def timed_run():
     print(f"Finished {len(anl_funcs)} {'analysis' if len(anl_funcs) == 1 else 'analyses'} in", \
         f"{time() - t_init:.1f}s.")
 
-# timed_run()
+timed_run()
 
 #endregion
