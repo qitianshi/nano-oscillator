@@ -2,7 +2,6 @@
 
 import argparse
 import os
-from sys import exit
 from time import time
 
 import analysis as anl
@@ -10,68 +9,70 @@ import analysis as anl
 
 #region Command line
 
-cli_parser = argparse.ArgumentParser(prog="analysis", description="Runs all analyses.")
+def __command_line() -> tuple[str, bool, int, list[str]]:
 
-cli_arg_date = cli_parser.add_argument(
-    "-d", "--date",
-    type=str,
-    nargs='?',
-    const=anl.paths.Top.latest_date(),
-    default=anl.paths.Top.latest_date(),
-    help="the date of the simulation (YYYY-MM-DD_hhmm), defaults to latest"
-)
+    cli_parser = argparse.ArgumentParser(prog="analysis", description="Runs all analyses.")
 
-cli_arg_mag_vars = cli_parser.add_argument(
-    "--mag-vars",
-    dest="mag_vars",
-    type=str,
-    nargs='+',
-    required=False,
-    default=["mx", "my", "mz"],
-    help="magnetization components to plot and analyze, any of: mx my mz, defaults to all"
-)
-
-cli_parser.add_argument(
-    "--plot-depth",
-    dest="plot_depth",
-    type=int,
-    required=False,
-    default=1,
-    help="the number of split levels to plot, defaults to 1"
-)
-
-cli_parser.add_argument(
-    "--skip-spatial",
-    dest="skip_spatial",
-    action="store_true",
-    help="skips analysis of spatial data"
-)
-
-cli_args = cli_parser.parse_args()
-DATE = cli_args.date
-SKIP_SPATIAL = cli_args.skip_spatial
-PLOT_DEPTH = cli_args.plot_depth
-MAG_VARS = cli_args.mag_vars
-
-if not os.path.exists(anl.paths.Top.result_dir(DATE)):
-    raise argparse.ArgumentError(cli_arg_date, f"No result was found for '{DATE}'.")
-
-acceptable_mag_vars = ("mx", "my", "mz")
-if any(i not in acceptable_mag_vars for i in MAG_VARS):
-    rejected_mag_vars = list(set(MAG_VARS) - set(acceptable_mag_vars))
-    raise argparse.ArgumentError(
-        cli_arg_mag_vars,
-        f"{', '.join(rejected_mag_vars)}"
-        + f" {'does not' if len(rejected_mag_vars) == 1 else 'do not'}"
-        + f" match valid values: {', '.join(acceptable_mag_vars)}"
+    cli_arg_date = cli_parser.add_argument(
+        "-d", "--date",
+        type=str,
+        nargs='?',
+        const=anl.paths.Top.latest_date(),
+        default=anl.paths.Top.latest_date(),
+        help="the date of the simulation (YYYY-MM-DD_hhmm), defaults to latest"
     )
+
+    cli_arg_mag_vars = cli_parser.add_argument(
+        "--mag-vars",
+        dest="mag_vars",
+        type=str,
+        nargs='+',
+        required=False,
+        default=["mx", "my", "mz"],
+        help="magnetization components to plot and analyze, any of: mx my mz, defaults to all"
+    )
+
+    cli_parser.add_argument(
+        "--plot-depth",
+        dest="plot_depth",
+        type=int,
+        required=False,
+        default=1,
+        help="the number of split levels to plot, defaults to 1"
+    )
+
+    cli_parser.add_argument(
+        "--skip-spatial",
+        dest="skip_spatial",
+        action="store_true",
+        help="skips analysis of spatial data"
+    )
+
+    cli_args = cli_parser.parse_args()
+
+    if not os.path.exists(anl.paths.Top.result_dir(cli_args.date)):
+        raise argparse.ArgumentError(cli_arg_date, f"No result was found for '{cli_args.date}'.")
+
+    acceptable_mag_vars = ("mx", "my", "mz")
+    if any(i not in acceptable_mag_vars for i in cli_args.mag_vars):
+        rejected_mag_vars = list(set(cli_args.mag_vars) - set(acceptable_mag_vars))
+        raise argparse.ArgumentError(
+            cli_arg_mag_vars,
+            f"{', '.join(rejected_mag_vars)}"
+            + f" {'does not' if len(rejected_mag_vars) == 1 else 'do not'}"
+            + f" match valid values: {', '.join(acceptable_mag_vars)}"
+        )
+
+    return (cli_args.date, cli_args.skip_spatial, cli_args.plot_depth, cli_args.mag_vars)
+
+DATE, SKIP_SPATIAL, PLOT_DEPTH, MAG_VARS = __command_line()
 
 print(
     "Running analysis with parameters:",
-    f"date: {DATE}",
-    f"mag-vars: {MAG_VARS}",
-    f"plot-depth: {PLOT_DEPTH}",
-    f"skip-spatial: {SKIP_SPATIAL}",
+    f"date: {DATE.__repr__()}",
+    f"mag-vars: {MAG_VARS.__repr__()}",
+    f"plot-depth: {PLOT_DEPTH.__repr__()}",
+    f"skip-spatial: {SKIP_SPATIAL.__repr__()}",
     sep='\n  ',
     end='\n\n'
 )
@@ -344,6 +345,6 @@ def timed_run():
     print(f"Finished {len(anl_funcs)} {'analysis' if len(anl_funcs) == 1 else 'analyses'} in", \
         f"{time() - t_init:.1f}s.")
 
-timed_run()
+# timed_run()
 
 #endregion
