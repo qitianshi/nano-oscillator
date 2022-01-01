@@ -7,7 +7,7 @@ on:
         description: 'Result date (YYYY-MM-DD_hhmm)'
         required: false
       skip-spatial:
-        descriptions: 'Skip spatial data analyses'
+        description: 'Skip spatial data analyses'
         type: boolean
         required: false
         default: false
