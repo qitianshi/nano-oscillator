@@ -1,24 +1,44 @@
 """Runs all data analyses, including splitting, calculations, and plotting."""
 
+import argparse
 import os
-
-from sys import argv
 from time import time
 
 import analysis as anl
 
 
-#region Setup
-
-try:
-    DATE = argv[1]
-except IndexError:
-    DATE = anl.paths.Top.latest_date()
-    print(f"No 'date' parameter provided. Using latest result: {DATE}")
-
-SKIP_SPATIAL = "--skip-spatial" in argv
-
 MAG_VARS = ("mx", "my", "mz")
+
+#region Command line
+
+cli_parser = argparse.ArgumentParser(prog="analysis", description="Runs all analyses.")
+
+cli_parser.add_argument(
+    "--date",
+    type=str,
+    default=anl.paths.Top.latest_date(),
+    required=False,
+    help="the date of the simulation (YYYY-MM-DD_hhmm)"
+)
+
+cli_parser.add_argument(
+    "--skip-spatial",
+    dest="skip_spatial",
+    action="store_true",
+    help="skips analysis of spatial data"
+)
+
+cli_args = cli_parser.parse_args()
+DATE = cli_args.date
+SKIP_SPATIAL = cli_args.skip_spatial
+
+print(
+    "Running analysis with parameters:",
+    f"date: {DATE}",
+    f"skip-spatial: {SKIP_SPATIAL}",
+    sep='\n  ',
+    end='\n\n'
+)
 
 #endregion
 
@@ -248,7 +268,7 @@ def __plotcheck_fitted_amp():
 
 #endregion
 
-#region Run analyses
+#region Run
 
 def timed_run():
     """Runs all analyses."""
