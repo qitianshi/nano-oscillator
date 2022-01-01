@@ -14,11 +14,12 @@ MAG_VARS = ("mx", "my", "mz")
 cli_parser = argparse.ArgumentParser(prog="analysis", description="Runs all analyses.")
 
 cli_parser.add_argument(
-    "--date",
+    "-d", "--date",
     type=str,
+    nargs='?',
+    const=anl.paths.Top.latest_date(),
     default=anl.paths.Top.latest_date(),
-    required=False,
-    help="the date of the simulation (YYYY-MM-DD_hhmm)"
+    help="the date of the simulation (YYYY-MM-DD_hhmm), defaults to latest"
 )
 
 cli_parser.add_argument(
@@ -302,6 +303,6 @@ def timed_run():
     print(f"Finished {len(anl_funcs)} {'analysis' if len(anl_funcs) == 1 else 'analyses'} in", \
         f"{time() - t_init:.1f}s.")
 
-timed_run()
+# timed_run()
 
 #endregion
