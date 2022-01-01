@@ -2,6 +2,7 @@
 
 import argparse
 import os
+from sys import exit
 from time import time
 
 import analysis as anl
@@ -13,7 +14,7 @@ def __command_line() -> tuple[str, bool, int, list[str]]:
 
     cli_parser = argparse.ArgumentParser(prog="analysis", description="Runs all analyses.")
 
-    cli_arg_date = cli_parser.add_argument(
+    cli_parser.add_argument(
         "-d", "--date",
         type=str,
         nargs='?',
@@ -51,7 +52,7 @@ def __command_line() -> tuple[str, bool, int, list[str]]:
     cli_args = cli_parser.parse_args()
 
     if not os.path.exists(anl.paths.Top.result_dir(cli_args.date)):
-        raise argparse.ArgumentError(cli_arg_date, f"No result was found for '{cli_args.date}'.")
+        exit(f"Error: no result was found for '{cli_args.date}'.")
 
     acceptable_mag_vars = ("mx", "my", "mz")
     if any(i not in acceptable_mag_vars for i in cli_args.mag_vars):
@@ -345,6 +346,6 @@ def timed_run():
     print(f"Finished {len(anl_funcs)} {'analysis' if len(anl_funcs) == 1 else 'analyses'} in", \
         f"{time() - t_init:.1f}s.")
 
-# timed_run()
+timed_run()
 
 #endregion
