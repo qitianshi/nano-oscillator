@@ -15,7 +15,7 @@ def __command_line() -> tuple[str, bool, int, list[str]]:
     cli_parser = argparse.ArgumentParser(prog="analysis", description="Runs all analyses.")
 
     cli_parser.add_argument(
-        "-d", "--date",
+        "date",
         type=str,
         nargs='?',
         const=anl.paths.Top.latest_date(),
