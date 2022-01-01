@@ -30,9 +30,19 @@ cli_parser.add_argument(
     help="skips analysis of spatial data"
 )
 
+cli_parser.add_argument(
+    "--plot-depth",
+    dest="plot_depth",
+    type=int,
+    required=False,
+    default=1,
+    help="the number of split levels to plot, defaults to 1"
+)
+
 cli_args = cli_parser.parse_args()
 DATE = cli_args.date
 SKIP_SPATIAL = cli_args.skip_spatial
+PLOT_DEPTH = cli_args.plot_depth
 
 if not os.path.exists(anl.paths.Top.result_dir(DATE)):
     exit(f"ERROR: No result was found for '{DATE}'.")
@@ -41,6 +51,7 @@ print(
     "Running analysis with parameters:",
     f"date: {DATE}",
     f"skip-spatial: {SKIP_SPATIAL}",
+    f"plot-depth: {PLOT_DEPTH}",
     sep='\n  ',
     end='\n\n'
 )
@@ -148,15 +159,20 @@ def __plot_mag_phi():
 
 def __plot_mag_phi_fRF():
     print("Plotting mx, my, mz against t from data split by phi, f_RF...")
-    anl.plot.plot_dataset_xy(
-        attr_data=anl.read.read_dataset(
-            anl.paths.Data.dataset_dir(DATE, {"phi": None, "f_RF": None})
-        ),
-        x_var="t",
-        y_vars=["mx", "my", "mz"],
-        xlabel="t (s)",
-        save_to_root=anl.paths.Plots.plot_dir(DATE, ["phi, f_RF"])
-    )
+
+    if PLOT_DEPTH >= 2:
+        anl.plot.plot_dataset_xy(
+            attr_data=anl.read.read_dataset(
+                anl.paths.Data.dataset_dir(DATE, {"phi": None, "f_RF": None})
+            ),
+            x_var="t",
+            y_vars=["mx", "my", "mz"],
+            xlabel="t (s)",
+            save_to_root=anl.paths.Plots.plot_dir(DATE, ["phi, f_RF"])
+        )
+
+    else:
+        print("Skipped.")
 
 
 def __plot_amp():
@@ -290,6 +306,7 @@ def timed_run():
         __plot_mag,
         __plot_MaxAngle,
         __plot_mag_phi,
+        __plot_mag_phi_fRF,
         __plot_amp,
         __plot_MaxAmp,
         __plot_fitted_amp,
