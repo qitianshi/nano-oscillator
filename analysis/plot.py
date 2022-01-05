@@ -46,8 +46,6 @@ def plot_xy(
         show_plot (bool): Whether to show (`matplotlib.pyplot.show`) the graph.
     """
 
-    attr_data = attr_data if isinstance(attr_data, list) else [attr_data]
-
     fig = plt.figure(figsize=(10, 5))
     ax = fig.add_subplot(1, 1, 1)
 
@@ -203,58 +201,64 @@ def plot_function(
     )
 
 
-def plot_spatial(
+def plot_linearspace(
+    date: str,
     xindex: int = None,
     yindex: int = None,
-    component: str = "mz",
+    component: str = "z",
     filename: str = None,
+    slices: int = None
 ):
     """Plots the graphs of spatial data against the x or y index of the cells"""
 
     #creates a Pandas dataframe with the B_ext data as a column
     if yindex is None:
         #vertical line
-        plot_data = pd.DataFrame(
-            read.read_data(paths.Spatial.spatial_path(filename, component)).iloc[:, xindex]
-        )
-        cell_index = "y"
+        line_index = "y"
+        yvar_name = xindex
+        plot_data = read.read_data(
+                paths.Spatial.spatial_path(filename, component, slices, date)
+        ).iloc[:, xindex].to_frame(str(xindex))
 
     elif xindex is None:
         #horizontal line
-        plot_data = pd.DataFrame(
-            read.read_data(paths.Spatial.spatial_path(filename, component)).iloc[yindex, :]
-        )
-        cell_index = "x"
+        line_index = "x"
+        yvar_name = yindex
+        plot_data = read.read_data(
+                paths.Spatial.spatial_path(filename, component, slices, date)
+        ).iloc[yindex, :].to_frame(str(yindex))
 
     else:
         raise ValueError("`xindex` and `yindex` cannot both be `None`.")
 
-    #create the list of x coordinates and puts it in the Pandas dataframe
-    with open(paths.Spatial.header_path(), 'r', encoding='utf-8') as file:
+    # create the list of x coordinates and puts it in the Pandas dataframe
+    with open(paths.Spatial.header_path(date), 'r', encoding='utf-8') as file:
         headers = json.load(file)
 
         xvar = np.arange(
-            float(headers[f"{cell_index}min"]),
-            float(headers[f"{cell_index}max"]),
-            float(headers[f"{cell_index}stepsize"])
+            float(headers[f"{line_index}min"]),
+            float(headers[f"{line_index}max"]),
+            float(headers[f"{line_index}stepsize"])
         )
 
-        xlabel = f"{cell_index} (" + headers["meshunit"] + ")"
+        xlabel = f"{line_index} (" + headers["meshunit"] + ")"
         for label in headers["valuelabels"]:
             if "_" + component.strip("m") in label:
                 ylabel = label
 
-        plot_data.insert(0, xlabel, xvar)
+        plot_data.insert(0, line_index, xvar)
 
     plot_xy(
-        plot_data,
-        xlabel=xlabel,
-        ylabel=ylabel,
-        xstep=0.2e-06
+        [read.AttributedData(plot_data, x_var=line_index, y_vars=[str(yvar_name)])],
+        xlabel,
+        ylabel,
+        xstep=0.2e-06,
+        save_to=paths.Plots.linearspace_dir(filename, component, line_index, date)
     )
 
 
 def plot_image(
+    date: str = None,
     data: list[float] = None,
     xlabel: str = None,
     ylabel: str = None,
@@ -275,7 +279,7 @@ def plot_image(
     ax = fig.add_subplot(1, 1, 1)
 
 
-    with open(paths.Spatial.header_path(), 'r', encoding='utf-8') as file:
+    with open(paths.Spatial.header_path(date), 'r', encoding='utf-8') as file:
         headers = json.load(file)
 
         xaxis_max = (float(headers["xmax"]) - float(headers["xmin"])) / 2

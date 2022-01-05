@@ -109,11 +109,23 @@ class Plots:
         return os.path.join(Top.result_dir(date), "plots", *(subs if subs is not None else []))
 
     @staticmethod
-    def spatial_dir(filename: str, title=str, date: str = None) -> str:
+    def spatial_dir(filename: str, component=str, date: str = None) -> str:
         """Returns the path of the spatial plots"""
         return os.path.join(
-            Plots.plot_dir(date), "spatial_distribution", f"{filename}", f"{title}.pdf")
+            Plots.plot_dir(date),
+            "spatial_distribution",
+            f"{filename}",
+            f"{filename}_{component}.pdf"
+        )
 
+    @staticmethod
+    def linearspace_dir(filename: str, component=str, index=str, date: str = None) -> str:
+        """Returns the path of the linearspace plots"""
+        return os.path.join(
+            Plots.plot_dir(date),
+            "line_distribution",
+            f"{filename}", f"{filename}_{component} against {index}.pdf"
+        )
 
 class Spatial:
     """Spatial data."""
@@ -134,11 +146,13 @@ class Spatial:
         return os.path.join(Spatial.root(date), "headers.json")
 
     @staticmethod
-    def spatial_path(filename: str, mag_var: str, slices: int = 0, date: str = None):
+    def spatial_path(filename: str, mag_var: str, slices: int, date: str = None):
         """Returns the path of the spatial data .tsv files"""
-        #TODO: make 0 the default slice value
-        slices = str(slices)
-        return os.path.join(Spatial.geom_dir(filename, date), f"{mag_var}_slice_{slices}.tsv")
+        slices = str(slices) if slices is not None else str(0)
+        return os.path.join(
+            Spatial.geom_dir(filename, date),
+            f"{filename}_{mag_var}_slice_{slices}.tsv"
+        )
 
     @staticmethod
     def geom_ovf_path(filename: int, date: str = None) -> str:

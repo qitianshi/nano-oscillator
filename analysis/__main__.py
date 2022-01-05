@@ -256,17 +256,23 @@ def __plot_spatial():
                     component = component.strip("m")
                     try:
                         anl.plot.plot_image(
+                            DATE,
                             anl.read.read_data(
-                                anl.paths.Spatial.spatial_path(filename, component, DATE)),
-                            xlabel="x (m)",
-                            ylabel="y (m)",
-                            title = filename + " (T)",
-                            save_to=anl.paths.Plots.spatial_dir(filename, component, DATE),
-                            show_plot=False
+                                anl.paths.Spatial.spatial_path(filename, component, None, DATE)),
+                                xlabel="x (m)",
+                                ylabel="y (m)",
+                                title=filename + " (T)",
+                                save_to=anl.paths.Plots.spatial_dir(
+                                    filename, component, DATE),
+                                show_plot=False
                         )
                     except FileNotFoundError as err:
-                        if os.path.isdir(os.path.join(anl.paths.Spatial.root(DATE), filename)):
-                            print(f"{component} not found for {filename}. Component skipped.")
+                        if len(
+                            os.listdir(os.path.join(anl.paths.Spatial.root(DATE), filename))
+                        ) > 0:
+                            #TODO: add in condition to look for x, y or z in the name
+                            print(
+                                f"{component} not found for {filename}. Component skipped.")
                         else:
                             raise err
 
