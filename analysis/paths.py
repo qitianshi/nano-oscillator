@@ -77,7 +77,7 @@ class Data:
             str: The path of the requested dataset. The path stops at the first
             item in `vals` whose value is `None`.
         """
-        
+
         if vals is None:
             return os.path.join(Top.result_dir(date), "raw")
         else:
@@ -112,7 +112,11 @@ class Plots:
     def spatial_dir(filename: str, component=str, date: str = None) -> str:
         """Returns the path of the spatial plots"""
         return os.path.join(
-            Plots.plot_dir(date), "spatial_distribution", f"{filename}", f"{filename}_{component}.pdf")
+            Plots.plot_dir(date),
+            "spatial_distribution",
+            f"{filename}",
+            f"{filename}_{component}.pdf"
+        )
 
     @staticmethod
     def linearspace_dir(filename: str, component=str, index=str, date: str = None) -> str:
@@ -145,7 +149,10 @@ class Spatial:
     def spatial_path(filename: str, mag_var: str, slices: int, date: str = None):
         """Returns the path of the spatial data .tsv files"""
         slices = str(slices) if slices is not None else str(0)
-        return os.path.join(Spatial.geom_dir(filename, date), f"{filename}_{mag_var}_slice_{slices}.tsv")
+        return os.path.join(
+            Spatial.geom_dir(filename, date),
+            f"{filename}_{mag_var}_slice_{slices}.tsv"
+        )
 
     @staticmethod
     def geom_ovf_path(filename: int, date: str = None) -> str:
