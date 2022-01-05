@@ -15,7 +15,7 @@ def convert_npy(date: str = None):
     date = date if date is not None else paths.Top.latest_date()
     conversion = ["x", "y", "z"]
 
-    for file in os.listdir(paths.Data.dataset_dir()):
+    for file in os.listdir(paths.Data.dataset_dir(date)):
 
         fields = {}
 
@@ -26,7 +26,7 @@ def convert_npy(date: str = None):
             filename = os.path.splitext(file)[0]
             write.prep_dir(paths.Spatial.geom_dir(filename, date))
 
-            fields[filename] = np.load(os.path.join(paths.Data.dataset_dir(), file))
+            fields[filename] = np.load(os.path.join(paths.Data.dataset_dir(date), file))
 
             for component_index in range(len(fields[filename])):
                 component = conversion[component_index]
