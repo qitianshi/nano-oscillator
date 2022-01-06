@@ -263,8 +263,8 @@ def plot_image(
     ylabel: str,
     title: str,
     save_to: str,
-    xindexes: list[int] = [150, 362], #index starts at 0
-    yindexes: list[int] = [150, 362], #index starts at 0
+    xindexes: list[int] = None, #index starts at 0
+    yindexes: list[int] = None, #index starts at 0
     xstep: float = 100e-09,
     ystep: float = 100e-09,
     cmap_name: str = "winter",
@@ -280,6 +280,10 @@ def plot_image(
     fig = plt.figure(figsize=(10, 5))
     ax = fig.add_subplot(1, 1, 1)
 
+    if xindexes is None:
+        xindexes = [0, 511]
+    if yindexes is None:
+        yindexes = [0, 511]
 
     with open(paths.spatial.header_path(date), 'r', encoding='utf-8') as file:
         headers = json.load(file)
