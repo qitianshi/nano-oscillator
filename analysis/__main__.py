@@ -18,7 +18,7 @@ def __parse_cli_input() -> tuple[str, list[str], int, bool]:
         "date",
         type=str,
         nargs='?',
-        default=anl.paths.Top.latest_date(),
+        default=anl.paths.top.latest_date(),
         help="the date of the simulation (YYYY-MM-DD_hhmm), defaults to latest"
     )
 
@@ -50,7 +50,7 @@ def __parse_cli_input() -> tuple[str, list[str], int, bool]:
 
     cli_args = cli_parser.parse_args()
 
-    if not os.path.exists(anl.paths.Top.result_dir(cli_args.date)):
+    if not os.path.exists(anl.paths.top.result_dir(cli_args.date)):
         exit(f"Error: no result was found for '{cli_args.date}'.")
 
     acceptable_mag_vars = ("mx", "my", "mz")
@@ -141,13 +141,13 @@ def __plot_mag():
     print("Plotting mx, my, mz against t from table data...")
     anl.plot.plot_xy(
         attr_data=anl.read.AttributedData(
-            data=anl.read.read_data(anl.paths.Data.data_path(DATE)),
+            data=anl.read.read_data(anl.paths.data.data_path(DATE)),
             x_var="t",
             y_vars=["mx", "my", "mz"]
         ),
         xlabel="t (s)",
         save_to=os.path.join(
-            anl.paths.Plots.plot_dir(DATE, ["aggregate"]), "mx, my, mz against t.pdf")
+            anl.paths.plots.plot_dir(DATE, ["aggregate"]), "mx, my, mz against t.pdf")
     )
 
 
@@ -155,26 +155,26 @@ def __plot_MaxAngle():                                                #pylint: d
     print("Plotting MaxAngle against t from table data...")
     anl.plot.plot_xy(
         attr_data=anl.read.AttributedData(
-            data=anl.read.read_data(anl.paths.Data.data_path(DATE)),
+            data=anl.read.read_data(anl.paths.data.data_path(DATE)),
             x_var="t",
             y_vars=["MaxAngle"]
         ),
         xlabel="t (s)",
         ylabel="MaxAngle (rad)",
         save_to=os.path.join(
-            anl.paths.Plots.plot_dir(DATE, ["aggregate"]), "MaxAngle against t.pdf")
+            anl.paths.plots.plot_dir(DATE, ["aggregate"]), "MaxAngle against t.pdf")
     )
 
 
 def __plot_mag_phi():
     print("Plotting mx, my, mz against t from data split by phi...")
     anl.plot.plot_dataset_xy(
-        attr_data=anl.read.read_dataset(anl.paths.Data.dataset_dir(DATE, {"phi": None})),
+        attr_data=anl.read.read_dataset(anl.paths.data.dataset_dir(DATE, {"phi": None})),
         x_var="t",
         y_vars=["mx", "my", "mz"],
         xlabel="t (s)",
         ylim=(-1.0, 1.0),
-        save_to_root=anl.paths.Plots.plot_dir(DATE, ["phi"])
+        save_to_root=anl.paths.plots.plot_dir(DATE, ["phi"])
     )
 
 
@@ -184,12 +184,12 @@ def __plot_mag_phi_fRF():
     if PLOT_DEPTH >= 2:
         anl.plot.plot_dataset_xy(
             attr_data=anl.read.read_dataset(
-                anl.paths.Data.dataset_dir(DATE, {"phi": None, "f_RF": None})
+                anl.paths.data.dataset_dir(DATE, {"phi": None, "f_RF": None})
             ),
             x_var="t",
             y_vars=["mx", "my", "mz"],
             xlabel="t (s)",
-            save_to_root=anl.paths.Plots.plot_dir(DATE, ["phi, f_RF"])
+            save_to_root=anl.paths.plots.plot_dir(DATE, ["phi, f_RF"])
         )
 
     else:
@@ -199,7 +199,7 @@ def __plot_mag_phi_fRF():
 def __plot_amp():
     print("Plotting amp against f_RF...")
     for mag in MAG_VARS:
-        amp_data = anl.read.read_data(anl.paths.CalcVals.amp_path(mag, DATE))
+        amp_data = anl.read.read_data(anl.paths.calcvals.amp_path(mag, DATE))
         anl.plot.plot_xy(
             attr_data=anl.read.AttributedData(
                 data=amp_data,
@@ -209,7 +209,7 @@ def __plot_amp():
             xlabel="f_RF (Hz)",
             ylabel=f"amp_{mag}",
             save_to=os.path.join(
-                anl.paths.Plots.plot_dir(DATE, ["aggregate"]), f"amp_{mag} against f_RF.pdf")
+                anl.paths.plots.plot_dir(DATE, ["aggregate"]), f"amp_{mag} against f_RF.pdf")
         )
 
 
@@ -217,7 +217,7 @@ def __plot_MaxAmp():                                                  #pylint: d
     print("Plotting MaxAmp against phi...")
     anl.plot.plot_xy(
         attr_data=anl.read.AttributedData(
-            data=anl.read.read_data(anl.paths.CalcVals.maxamp_path(DATE)),
+            data=anl.read.read_data(anl.paths.calcvals.maxamp_path(DATE)),
             x_var="phi",
             y_vars=["MaxAmp_mx", "MaxAmp_my", "MaxAmp_mz"]
         ),
@@ -225,7 +225,7 @@ def __plot_MaxAmp():                                                  #pylint: d
         ylabel="MaxAmp",
         xstep=45,
         save_to=os.path.join(
-            anl.paths.Plots.plot_dir(DATE, ["aggregate"]), "MaxAmp against phi.pdf")
+            anl.paths.plots.plot_dir(DATE, ["aggregate"]), "MaxAmp against phi.pdf")
     )
 
 
@@ -233,14 +233,14 @@ def __plot_fitted_amp():
     print("Plotting curve-fitted amp against f_RF...")
     for mag in MAG_VARS:
         anl.plot.plot_function(
-            data=anl.read.read_data(anl.paths.CalcVals.fitted_amp_path(mag, DATE)),
+            data=anl.read.read_data(anl.paths.calcvals.fitted_amp_path(mag, DATE)),
             func=anl.fit.cauchy,
             params=["x_0", "gamma", "I"],
             domain=[3.5e9, 6.0e9],
             xlabel="f_RF (Hz)",
             ylabel=f"fitted amp_{mag}",
             save_to=os.path.join(
-                anl.paths.Plots.plot_dir(DATE, ["aggregate"]),
+                anl.paths.plots.plot_dir(DATE, ["aggregate"]),
                 f"fitted amp_{mag} against f_RF.pdf"
             )
         )
@@ -250,7 +250,7 @@ def __plot_spatial():
     print("Plotting all spatial distribution data...")
 
     if not SKIP_SPATIAL:
-        for filename in os.listdir(anl.paths.Spatial.root(DATE)):
+        for filename in os.listdir(anl.paths.spatial.root(DATE)):
             if not filename.endswith("json"):
                 for component in MAG_VARS:
                     component = component.strip("m")
@@ -258,17 +258,17 @@ def __plot_spatial():
                         anl.plot.plot_image(
                             DATE,
                             anl.read.read_data(
-                                anl.paths.Spatial.spatial_path(filename, component, None, DATE)),
+                                anl.paths.spatial.spatial_path(filename, component, None, DATE)),
                                 xlabel="x (m)",
                                 ylabel="y (m)",
                                 title=filename + " (T)",
-                                save_to=anl.paths.Plots.spatial_dir(
+                                save_to=anl.paths.plots.spatial_dir(
                                     filename, component, DATE),
                                 show_plot=False
                         )
                     except FileNotFoundError as err:
                         if len(
-                            os.listdir(os.path.join(anl.paths.Spatial.root(DATE), filename))
+                            os.listdir(os.path.join(anl.paths.spatial.root(DATE), filename))
                         ) > 0:
                             #TODO: add in condition to look for x, y or z in the name
                             print(
@@ -288,8 +288,8 @@ def __plotcheck_fitted_amp():
     print("Checks: Plotting curve fit with data points for amp against f_RF...")
     for var in MAG_VARS:
 
-        curve_data = anl.read.read_data(anl.paths.CalcVals.fitted_amp_path(var, DATE))
-        amp_data = anl.read.read_data(anl.paths.CalcVals.amp_path(var, DATE))
+        curve_data = anl.read.read_data(anl.paths.calcvals.fitted_amp_path(var, DATE))
+        amp_data = anl.read.read_data(anl.paths.calcvals.amp_path(var, DATE))
         rows = curve_data["phi"][::(len(curve_data["phi"]) // 4)]     # Extracts a few sample rows.
         domain = (3.5e9, 6.0e9)
 
@@ -308,7 +308,7 @@ def __plotcheck_fitted_amp():
             ylabel=f"fitted amp_{var}",
             title=f"Curve-fit check for amp_{var}",
             save_to=os.path.join(
-                anl.paths.Plots.plot_dir(DATE, ["checks"]),
+                anl.paths.plots.plot_dir(DATE, ["checks"]),
                 f"check amp_{var} against f_RF.pdf"
             )
         )
