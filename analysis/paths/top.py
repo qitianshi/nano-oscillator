@@ -1,6 +1,7 @@
 """Top level of the results directory."""
 
 import os
+
 from pathlib import Path
 
 

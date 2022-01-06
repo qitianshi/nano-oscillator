@@ -258,16 +258,18 @@ def plot_linearspace(
 
 
 def plot_image(
-    date: str = None,
-    data: list[float] = None,
-    xlabel: str = None,
-    ylabel: str = None,
-    xstep: float = 200e-09,
-    ystep: float = 200e-09,
+    data: pd.DataFrame,
+    xlabel: str,
+    ylabel: str,
+    title: str,
+    save_to: str,
+    xindexes: list[int] = None, #index starts at 0
+    yindexes: list[int] = None, #index starts at 0
+    xstep: float = 100e-09,
+    ystep: float = 100e-09,
     cmap_name: str = "winter",
-    title: str = None,
-    save_to: str = None,
-    show_plot: bool = False
+    show_plot: bool = False,
+    date: str = None,
 ):
     """Plots an image from a given dataset
 
@@ -278,17 +280,33 @@ def plot_image(
     fig = plt.figure(figsize=(10, 5))
     ax = fig.add_subplot(1, 1, 1)
 
+    if xindexes is None:
+        xindexes = [0, 511]
+    if yindexes is None:
+        yindexes = [0, 511]
 
     with open(paths.spatial.header_path(date), 'r', encoding='utf-8') as file:
         headers = json.load(file)
 
         xaxis_max = (float(headers["xmax"]) - float(headers["xmin"])) / 2
-        xticks = np.arange(-abs(xaxis_max), xaxis_max, xstep)
-        ax.set_xticks(xticks)
+        all_cells_x = np.arange(-abs(xaxis_max), xaxis_max, float(headers["xstepsize"]))
+        xticks = np.arange(
+            all_cells_x[xindexes[0]] + xstep - all_cells_x[xindexes[0]] % xstep,
+            all_cells_x[xindexes[1]] + xstep - all_cells_x[xindexes[1]] % xstep,
+            xstep
+        )
+        ax.set_xticks(xticks, xticks)
 
         yaxis_max = (float(headers["ymax"]) - float(headers["ymin"])) / 2
-        yticks = np.arange(-abs(yaxis_max), yaxis_max, ystep)
-        ax.set_yticks(yticks)
+        all_cells_y = np.arange(-abs(yaxis_max), yaxis_max, float(headers["ystepsize"]))
+        yticks = np.arange(
+            all_cells_y[yindexes[0]] + ystep - all_cells_y[yindexes[0]] % ystep,
+            all_cells_y[yindexes[1]] + ystep - all_cells_y[yindexes[1]] % ystep,
+            ystep
+        )
+        ax.set_yticks(yticks, yticks)
+
+    data = data.iloc[yindexes[0] : yindexes[1], xindexes[0] : xindexes[1]]
 
     plot = plt.imshow(data, cmap=cmap_name,
         extent=[xticks.min(), xticks.max(), yticks.min(), yticks.max()]
