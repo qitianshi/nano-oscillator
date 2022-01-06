@@ -258,13 +258,14 @@ def __plot_spatial():
                         anl.plot.plot_image(
                             DATE,
                             anl.read.read_data(
-                                anl.paths.spatial.spatial_path(filename, component, None, DATE)),
-                                xlabel="x (m)",
-                                ylabel="y (m)",
-                                title=filename + " (T)",
-                                save_to=anl.paths.plots.spatial_dir(
-                                    filename, component, DATE),
-                                show_plot=False
+                                anl.paths.spatial.spatial_path(filename, component, None, DATE)
+                            ),
+                            xlabel="x (m)",
+                            ylabel="y (m)",
+                            title=filename + " (T)",
+                            save_to=anl.paths.plots.spatial_dir(
+                                filename, component, DATE),
+                            show_plot=False
                         )
                     except FileNotFoundError as err:
                         if len(
