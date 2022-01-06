@@ -1,7 +1,10 @@
 """Analysis, plotting, read/write, parsing, and data check functions for
 results from mumax3.
 
-Terminology used in this package:
+To use this package: run `python3 -m analysis` on macOS and Linux, or
+`python -m analysis` on Windows. Use the `-h` flag for usage.
+
+Nomenclature used in this package:
 * data: A single `*.tsv` file containing either mumax3 output or calculated
   data.
 * dataset: A folder, in any location, containing zero, one, or more data files,
@@ -18,7 +21,7 @@ Terminology used in this package:
 * variable: A variable from the mumax3 simulation. Used to identify columns
   in data.
 
-Requires Python 3.9 or later.
+Requires Python 3.10 or later.
 """
 
 from analysis import amplitude, fetch, fit, geom, paths, plot, read, split, write
