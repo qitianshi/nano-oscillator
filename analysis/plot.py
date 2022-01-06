@@ -7,7 +7,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from math import floor, log10
 from analysis import read, paths, write
 
 
@@ -264,8 +263,8 @@ def plot_image(
     ylabel: str,
     title: str,
     save_to: str,
-    xindexes: list[int] = [150, 362], #starts at 0
-    yindexes: list[int] = [150, 362], #starts at 0
+    xindexes: list[int] = [150, 362], #index starts at 0
+    yindexes: list[int] = [150, 362], #index starts at 0
     xstep: float = 100e-09,
     ystep: float = 100e-09,
     cmap_name: str = "winter",
