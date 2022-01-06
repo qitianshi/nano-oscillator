@@ -211,28 +211,28 @@ def plot_linearspace(
 ):
     """Plots the graphs of spatial data against the x or y index of the cells"""
 
-    #creates a Pandas dataframe with the B_ext data as a column
+    # Creates a Pandas dataframe with the B_ext data as a column
     if yindex is None:
-        #vertical line
+        # Vertical line
         line_index = "y"
         yvar_name = xindex
         plot_data = read.read_data(
-                paths.Spatial.spatial_path(filename, component, slices, date)
+                paths.spatial.spatial_path(filename, component, slices, date)
         ).iloc[:, xindex].to_frame(str(xindex))
 
     elif xindex is None:
-        #horizontal line
+        # Horizontal line
         line_index = "x"
         yvar_name = yindex
         plot_data = read.read_data(
-                paths.Spatial.spatial_path(filename, component, slices, date)
+                paths.spatial.spatial_path(filename, component, slices, date)
         ).iloc[yindex, :].to_frame(str(yindex))
 
     else:
         raise ValueError("`xindex` and `yindex` cannot both be `None`.")
 
-    # create the list of x coordinates and puts it in the Pandas dataframe
-    with open(paths.Spatial.header_path(date), 'r', encoding='utf-8') as file:
+    # Create the list of x coordinates and puts it in the Pandas dataframe
+    with open(paths.spatial.header_path(date), 'r', encoding='utf-8') as file:
         headers = json.load(file)
 
         xvar = np.arange(
@@ -253,7 +253,7 @@ def plot_linearspace(
         xlabel,
         ylabel,
         xstep=0.2e-06,
-        save_to=paths.Plots.linearspace_dir(filename, component, line_index, date)
+        save_to=paths.plots.linearspace_dir(filename, component, line_index, date)
     )
 
 
@@ -279,7 +279,7 @@ def plot_image(
     ax = fig.add_subplot(1, 1, 1)
 
 
-    with open(paths.Spatial.header_path(date), 'r', encoding='utf-8') as file:
+    with open(paths.spatial.header_path(date), 'r', encoding='utf-8') as file:
         headers = json.load(file)
 
         xaxis_max = (float(headers["xmax"]) - float(headers["xmin"])) / 2

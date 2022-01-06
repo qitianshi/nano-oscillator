@@ -55,10 +55,10 @@ def __download_gdrive(drive_id, save_to):
 def fetch_raw(date: str = None):
     """Fetches and downloads all refs in the raw output."""
 
-    with open(paths.Refs.ref_path(date), 'r', encoding="utf-8") as file:
-        __download_gdrive(file.read().strip(), paths.Refs.raw_zip_path(date))
+    with open(paths.refs.ref_path(date), 'r', encoding="utf-8") as file:
+        __download_gdrive(file.read().strip(), paths.refs.raw_zip_path(date))
 
-    with ZipFile(paths.Refs.raw_zip_path(date), 'r') as zip_ref:
-        zip_ref.extractall(paths.Data.dataset_dir(date))
+    with ZipFile(paths.refs.raw_zip_path(date), 'r') as zip_ref:
+        zip_ref.extractall(paths.data.dataset_dir(date))
 
-    remove(paths.Refs.raw_zip_path(date))
+    remove(paths.refs.raw_zip_path(date))
