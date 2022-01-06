@@ -4,10 +4,14 @@ import os
 from pathlib import Path
 
 
+def results_root() -> str:
+    """Returns the root path of the results directory."""
+    return os.path.join(Path(__file__).parents[2], 'results')
+
+
 def latest_date() -> str:
     """Returns the date of the latest result."""
-    return sorted(
-        os.listdir(os.path.join(os.path.dirname(__file__), os.pardir, 'results')))[-1]
+    return sorted(os.listdir(results_root()))[-1]
 
 
 def result_dir(date: str = None) -> str:
@@ -21,7 +25,4 @@ def result_dir(date: str = None) -> str:
         str: The path of the result.
     """
 
-    results_path = os.path.join(Path(__file__).parents[2], 'results')
-    requested_result = date if date is not None else sorted(os.listdir(results_path))[-1]
-
-    return os.path.join(results_path, requested_result)
+    return os.path.join(results_root(), date if date is not None else latest_date())
