@@ -17,7 +17,7 @@ def __calc_amp(date: str, phi: str, fRF: float, mag_var: str) -> float:
 
     skip_duration = 1.5e-9
 
-    data = read.read_data(paths.Data.data_path(date,
+    data = read.read_data(paths.data.data_path(date,
         {"phi": f"{phi:03}deg",
         "f_RF": f"{fRF / 1e9}GHz"}
     ))
@@ -35,8 +35,8 @@ def amp_phi_fRF(date: str = None):
     components.
     """
 
-    date = date if date is not None else paths.Top.latest_date()
-    data = read.read_data(paths.Data.data_path(date))
+    date = date if date is not None else paths.top.latest_date()
+    data = read.read_data(paths.data.data_path(date))
 
     for mag_var in ("mx", "my", "mz"):
 
@@ -47,21 +47,21 @@ def amp_phi_fRF(date: str = None):
             col = np.array([__calc_amp(date, phi, fRF, mag_var) for fRF in data["f_RF"].unique()])
             amplitudes = np.append(amplitudes, np.reshape(col, newshape=(-1, 1)), axis=1)
 
-        write.prep_dir(paths.CalcVals.root(date), clear=False)
+        write.prep_dir(paths.calcvals.root(date), clear=False)
 
         # Outputs amplitude data.
         pd.DataFrame(amplitudes, columns=["f_RF", *[f"{i}deg" for i in data["phi"].unique()]]) \
-            .to_csv(paths.CalcVals.amp_path(mag_var, date), sep='\t', index=False)
+            .to_csv(paths.calcvals.amp_path(mag_var, date), sep='\t', index=False)
 
 
 def max_amp_phi(date: str = None):
     """Finds the maximum amplitudes for each phi value."""
 
-    date = date if date is not None else paths.Top.latest_date()
+    date = date if date is not None else paths.top.latest_date()
 
     # .T transposes the ndarray to a column vector.
     result = np.reshape(
-        np.array( ( read.read_data(paths.Data.data_path(date))["phi"] ).unique() ),
+        np.array( ( read.read_data(paths.data.data_path(date))["phi"] ).unique() ),
         newshape=(-1, 1)
     )
 
@@ -69,11 +69,11 @@ def max_amp_phi(date: str = None):
     for var in mag_vars:
 
         # Reads the greatest amp for each value of phi.
-        data = read.read_data(paths.CalcVals.amp_path(var, date))
+        data = read.read_data(paths.calcvals.amp_path(var, date))
         max_col = np.array([data[val].max() for val in data.columns[1:]])
 
         result = np.append(result, np.reshape(max_col, newshape=(-1, 1)), axis=1)
 
     # Outputs to data file.
     pd.DataFrame(result, columns=(["phi"] + list(f"MaxAmp_{i}" for i in mag_vars))) \
-        .to_csv(paths.CalcVals.maxamp_path(date), sep='\t', index=False)
+        .to_csv(paths.calcvals.maxamp_path(date), sep='\t', index=False)

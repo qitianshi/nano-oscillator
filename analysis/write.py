@@ -14,7 +14,7 @@ def write_json(date: str = None):
 
     yaml_data = yaml.safe_load(geom.preparse_yml(geom.get_header(date)))
 
-    with open(paths.Spatial.header_path(date), 'w', encoding='utf-8') as file:
+    with open(paths.spatial.header_path(date), 'w', encoding='utf-8') as file:
         json.dump(yaml_data, file, indent=4)
         file.write("\n")
 

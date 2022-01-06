@@ -12,27 +12,27 @@ from analysis import paths, write
 def convert_npy(date: str = None):
     """Converts all .npy files to .tsv files."""
 
-    date = date if date is not None else paths.Top.latest_date()
+    date = date if date is not None else paths.top.latest_date()
     conversion = ["x", "y", "z"]
 
-    for file in os.listdir(paths.Data.dataset_dir(date)):
+    for file in os.listdir(paths.data.dataset_dir(date)):
 
         fields = {}
 
         if file.endswith(".npy"):
 
-            #TODO raise FileNotFoundError
+            #TODO: raise FileNotFoundError
 
             filename = os.path.splitext(file)[0]
-            write.prep_dir(paths.Spatial.geom_dir(filename, date))
+            write.prep_dir(paths.spatial.geom_dir(filename, date))
 
-            fields[filename] = np.load(os.path.join(paths.Data.dataset_dir(date), file))
+            fields[filename] = np.load(os.path.join(paths.data.dataset_dir(date), file))
 
             for component_index in range(len(fields[filename])):
                 component = conversion[component_index]
                 for z_index in range(len(fields[filename][component_index])):
                     pd.DataFrame(np.flip(fields[filename][component_index][z_index])) \
-                        .to_csv(paths.Spatial.spatial_path(
+                        .to_csv(paths.spatial.spatial_path(
                             filename, component, z_index, date), sep="\t", index=False
                         )
 
@@ -41,10 +41,10 @@ def preparse_yml(header: list):
     """Parses the header data as yaml."""
 
     for i, line in enumerate(header):
-        #removes double whitespaces
+        # Removes double whitespaces
         line = re.sub(r"\s\s+" , " ", line)
 
-        #split based on multiple colons in the same line
+        # Split based on multiple colons in the same line
         if line.count(":") > 1:
             new_val = line.split(":", 1)
             new_val[0] = new_val[0] + ": "
@@ -54,7 +54,7 @@ def preparse_yml(header: list):
 
     offset = 0
     for i, _ in enumerate(header):
-        #split based on spaces that do not follow a colon
+        # Splits based on spaces that do not follow a colon
         i += offset
         if " " in header[i][header[i].index(": ") + 2:]:
 
@@ -78,9 +78,9 @@ def preparse_yml(header: list):
 def get_header(date: str = None) -> list[str]:
     """Returns the list of headers from any .ovf file"""
 
-    for file in os.listdir(paths.Data.dataset_dir(date)):
+    for file in os.listdir(paths.data.dataset_dir(date)):
         if file.endswith(".ovf"):
-            data = paths.Spatial.geom_ovf_path(file.strip(".ovf"), date)
+            data = paths.spatial.geom_ovf_path(file.strip(".ovf"), date)
 
     with open(data, 'r', encoding='utf-8', errors="surrogateescape") as file:
 
