@@ -265,6 +265,8 @@ def __plot_spatial():
                             save_to=anl.paths.plots.spatial_dir(
                                 filename, component, DATE
                             ),
+                            xindexes=[150, 362],
+                            yindexes=[150, 362],
                             show_plot=False,
                             date=DATE
                         )
