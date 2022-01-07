@@ -59,7 +59,7 @@ gammaLL = 1.855e11
 
 // In plane Anisotropy
 Ku1 = 5.0e3           // This anisotropy generate an equivalent field of 0.025 T
-//Ku1 varies from 5.0e3 to 7.5e3 with steps of 0.5e3
+// Ku1 was manually varied from 5.0e3 to 7.5e3 with steps of 0.5e3
 anisAngle := 75
 anisU = vector(cos(anisAngle*pi/180), sin(anisAngle*pi/180), 0)
 
