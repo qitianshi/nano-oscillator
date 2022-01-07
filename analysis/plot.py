@@ -242,9 +242,7 @@ def plot_linearspace(
         )
 
         xlabel = f"{line_index} (" + headers["meshunit"] + ")"
-        for label in headers["valuelabels"]:
-            if "_" + component.strip("m") in label:
-                ylabel = label
+        ylabel = f"{filename} (" + headers["valueunits"][0] + ")"
 
         plot_data.insert(0, line_index, xvar)
 
