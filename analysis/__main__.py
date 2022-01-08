@@ -41,7 +41,7 @@ def __validate_arg_list(value: list, arg_obj, accept_vals: list):
             )
 
 
-def validate_arg_option(value, arg_obj, accept_vals: str):
+def __validate_arg_option(value, arg_obj, accept_vals: str):
 
     if value not in accept_vals:
         raise argparse.ArgumentError(
@@ -278,7 +278,7 @@ def __parse_cli_input() -> tuple:
     if args.command == "preparse":
 
         __validate_date(args.date, argobj_preparse_dates)
-        validate_arg_option(args.result_type, argobj_result_type, ("resonance", "spatial"))
+        __validate_arg_option(args.result_type, argobj_result_type, ("resonance", "spatial"))
 
         return (Commands.PREPARSE, (args.date, args.result_type), (args.cli_test,))
 
