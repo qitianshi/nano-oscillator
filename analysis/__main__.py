@@ -225,6 +225,7 @@ def __parse_cli_input() -> tuple[str, list[str], int, bool]:
         "--type",
         dest="result_type",
         type=str,
+        required=True,
         help="the type of simulaton to preparse, e.g. resonance, spatial"
     )
 
