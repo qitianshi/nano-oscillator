@@ -2,19 +2,31 @@
 
 import argparse
 import os
+from enum import Enum, auto
 from sys import exit
 from time import time
 
 import analysis as anl
 
-
 #region Command line
+
+class Commands(Enum):
+    """CLI commands."""
+
+    RESONANCE = auto()
+    SPATIAL = auto()
+
 
 def __parse_cli_input() -> tuple[str, list[str], int, bool]:
 
     parser = argparse.ArgumentParser(prog="analysis", description="Runs all analyses.")
+    subparser = parser.add_subparsers(dest="command")
+    comm_resonance = subparser.add_parser("resonance")
+    comm_spatial = subparser.add_parser("spatial")
 
-    parser.add_argument(
+    # Resonance args
+
+    comm_resonance.add_argument(
         "date",
         type=str,
         nargs='?',
@@ -22,7 +34,7 @@ def __parse_cli_input() -> tuple[str, list[str], int, bool]:
         help="the date of the simulation (YYYY-MM-DD_hhmm), defaults to latest"
     )
 
-    arg_mag_vars = parser.add_argument(
+    arg_mag_vars = comm_resonance.add_argument(
         "--mag-vars",
         dest="mag_vars",
         type=str,
@@ -32,7 +44,7 @@ def __parse_cli_input() -> tuple[str, list[str], int, bool]:
         help="magnetization components to plot and analyze, any of: mx my mz, defaults to all"
     )
 
-    parser.add_argument(
+    comm_resonance.add_argument(
         "--plot-depth",
         dest="plot_depth",
         type=int,
@@ -41,41 +53,88 @@ def __parse_cli_input() -> tuple[str, list[str], int, bool]:
         help="the number of split levels to plot, defaults to 1"
     )
 
-    parser.add_argument(
-        "--skip-spatial",
-        dest="skip_spatial",
-        action="store_true",
-        help="skips analysis of spatial data"
+    # Spatial args
+
+    comm_spatial.add_argument(
+        "date",
+        type=str,
+        nargs='?',
+        default=anl.paths.top.latest_date(),
+        help="the date of the simulation (YYYY-MM-DD_hhmm), defaults to latest"
+    )
+
+    comm_spatial.add_argument(
+        "--components",
+        dest="components",
+        type=str,
+        nargs='+',
+        required=False,
+        default=["x", "y", "z"],
+        help="magnetization components to plot and analyze, any of: x y z, defaults to all"
     )
 
     args = parser.parse_args()
 
+    # Checks that simulation date exists.
     if not os.path.exists(anl.paths.top.result_dir(args.date)):
         exit(f"Error: no result was found for '{args.date}'.")
 
-    acceptable_mag_vars = ("mx", "my", "mz")
-    if any(i not in acceptable_mag_vars for i in args.mag_vars):
-        rejected_mag_vars = list(set(args.mag_vars) - set(acceptable_mag_vars))
-        raise argparse.ArgumentError(
-            arg_mag_vars,
-            f"{', '.join(rejected_mag_vars)}"
-            + f" {'does not' if len(rejected_mag_vars) == 1 else 'do not'}"
-            + f" match valid values: {', '.join(acceptable_mag_vars)}"
-        )
+    if args.command == "resonance":
 
-    return (args.date, args.mag_vars, args.plot_depth, args.skip_spatial)
+        # Checks that mag vars are valid.
+        acceptable_components = ("mx", "my", "mz")
+        if any(i not in acceptable_components for i in args.mag_vars):
+            rejected_mag_vars = list(set(args.mag_vars) - set(acceptable_components))
+            raise argparse.ArgumentError(
+                arg_mag_vars,
+                f"{', '.join(rejected_mag_vars)}"
+                + f" {'does not' if len(rejected_mag_vars) == 1 else 'do not'}"
+                + f" match valid values: {', '.join(acceptable_components)}"
+            )
 
-DATE, MAG_VARS, PLOT_DEPTH, SKIP_SPATIAL = __parse_cli_input()
+        return (Commands.RESONANCE, (args.date, args.mag_vars, args.plot_depth))
 
-print(
-    "Running analysis with parameters:",
-    f"date: {DATE.__repr__()}",
-    f"mag-vars: {MAG_VARS.__repr__()}",
-    f"plot-depth: {PLOT_DEPTH.__repr__()}",
-    f"skip-spatial: {SKIP_SPATIAL.__repr__()}",
-    sep='\n  ',
-    end='\n\n'
-)
+    if args.command == "spatial":
+
+        # Checks that components are valid.
+        acceptable_components = ("x", "y", "z")
+        if any(i not in acceptable_components for i in args.components):
+            rejected_mag_vars = list(set(args.components) - set(acceptable_components))
+            raise argparse.ArgumentError(
+                arg_mag_vars,
+                f"{', '.join(rejected_mag_vars)}"
+                + f" {'does not' if len(rejected_mag_vars) == 1 else 'do not'}"
+                + f" match valid values: {', '.join(acceptable_components)}"
+            )
+
+        return (Commands.SPATIAL, (args.date, args.components))
+
+COMMAND, ARGS = __parse_cli_input()
+
+if COMMAND is Commands.RESONANCE:
+
+    DATE, MAG_VARS, PLOT_DEPTH = ARGS                   #pylint: disable=unbalanced-tuple-unpacking
+
+    print(
+        "Running analysis (resonance) with parameters:",
+        f"date: {DATE.__repr__()}",
+        f"mag-vars: {MAG_VARS.__repr__()}",
+        f"plot-depth: {PLOT_DEPTH.__repr__()}",
+        sep='\n  ',
+        end='\n\n'
+    )
+
+elif COMMAND is Commands.SPATIAL:
+
+    DATE, COMPONENTS = ARGS                             #pylint: disable=unbalanced-tuple-unpacking
+
+    print(
+        "Running analysis (spatial) with parameters:",
+        f"date: {DATE.__repr__()}",
+        f"components: {COMPONENTS.__repr__()}",
+        sep='\n  ',
+        end='\n\n'
+    )
 
 #endregion
 
