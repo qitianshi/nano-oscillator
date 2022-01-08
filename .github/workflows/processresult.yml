@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       cli-args:
-        description: 'Command line arguments'
+        description: Args (python3 -m analysis [ARGS])
         required: true
 
 jobs:
