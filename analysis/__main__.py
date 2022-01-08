@@ -8,7 +8,7 @@ from time import time
 
 import analysis as anl
 
-#region Internal functions
+#region Internals
 
 class Commands(Enum):
     """CLI commands."""
@@ -31,7 +31,7 @@ def __validate_arg_options(value, arg_obj, accept_vals):
             )
 
 
-def timed_run(anl_funcs):
+def __timed_run(anl_funcs):
     """Runs all analyses."""
 
     t_init = time()
@@ -408,7 +408,7 @@ if COMMAND is Commands.RESONANCE:
         end='\n\n'
     )
 
-    timed_run([
+    __timed_run([
         __fetch_raw,
         __convert_table_txt,
         __split_phi,
@@ -435,7 +435,7 @@ elif COMMAND is Commands.SPATIAL:
         end='\n\n'
     )
 
-    timed_run([
+    __timed_run([
         __convert_npy,
         __create_json,
         __plot_spatial
