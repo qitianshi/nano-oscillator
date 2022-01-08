@@ -211,6 +211,23 @@ def __parse_cli_input() -> tuple[str, list[str], int, bool]:
         help="plots a horizontal line of values with the given y-value"
     )
 
+    # preparse args
+
+    argobj_preparse_dates = comm_preparse.add_argument(
+        "date",
+        type=str,
+        nargs='*',
+        default=[anl.paths.top.latest_date()],
+        help="the list of dates to analyze (YYYY-MM-DD_hhmm), defaults to latest"
+    )
+
+    argobj_result_type = comm_preparse.add_argument(
+        "--type",
+        dest="result_type",
+        type=str,
+        help="the type of simulaton to preparse, e.g. resonance, spatial"
+    )
+
     # Parsing
 
     args = parser.parse_args()
