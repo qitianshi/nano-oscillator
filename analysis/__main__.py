@@ -151,7 +151,7 @@ def __parse_cli_input() -> tuple[str, list[str], int, bool]:
         help="the list of dates to analyze (YYYY-MM-DD_hhmm), defaults to latest"
     )
 
-    argobj_components = comm_spatial.add_argument(
+    argobj_spatial_components = comm_spatial.add_argument(
         "--components",
         dest="components",
         type=str,
@@ -160,6 +160,53 @@ def __parse_cli_input() -> tuple[str, list[str], int, bool]:
         default=["x", "y", "z"],
         help="magnetization components to plot and analyze, any of: x y z, defaults to all"
     )
+
+    # spatialline args
+
+    argobj_spatialline_dates = comm_spatialline.add_argument(
+        "date",
+        type=str,
+        nargs='*',
+        default=[anl.paths.top.latest_date()],
+        help="the list of dates to analyze (YYYY-MM-DD_hhmm), defaults to latest"
+    )
+
+    comm_spatialline.add_argument(
+        "--quantity",
+        type=str,
+        nargs=1,
+        help="the quantity to be plotted"
+    )
+
+    argobj_spatialline_components = comm_spatial.add_argument(
+        "--components",
+        dest="components",
+        type=str,
+        nargs='+',
+        required=False,
+        default=["x", "y", "z"],
+        help="magnetization components to plot and analyze, any of: x y z, defaults to all"
+    )
+
+    spatialline_axis_grp = comm_spatialline.add_mutually_exclusive_group()
+
+    spatialline_axis_grp.add_argument(
+        "-x",
+        dest="x_val",
+        type=int,
+        nargs=1,
+        help="plots a vertical line of values with the given x-value"
+    )
+
+    spatialline_axis_grp.add_argument(
+        "-y",
+        dest="y_val",
+        type=int,
+        nargs=1,
+        help="plots a horizontal line of values with the given y-value"
+    )
+
+    # Parsing
 
     args = parser.parse_args()
 
@@ -177,7 +224,7 @@ def __parse_cli_input() -> tuple[str, list[str], int, bool]:
     if args.command == "spatial":
 
         __validate_date(args.date, argobj_spatial_dates)
-        __validate_arg_options(args.components, argobj_components, ("x", "y", "z"))
+        __validate_arg_options(args.components, argobj_spatial_components, ("x", "y", "z"))
 
         return (Commands.SPATIAL, (args.date, args.components), (args.cli_test,))
 
