@@ -212,13 +212,13 @@ def __parse_cli_input() -> tuple:
     comm_spatialline.add_argument(
         "--show",
         action="store_true",
-        help="whether to show the plot or not"
+        help="whether to show the plot in a new window"
     )
 
     comm_spatialline.add_argument(
         "--save",
         action="store_true",
-        help="whether to save the plot or not"
+        help="whether to save the plot"
     )
 
     spatialline_axis_grp = comm_spatialline.add_mutually_exclusive_group(required=True)
