@@ -69,12 +69,12 @@ def __timed_run(anl_funcs):
             print(f"  Done in {time() - t_start:.1f}s.")
 
         print(f"Finished {len(anl_funcs)} {'analysis' if len(anl_funcs) == 1 else 'analyses'} in",
-              f"{time() - t_init:.1f}s.")
+              f"{time() - t_init:.1f}s.\n")
 
     else:
         print(
             "CLI test mode is active.",
-            f"Analysis functions: {[func.__name__ for func in anl_funcs]}"
+            f"Analysis functions: {[func.__name__ for func in anl_funcs]}\n"
         )
 
 #endregion
@@ -413,55 +413,69 @@ def __plot_spatial():
 
 COMMAND, COMM_ARGS, TOP_ARGS = __parse_cli_input()
 
+if COMMAND is Commands.RESONANCE:
+    date_arg, MAG_VARS, PLOT_DEPTH = COMM_ARGS          #pylint: disable=unbalanced-tuple-unpacking
+elif COMMAND is Commands.SPATIAL:
+    date_arg, COMPONENTS = COMM_ARGS                    #pylint: disable=unbalanced-tuple-unpacking
+
+DATES = __resolve_dates(date_arg)
 CLI_TEST = TOP_ARGS[0]
 
-if COMMAND is Commands.RESONANCE:
-    DATE, MAG_VARS, PLOT_DEPTH = COMM_ARGS  # pylint: disable=unbalanced-tuple-unpacking
-elif COMMAND is Commands.SPATIAL:
-    DATE, COMPONENTS = COMM_ARGS  # pylint: disable=unbalanced-tuple-unpacking
+if len(DATES) > 1:
+    print(f"Running analysis for {len(DATES)} dates: {DATES}. \n")
 
 if COMMAND is Commands.RESONANCE:
 
-    print(
-        "Running analysis (resonance) with parameters:",
-        f"date: {DATE.__repr__()}",
-        f"mag-vars: {MAG_VARS.__repr__()}",
-        f"plot-depth: {PLOT_DEPTH.__repr__()}",
-        sep='\n  ',
-        end='\n\n'
-    )
+    #TODO: Modifying DATE directly is very hacky.
 
-    __timed_run([
-        __fetch_raw,
-        __convert_table_txt,
-        __split_phi,
-        __split_phi_fRF,
-        __calc_amp,
-        __calc_mag_fit,
-        __plot_mag,
-        __plot_MaxAngle,
-        __plot_mag_phi,
-        __plot_mag_phi_fRF,
-        __plot_amp,
-        __plot_MaxAmp,
-        __plot_fitted_amp,
-        __plotcheck_fitted_amp
-    ])
+    for date in DATES:
+
+        DATE = date
+
+        print(
+            "Running analysis (resonance) with parameters:",
+            f"date: {DATE.__repr__()}",
+            f"mag-vars: {MAG_VARS.__repr__()}",
+            f"plot-depth: {PLOT_DEPTH.__repr__()}",
+            sep='\n  ',
+            end='\n\n'
+        )
+
+        __timed_run([
+            __fetch_raw,
+            __convert_table_txt,
+            __split_phi,
+            __split_phi_fRF,
+            __calc_amp,
+            __calc_mag_fit,
+            __plot_mag,
+            __plot_MaxAngle,
+            __plot_mag_phi,
+            __plot_mag_phi_fRF,
+            __plot_amp,
+            __plot_MaxAmp,
+            __plot_fitted_amp,
+            __plotcheck_fitted_amp
+        ])
 
 elif COMMAND is Commands.SPATIAL:
 
-    print(
-        "Running analysis (spatial) with parameters:",
-        f"date: {DATE.__repr__()}",
-        f"components: {COMPONENTS.__repr__()}",
-        sep='\n  ',
-        end='\n\n'
-    )
+    for date in DATES:
 
-    __timed_run([
-        __convert_npy,
-        __create_json,
-        __plot_spatial
-    ])
+        DATE = date
+
+        print(
+            "Running analysis (spatial) with parameters:",
+            f"date: {DATE.__repr__()}",
+            f"components: {COMPONENTS.__repr__()}",
+            sep='\n  ',
+            end='\n\n'
+        )
+
+        __timed_run([
+            __convert_npy,
+            __create_json,
+            __plot_spatial
+        ])
 
 #endregion
