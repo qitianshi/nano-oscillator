@@ -521,6 +521,18 @@ def __plot_spatial_line():
 
 #endregion
 
+#region Preparse
+
+def __convert_table_txt():
+    print("Converting table.txt to table.tsv...")
+    anl.read.convert_table_txt(DATE)
+
+def __create_json():
+    print("Creating the json file...")
+    anl.write.write_json(DATE)
+
+#endregion
+
 #region Run
 
 COMMAND, COMM_ARGS, TOP_ARGS = __parse_cli_input()
@@ -531,6 +543,8 @@ elif COMMAND is Commands.SPATIAL:
     date_arg, COMPONENTS = COMM_ARGS                                         #pylint: disable=W0632
 elif COMMAND is Commands.SPATIALLINE:
     date_arg, QUANTITY, COMPONENTS, AXIS, AXIS_VAL = COMM_ARGS               #pylint: disable=W0632
+elif COMMAND is Commands.PREPARSE:
+    date_arg, RESULT_TYPE = COMM_ARGS                                        #pylint: disable=W0632
 
 DATES = __resolve_dates(date_arg)
 CLI_TEST = TOP_ARGS[0]
@@ -557,7 +571,6 @@ if COMMAND is Commands.RESONANCE:
 
         __timed_run([
             __fetch_raw,
-            __convert_table_txt,
             __split_phi,
             __split_phi_fRF,
             __calc_amp,
@@ -589,7 +602,6 @@ elif COMMAND is Commands.SPATIAL:
         __timed_run([
             __fetch_raw,
             __convert_npy,
-            __create_json,
             __plot_spatial
         ])
 
@@ -614,5 +626,24 @@ elif COMMAND is Commands.SPATIALLINE:
             __fetch_raw,
             __plot_spatial_line
         ])
+
+elif COMMAND is Commands.PREPARSE:
+
+    for date in DATES:
+
+        DATE = date
+
+        print(
+            "Running analysis (preparse) with parameters:",
+            f"date: {DATE.__repr__()}",
+            f"result_type: {RESULT_TYPE.__repr__()}",
+            sep='\n  ',
+            end='\n\n'
+        )
+
+        if RESULT_TYPE == "resonance":
+            __timed_run([__convert_table_txt])
+        elif RESULT_TYPE == "spatial":
+            __timed_run([__create_json])
 
 #endregion
