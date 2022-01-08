@@ -207,8 +207,8 @@ def plot_function(
 
 def plot_spatial_line(
     date: str,
-    xindex: int = None,
-    yindex: int = None,
+    x_index: int = None,
+    y_index: int = None,
     component: str = "z",
     filename: str = None,
     slices: int = None
@@ -224,21 +224,21 @@ def plot_spatial_line(
     """
 
     # Creates a Pandas dataframe with the B_ext data as a column
-    if yindex is None:
+    if y_index is None:
         # Vertical line
         line_index = "y"
-        yvar_name = xindex
+        yvar_name = x_index
         plot_data = read.read_data(
                 paths.spatial.spatial_path(filename, component, slices, date)
-        ).iloc[:, xindex].to_frame(str(xindex))
+        ).iloc[:, x_index].to_frame(str(x_index))
 
-    elif xindex is None:
+    elif x_index is None:
         # Horizontal line
         line_index = "x"
-        yvar_name = yindex
+        yvar_name = y_index
         plot_data = read.read_data(
                 paths.spatial.spatial_path(filename, component, slices, date)
-        ).iloc[yindex, :].to_frame(str(yindex))
+        ).iloc[y_index, :].to_frame(str(y_index))
 
     else:
         raise ValueError("`xindex` and `yindex` cannot both be `None`.")
