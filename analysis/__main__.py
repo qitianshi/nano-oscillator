@@ -281,11 +281,6 @@ def __fetch_raw():
 
 #region Splits and calculations
 
-def __convert_table_txt():
-    print("Converting table.txt to table.tsv...")
-    anl.read.convert_table_txt(DATE)
-
-
 def __split_phi():
     print("Splitting by phi...")
     anl.split.split_phi(DATE)
@@ -465,11 +460,6 @@ def __plotcheck_fitted_amp():
 def __convert_npy():
     print("Converting all .npy files to .tsv files")
     anl.geom.convert_npy(DATE)
-
-
-def __create_json():
-    print("Creating the json file...")
-    anl.write.write_json(DATE)
 
 #endregion
 
