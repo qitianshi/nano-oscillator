@@ -41,9 +41,9 @@ def __validate_arg_options(value, arg_obj, accept_vals):
 def __resolve_dates(values: list[str]) -> list[str]:
 
     # Checks that simulation date exists.
-    for date in values:
-        if date != "..." and (not os.path.exists(anl.paths.top.result_dir(date))):
-            exit(f"Error: no result was found for '{date}'.")
+    for val in values:
+        if val != "..." and (not os.path.exists(anl.paths.top.result_dir(val))):
+            exit(f"Error: no result was found for '{val}'.")
 
     if "..." in values:
 
