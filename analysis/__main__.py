@@ -501,7 +501,7 @@ DATES = __resolve_dates(date_arg)
 CLI_TEST = TOP_ARGS[0]
 
 if len(DATES) > 1:
-    print(f"Running analysis for {len(DATES)} dates: {DATES}. \n")
+    print(f"Running analysis for {len(DATES)} results: {DATES}. \n")
 
 if COMMAND is Commands.RESONANCE:
 
