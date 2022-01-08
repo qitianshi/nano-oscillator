@@ -138,13 +138,15 @@ elif COMMAND is Commands.SPATIAL:
 
 #endregion
 
-#region Fetching refs
+#region Refs
 
 def __fetch_raw():
     print("Fetching raw data from Google Drive...")
     anl.fetch.fetch_raw(DATE)
 
 #endregion
+
+#region Resonance
 
 #region Splits and calculations
 
@@ -173,16 +175,6 @@ def __calc_mag_fit():
     print("Calculating curve-fit for amplitudes...")
     for mag in MAG_VARS:
         anl.fit.fit_cauchy(mag_var=mag, xlim=[3.5e9, 6.0e9], date=DATE)
-
-
-def __convert_npy():
-    print("Covnerting all .npy files to .tsv files")
-    anl.geom.convert_npy(DATE)
-
-
-def __create_json():
-    print("Creating the json file...")
-    anl.write.write_json(DATE)
 
 #endregion
 
@@ -297,40 +289,6 @@ def __plot_fitted_amp():
         )
 
 
-def __plot_spatial():
-    print("Plotting all spatial distribution data...")
-
-    for filename in os.listdir(anl.paths.spatial.root(DATE)):
-        if not filename.endswith("json"):
-            for component in MAG_VARS:
-                component = component.strip("m")
-                try:
-                    anl.plot.plot_image(
-                        anl.read.read_data(
-                            anl.paths.spatial.spatial_path(filename, component, None, DATE)
-                        ),
-                        xlabel="x (m)",
-                        ylabel="y (m)",
-                        title=filename + " (T)",
-                        save_to=anl.paths.plots.spatial_dir(
-                            filename, component, DATE
-                        ),
-                        xindexes=[150, 362],
-                        yindexes=[150, 362],
-                        show_plot=False,
-                        date=DATE
-                    )
-                except FileNotFoundError as err:
-                    if len(
-                        os.listdir(os.path.join(anl.paths.spatial.root(DATE), filename))
-                    ) > 0:
-                        #TODO: add in condition to look for x, y or z in the name
-                        print(
-                            f"{component} not found for {filename}. Component skipped.")
-                    else:
-                        raise err
-
-
 #endregion
 
 #region Calibration checks
@@ -366,6 +324,64 @@ def __plotcheck_fitted_amp():
 
 
 #endregion
+
+#endregion Resonance
+
+#region Spatial
+
+#region Conversions
+
+def __convert_npy():
+    print("Converting all .npy files to .tsv files")
+    anl.geom.convert_npy(DATE)
+
+
+def __create_json():
+    print("Creating the json file...")
+    anl.write.write_json(DATE)
+
+#endregion
+
+#region Plots
+
+def __plot_spatial():
+    print("Plotting all spatial distribution data...")
+
+    for filename in os.listdir(anl.paths.spatial.root(DATE)):
+        if not filename.endswith("json"):
+            for component in MAG_VARS:
+                component = component.strip("m")
+                try:
+                    anl.plot.plot_image(
+                        anl.read.read_data(
+                            anl.paths.spatial.spatial_path(
+                                filename, component, None, DATE)
+                        ),
+                        xlabel="x (m)",
+                        ylabel="y (m)",
+                        title=filename + " (T)",
+                        save_to=anl.paths.plots.spatial_dir(
+                            filename, component, DATE
+                        ),
+                        xindexes=[150, 362],
+                        yindexes=[150, 362],
+                        show_plot=False,
+                        date=DATE
+                    )
+                except FileNotFoundError as err:
+                    if len(
+                        os.listdir(os.path.join(
+                            anl.paths.spatial.root(DATE), filename))
+                    ) > 0:
+                        #TODO: add in condition to look for x, y or z in the name
+                        print(
+                            f"{component} not found for {filename}. Component skipped.")
+                    else:
+                        raise err
+
+#endregion
+
+#endregion Spatial
 
 #region Run
 
