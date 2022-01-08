@@ -17,7 +17,7 @@ def geom_dir(filename: str, date: str = None) -> str:
 
 def header_path(date: str = None) -> str:
     """Returns the path of the YAML file"""
-    return os.path.join(root(date), "headers.json")
+    return os.path.join(data.dataset_dir(date), "headers.json")
 
 
 def spatial_path(filename: str, mag_var: str, slices: int, date: str = None):
