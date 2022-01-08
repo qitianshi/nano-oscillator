@@ -10,6 +10,27 @@ import analysis as anl
 
 #region Internal functions
 
+class Commands(Enum):
+    """CLI commands."""
+
+    RESONANCE = auto()
+    SPATIAL = auto()
+
+
+def __validate_arg_options(value, arg_obj, accept_vals):
+
+    if any(i not in accept_vals for i in value):
+
+        rejected_mag_vars = list(set(value) - set(accept_vals))
+
+        raise argparse.ArgumentError(
+                arg_obj,
+                f"{', '.join(rejected_mag_vars)}"
+                + f" {'does not' if len(rejected_mag_vars) == 1 else 'do not'}"
+                + f" match valid values: {', '.join(accept_vals)}"
+            )
+
+
 def timed_run(anl_funcs):
     """Runs all analyses."""
 
@@ -26,13 +47,6 @@ def timed_run(anl_funcs):
 #endregion
 
 #region Command line
-
-class Commands(Enum):
-    """CLI commands."""
-
-    RESONANCE = auto()
-    SPATIAL = auto()
-
 
 def __parse_cli_input() -> tuple[str, list[str], int, bool]:
 
@@ -51,7 +65,7 @@ def __parse_cli_input() -> tuple[str, list[str], int, bool]:
         help="the date of the simulation (YYYY-MM-DD_hhmm), defaults to latest"
     )
 
-    arg_mag_vars = comm_resonance.add_argument(
+    argobj_mag_vars = comm_resonance.add_argument(
         "--mag-vars",
         dest="mag_vars",
         type=str,
@@ -80,7 +94,7 @@ def __parse_cli_input() -> tuple[str, list[str], int, bool]:
         help="the date of the simulation (YYYY-MM-DD_hhmm), defaults to latest"
     )
 
-    comm_spatial.add_argument(
+    argobj_components = comm_spatial.add_argument(
         "--components",
         dest="components",
         type=str,
@@ -98,31 +112,13 @@ def __parse_cli_input() -> tuple[str, list[str], int, bool]:
 
     if args.command == "resonance":
 
-        # Checks that mag vars are valid.
-        acceptable_components = ("mx", "my", "mz")
-        if any(i not in acceptable_components for i in args.mag_vars):
-            rejected_mag_vars = list(set(args.mag_vars) - set(acceptable_components))
-            raise argparse.ArgumentError(
-                arg_mag_vars,
-                f"{', '.join(rejected_mag_vars)}"
-                + f" {'does not' if len(rejected_mag_vars) == 1 else 'do not'}"
-                + f" match valid values: {', '.join(acceptable_components)}"
-            )
+        __validate_arg_options(args.mag_vars, argobj_mag_vars, ("mx", "my", "mz"))
 
         return (Commands.RESONANCE, (args.date, args.mag_vars, args.plot_depth))
 
     if args.command == "spatial":
 
-        # Checks that components are valid.
-        acceptable_components = ("x", "y", "z")
-        if any(i not in acceptable_components for i in args.components):
-            rejected_mag_vars = list(set(args.components) - set(acceptable_components))
-            raise argparse.ArgumentError(
-                arg_mag_vars,
-                f"{', '.join(rejected_mag_vars)}"
-                + f" {'does not' if len(rejected_mag_vars) == 1 else 'do not'}"
-                + f" match valid values: {', '.join(acceptable_components)}"
-            )
+        __validate_arg_options(args.components, argobj_components, ("x", "y", "z"))
 
         return (Commands.SPATIAL, (args.date, args.components))
 
