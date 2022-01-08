@@ -491,9 +491,11 @@ def __plot_spatial():
 COMMAND, COMM_ARGS, TOP_ARGS = __parse_cli_input()
 
 if COMMAND is Commands.RESONANCE:
-    date_arg, MAG_VARS, PLOT_DEPTH = COMM_ARGS          #pylint: disable=unbalanced-tuple-unpacking
+    date_arg, MAG_VARS, PLOT_DEPTH = COMM_ARGS                               #pylint: disable=W0632
 elif COMMAND is Commands.SPATIAL:
-    date_arg, COMPONENTS = COMM_ARGS                    #pylint: disable=unbalanced-tuple-unpacking
+    date_arg, COMPONENTS = COMM_ARGS                                         #pylint: disable=W0632
+elif COMMAND is Commands.SPATIALLINE:
+    date_arg, QUANTITY, COMPONENTS, AXIS, AXIS_VAL = COMM_ARGS               #pylint: disable=W0632
 
 DATES = __resolve_dates(date_arg)
 CLI_TEST = TOP_ARGS[0]
@@ -554,5 +556,22 @@ elif COMMAND is Commands.SPATIAL:
             __create_json,
             __plot_spatial
         ])
+
+elif COMMAND is Commands.SPATIALLINE:
+
+    for date in DATES:
+
+        DATE = date
+
+        print(
+            "Running analysis (spatialline) with parameters:",
+            f"date: {DATE.__repr__()}",
+            f"quantity: {QUANTITY.__repr__()}",
+            f"components: {COMPONENTS.__repr__()}",
+            f"axis: {AXIS.__repr__()}",
+            f"axis_val: {AXIS_VAL.__repr__()}",
+            sep='\n  ',
+            end='\n\n'
+        )
 
 #endregion
