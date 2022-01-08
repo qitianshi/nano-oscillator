@@ -33,7 +33,7 @@ def convert_npy(date: str = None):
                 for z_index in range(len(fields[filename][component_index])):
                     pd.DataFrame(np.flip(fields[filename][component_index][z_index])) \
                         .to_csv(paths.spatial.spatial_path(
-                            filename, component, z_index, date), sep="\t", index=True
+                            filename, component, z_index, date), sep="\t", index=False
                         )
 
 

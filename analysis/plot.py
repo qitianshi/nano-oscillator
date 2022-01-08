@@ -226,7 +226,7 @@ def plot_linearspace(
         yvar_name = xindex
         plot_data = read.read_data(
                 paths.spatial.spatial_path(filename, component, slices, date)
-        ).iloc[:, xindex + 1].to_frame(str(xindex))
+        ).iloc[:, xindex].to_frame(str(xindex))
 
     elif xindex is None:
         # Horizontal line
@@ -234,7 +234,7 @@ def plot_linearspace(
         yvar_name = yindex
         plot_data = read.read_data(
                 paths.spatial.spatial_path(filename, component, slices, date)
-        ).iloc[yindex, 1:].to_frame(str(yindex))
+        ).iloc[yindex, :].to_frame(str(yindex))
 
     else:
         raise ValueError("`xindex` and `yindex` cannot both be `None`.")
@@ -291,8 +291,6 @@ def plot_image(
     if yindexes is None:
         yindexes = [0, 511]
 
-    #accounts for the column of row indexes
-    xindexes = [val + 1 for val in xindexes]
 
     with open(paths.spatial.header_path(date), 'r', encoding='utf-8') as file:
         headers = json.load(file)
@@ -300,8 +298,8 @@ def plot_image(
         xaxis_max = (float(headers["xmax"]) - float(headers["xmin"])) / 2
         all_cells_x = np.arange(-abs(xaxis_max), xaxis_max, float(headers["xstepsize"]))
         xticks = np.arange(
-            all_cells_x[xindexes[0] - 1] + xstep - all_cells_x[xindexes[0] - 1] % xstep,
-            all_cells_x[xindexes[1] - 1] + xstep - all_cells_x[xindexes[1] - 1] % xstep,
+            all_cells_x[xindexes[0]] + xstep - all_cells_x[xindexes[0]] % xstep,
+            all_cells_x[xindexes[1]] + xstep - all_cells_x[xindexes[1]] % xstep,
             xstep
         )
         ax.set_xticks(xticks, xticks)
@@ -316,6 +314,7 @@ def plot_image(
         ax.set_yticks(yticks, yticks)
 
     data = data.iloc[yindexes[0] : yindexes[1] + 1, xindexes[0] : xindexes[1] + 1]
+    print(data)
 
     plot = plt.imshow(data, cmap=cmap_name,
         extent=[xticks.min(), xticks.max(), yticks.min(), yticks.max()]
