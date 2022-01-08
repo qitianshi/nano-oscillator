@@ -27,7 +27,7 @@ def __validate_date(value: list[str], arg_obj):
             arg_obj, "Ranged dates must be in the format 'DATE_1 ... DATE_2'")
 
 
-def __validate_arg_options(value, arg_obj, accept_vals):
+def __validate_arg_list(value, arg_obj, accept_vals):
 
     if any(i not in accept_vals for i in value):
 
@@ -243,21 +243,21 @@ def __parse_cli_input() -> tuple[str, list[str], int, bool]:
     if args.command == "resonance":
 
         __validate_date(args.date, argobj_resonance_dates)
-        __validate_arg_options(args.mag_vars, argobj_mag_vars, ("mx", "my", "mz"))
+        __validate_arg_list(args.mag_vars, argobj_mag_vars, ("mx", "my", "mz"))
 
         return (Commands.RESONANCE, (args.date, args.mag_vars, args.plot_depth), (args.cli_test,))
 
     if args.command == "spatial":
 
         __validate_date(args.date, argobj_spatial_dates)
-        __validate_arg_options(args.components, argobj_spatial_components, ("x", "y", "z"))
+        __validate_arg_list(args.components, argobj_spatial_components, ("x", "y", "z"))
 
         return (Commands.SPATIAL, (args.date, args.components), (args.cli_test,))
 
     if args.command == "spatialline":
 
         __validate_date(args.date, argobj_spatialline_dates)
-        __validate_arg_options(args.components, argobj_spatialline_components, ("x", "y", "z"))
+        __validate_arg_list(args.components, argobj_spatialline_components, ("x", "y", "z"))
 
         comm_args = [args.date, args.quantity, args.components]
 
