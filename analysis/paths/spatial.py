@@ -31,4 +31,4 @@ def spatial_path(filename: str, mag_var: str, slices: int, date: str = None):
 
 def geom_ovf_path(filename: int, date: str = None) -> str:
     """Returns the path of the ovf file"""
-    return os.path.join(data.dataset_dir(date), f"{filename}.ovf")
+    return os.path.join(data.raw(date), f"{filename}.ovf")

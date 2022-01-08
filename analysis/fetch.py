@@ -59,6 +59,6 @@ def fetch_raw(date: str = None):
         __download_gdrive(file.read().strip(), paths.refs.raw_zip_path(date))
 
     with ZipFile(paths.refs.raw_zip_path(date), 'r') as zip_ref:
-        zip_ref.extractall(paths.data.dataset_dir(date))
+        zip_ref.extractall(paths.data.raw(date))
 
     remove(paths.refs.raw_zip_path(date))

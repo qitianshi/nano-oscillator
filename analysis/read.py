@@ -74,7 +74,7 @@ def convert_table_txt(date: str = None):
 
     try:
 
-        table_txt_path = os.path.join(paths.data.dataset_dir(date), "table.txt")
+        table_txt_path = os.path.join(paths.data.raw(date), "table.txt")
 
         data = read_data(table_txt_path)
         data.to_csv(paths.data.data_path(date, None), sep='\t', index=False)

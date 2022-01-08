@@ -15,7 +15,7 @@ def convert_npy(date: str = None):
     date = date if date is not None else paths.top.latest_date()
     conversion = ["x", "y", "z"]
 
-    for file in os.listdir(paths.data.dataset_dir(date)):
+    for file in os.listdir(paths.data.raw(date)):
 
         fields = {}
 
@@ -26,7 +26,7 @@ def convert_npy(date: str = None):
             filename = os.path.splitext(file)[0]
             write.prep_dir(paths.spatial.geom_dir(filename, date))
 
-            fields[filename] = np.load(os.path.join(paths.data.dataset_dir(date), file))
+            fields[filename] = np.load(os.path.join(paths.data.raw(date), file))
 
             for component_index in range(len(fields[filename])):
                 component = conversion[component_index]
@@ -78,7 +78,7 @@ def preparse_yml(header: list):
 def get_header(date: str = None) -> list[str]:
     """Returns the list of headers from any .ovf file"""
 
-    for file in os.listdir(paths.data.dataset_dir(date)):
+    for file in os.listdir(paths.data.raw(date)):
         if file.endswith(".ovf"):
             data = paths.spatial.geom_ovf_path(file.strip(".ovf"), date)
 
