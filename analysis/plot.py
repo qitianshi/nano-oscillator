@@ -220,8 +220,9 @@ def plot_spatial_line(
             the table of values
         yindex: the row index of data (starts at 0), equivalent to drawing a line of y=... on
             the table of values
-
     """
+
+    #TODO: Replace `filename` with `save_to` of full path with extension.
 
     # Creates a Pandas dataframe with the B_ext data as a column
     if y_index is None:
