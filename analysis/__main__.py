@@ -548,6 +548,7 @@ elif COMMAND is Commands.SPATIAL:
         )
 
         __timed_run([
+            __fetch_raw,
             __convert_npy,
             __create_json,
             __plot_spatial
