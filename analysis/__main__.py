@@ -589,4 +589,9 @@ elif COMMAND is Commands.SPATIALLINE:
             end='\n\n'
         )
 
+        __timed_run([
+            __fetch_raw,
+            __plot_spatial_line
+        ])
+
 #endregion
