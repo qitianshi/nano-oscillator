@@ -12,9 +12,9 @@ import analysis as anl
 
 def __parse_cli_input() -> tuple[str, list[str], int, bool]:
 
-    cli_parser = argparse.ArgumentParser(prog="analysis", description="Runs all analyses.")
+    parser = argparse.ArgumentParser(prog="analysis", description="Runs all analyses.")
 
-    cli_parser.add_argument(
+    parser.add_argument(
         "date",
         type=str,
         nargs='?',
@@ -22,7 +22,7 @@ def __parse_cli_input() -> tuple[str, list[str], int, bool]:
         help="the date of the simulation (YYYY-MM-DD_hhmm), defaults to latest"
     )
 
-    cli_arg_mag_vars = cli_parser.add_argument(
+    arg_mag_vars = parser.add_argument(
         "--mag-vars",
         dest="mag_vars",
         type=str,
@@ -32,7 +32,7 @@ def __parse_cli_input() -> tuple[str, list[str], int, bool]:
         help="magnetization components to plot and analyze, any of: mx my mz, defaults to all"
     )
 
-    cli_parser.add_argument(
+    parser.add_argument(
         "--plot-depth",
         dest="plot_depth",
         type=int,
@@ -41,29 +41,29 @@ def __parse_cli_input() -> tuple[str, list[str], int, bool]:
         help="the number of split levels to plot, defaults to 1"
     )
 
-    cli_parser.add_argument(
+    parser.add_argument(
         "--skip-spatial",
         dest="skip_spatial",
         action="store_true",
         help="skips analysis of spatial data"
     )
 
-    cli_args = cli_parser.parse_args()
+    args = parser.parse_args()
 
-    if not os.path.exists(anl.paths.top.result_dir(cli_args.date)):
-        exit(f"Error: no result was found for '{cli_args.date}'.")
+    if not os.path.exists(anl.paths.top.result_dir(args.date)):
+        exit(f"Error: no result was found for '{args.date}'.")
 
     acceptable_mag_vars = ("mx", "my", "mz")
-    if any(i not in acceptable_mag_vars for i in cli_args.mag_vars):
-        rejected_mag_vars = list(set(cli_args.mag_vars) - set(acceptable_mag_vars))
+    if any(i not in acceptable_mag_vars for i in args.mag_vars):
+        rejected_mag_vars = list(set(args.mag_vars) - set(acceptable_mag_vars))
         raise argparse.ArgumentError(
-            cli_arg_mag_vars,
+            arg_mag_vars,
             f"{', '.join(rejected_mag_vars)}"
             + f" {'does not' if len(rejected_mag_vars) == 1 else 'do not'}"
             + f" match valid values: {', '.join(acceptable_mag_vars)}"
         )
 
-    return (cli_args.date, cli_args.mag_vars, cli_args.plot_depth, cli_args.skip_spatial)
+    return (args.date, args.mag_vars, args.plot_depth, args.skip_spatial)
 
 DATE, MAG_VARS, PLOT_DEPTH, SKIP_SPATIAL = __parse_cli_input()
 
