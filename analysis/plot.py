@@ -211,6 +211,7 @@ def plot_spatial_line(
     y_index: int = None,
     component: str = "z",
     filename: str = None,
+    show_plot: bool = False,
     slices: int = None
 ):
     """Plots the graphs of spatial data against the x or y index of the cells.
@@ -264,7 +265,8 @@ def plot_spatial_line(
         xlabel,
         ylabel,
         xstep=0.2e-06,
-        save_to=paths.plots.spatial_line(filename, component, line_index, date)
+        save_to=paths.plots.spatial_line(filename, component, line_index, date),
+        show_plot=show_plot
     )
 
 
