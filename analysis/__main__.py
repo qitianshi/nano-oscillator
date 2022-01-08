@@ -83,10 +83,19 @@ def __timed_run(anl_funcs):
 
 def __parse_cli_input() -> tuple[str, list[str], int, bool]:
 
-    parser = argparse.ArgumentParser(prog="analysis", description="Runs all analyses.")
+    parser = argparse.ArgumentParser(prog="analysis", description="Runs analyses of mumax3 data.")
     subparser = parser.add_subparsers(dest="command")
-    comm_resonance = subparser.add_parser("resonance")
-    comm_spatial = subparser.add_parser("spatial")
+
+    comm_resonance = subparser.add_parser(
+        "resonance",
+        description=(
+            "Analyses for characterizing resonance characteristics of the nano-constriction.")
+    )
+
+    comm_spatial = subparser.add_parser(
+        "spatial",
+        description=("Analyses of spatial magnetization data.")
+    )
 
     # Top-level args
 
