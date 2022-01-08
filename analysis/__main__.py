@@ -47,7 +47,10 @@ def timed_run(anl_funcs):
               f"{time() - t_init:.1f}s.")
 
     else:
-        print(f"CLI test mode is active. Analysis functions: {[func.__name__ for func in anl_funcs]}")
+        print(
+            f"CLI test mode is active.",
+            f"Analysis functions: {[func.__name__ for func in anl_funcs]}"
+        )
 
 #endregion
 
