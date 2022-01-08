@@ -285,7 +285,7 @@ def __parse_cli_input() -> tuple:
         elif args.y_val is not None:
             comm_args.extend(("y", args.y_val))
 
-        return (Commands.SPATIALLINE, list(comm_args,), (args.cli_test,))
+        return (Commands.SPATIALLINE, list(comm_args), (args.cli_test,))
 
     if args.command == "preparse":
 
