@@ -255,6 +255,7 @@ def plot_linearspace(
 
         xlabel = f"{line_index} (" + headers["meshunit"] + ")"
         ylabel = f"{filename} (T)"
+        #TODO: make the y axis units an option
 
         plot_data.insert(0, line_index, xvar)
 
