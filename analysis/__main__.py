@@ -15,6 +15,7 @@ class Commands(Enum):
 
     RESONANCE = auto()
     SPATIAL = auto()
+    SPATIALLINE = auto()
 
 
 def __validate_date(value: list[str], arg_obj):
@@ -84,7 +85,7 @@ def __timed_run(anl_funcs):
 def __parse_cli_input() -> tuple[str, list[str], int, bool]:
 
     parser = argparse.ArgumentParser(prog="analysis", description="Runs analyses of mumax3 data.")
-    subparser = parser.add_subparsers(dest="command")
+    subparser = parser.add_subparsers(dest="command", required=True)
 
     comm_resonance = subparser.add_parser(
         "resonance",
@@ -94,7 +95,12 @@ def __parse_cli_input() -> tuple[str, list[str], int, bool]:
 
     comm_spatial = subparser.add_parser(
         "spatial",
-        description=("Analyses of spatial magnetization data.")
+        description="Analyses of spatial magnetization data."
+    )
+
+    comm_spatialline = subparser.add_parser(
+        "spatialline",
+        description="Plots a line of values in spatial data."
     )
 
     # Top-level args
@@ -106,7 +112,7 @@ def __parse_cli_input() -> tuple[str, list[str], int, bool]:
         help="activates CLI test mode; analysis functions will not be run."
     )
 
-    # Resonance args
+    # resonance args
 
     argobj_resonance_dates = comm_resonance.add_argument(
         "date",
@@ -135,7 +141,7 @@ def __parse_cli_input() -> tuple[str, list[str], int, bool]:
         help="the number of split levels to plot, defaults to 1"
     )
 
-    # Spatial args
+    # spatial args
 
     argobj_spatial_dates = comm_spatial.add_argument(
         "date",
@@ -145,7 +151,7 @@ def __parse_cli_input() -> tuple[str, list[str], int, bool]:
         help="the list of dates to analyze (YYYY-MM-DD_hhmm), defaults to latest"
     )
 
-    argobj_components = comm_spatial.add_argument(
+    argobj_spatial_components = comm_spatial.add_argument(
         "--components",
         dest="components",
         type=str,
@@ -155,11 +161,52 @@ def __parse_cli_input() -> tuple[str, list[str], int, bool]:
         help="magnetization components to plot and analyze, any of: x y z, defaults to all"
     )
 
-    args = parser.parse_args()
+    # spatialline args
 
-    if args.command is None:
-        parser.print_help()
-        exit(2)
+    argobj_spatialline_dates = comm_spatialline.add_argument(
+        "date",
+        type=str,
+        nargs='*',
+        default=[anl.paths.top.latest_date()],
+        help="the list of dates to analyze (YYYY-MM-DD_hhmm), defaults to latest"
+    )
+
+    comm_spatialline.add_argument(
+        "--quantity",
+        type=str,
+        required=True,
+        help="the quantity to be plotted"
+    )
+
+    argobj_spatialline_components = comm_spatialline.add_argument(
+        "--components",
+        dest="components",
+        type=str,
+        nargs='+',
+        required=False,
+        default=["x", "y", "z"],
+        help="magnetization components to plot and analyze, any of: x y z, defaults to all"
+    )
+
+    spatialline_axis_grp = comm_spatialline.add_mutually_exclusive_group(required=True)
+
+    spatialline_axis_grp.add_argument(
+        "-x",
+        dest="x_val",
+        type=int,
+        help="plots a vertical line of values with the given x-value"
+    )
+
+    spatialline_axis_grp.add_argument(
+        "-y",
+        dest="y_val",
+        type=int,
+        help="plots a horizontal line of values with the given y-value"
+    )
+
+    # Parsing
+
+    args = parser.parse_args()
 
     if args.command == "resonance":
 
@@ -171,9 +218,23 @@ def __parse_cli_input() -> tuple[str, list[str], int, bool]:
     if args.command == "spatial":
 
         __validate_date(args.date, argobj_spatial_dates)
-        __validate_arg_options(args.components, argobj_components, ("x", "y", "z"))
+        __validate_arg_options(args.components, argobj_spatial_components, ("x", "y", "z"))
 
         return (Commands.SPATIAL, (args.date, args.components), (args.cli_test,))
+
+    if args.command == "spatialline":
+
+        __validate_date(args.date, argobj_spatialline_dates)
+        __validate_arg_options(args.components, argobj_spatialline_components, ("x", "y", "z"))
+
+        comm_args = [args.date, args.quantity, args.components]
+
+        if args.x_val is not None:
+            comm_args.extend(("x", args.x_val))
+        elif args.y_val is not None:
+            comm_args.extend(("y", args.y_val))
+
+        return (Commands.SPATIALLINE, tuple(comm_args), (args.cli_test,))
 
 #endregion
 
@@ -421,20 +482,40 @@ def __plot_spatial():
 
 #endregion Spatial
 
+#region Spatial line
+
+def __plot_spatial_line():
+
+    print("Plotting spatial line...")
+
+    for component in COMPONENTS:
+
+        anl.plot.plot_spatial_line(
+            date=DATE,
+            x_index=AXIS_VAL if AXIS == 'x' else None,
+            y_index=AXIS_VAL if AXIS == 'y' else None,
+            component=component,
+            filename=QUANTITY
+        )
+
+#endregion
+
 #region Run
 
 COMMAND, COMM_ARGS, TOP_ARGS = __parse_cli_input()
 
 if COMMAND is Commands.RESONANCE:
-    date_arg, MAG_VARS, PLOT_DEPTH = COMM_ARGS          #pylint: disable=unbalanced-tuple-unpacking
+    date_arg, MAG_VARS, PLOT_DEPTH = COMM_ARGS                               #pylint: disable=W0632
 elif COMMAND is Commands.SPATIAL:
-    date_arg, COMPONENTS = COMM_ARGS                    #pylint: disable=unbalanced-tuple-unpacking
+    date_arg, COMPONENTS = COMM_ARGS                                         #pylint: disable=W0632
+elif COMMAND is Commands.SPATIALLINE:
+    date_arg, QUANTITY, COMPONENTS, AXIS, AXIS_VAL = COMM_ARGS               #pylint: disable=W0632
 
 DATES = __resolve_dates(date_arg)
 CLI_TEST = TOP_ARGS[0]
 
 if len(DATES) > 1:
-    print(f"Running analysis for {len(DATES)} dates: {DATES}. \n")
+    print(f"Running analysis for {len(DATES)} results: {DATES}. \n")
 
 if COMMAND is Commands.RESONANCE:
 
@@ -485,9 +566,32 @@ elif COMMAND is Commands.SPATIAL:
         )
 
         __timed_run([
+            __fetch_raw,
             __convert_npy,
             __create_json,
             __plot_spatial
+        ])
+
+elif COMMAND is Commands.SPATIALLINE:
+
+    for date in DATES:
+
+        DATE = date
+
+        print(
+            "Running analysis (spatialline) with parameters:",
+            f"date: {DATE.__repr__()}",
+            f"quantity: {QUANTITY.__repr__()}",
+            f"components: {COMPONENTS.__repr__()}",
+            f"axis: {AXIS.__repr__()}",
+            f"axis_val: {AXIS_VAL.__repr__()}",
+            sep='\n  ',
+            end='\n\n'
+        )
+
+        __timed_run([
+            __fetch_raw,
+            __plot_spatial_line
         ])
 
 #endregion
