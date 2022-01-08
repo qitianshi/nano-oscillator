@@ -548,7 +548,7 @@ def __plot_spatial_line():
             y_index=AXIS_VAL if AXIS == 'y' else None,
             component=component,
             filename=QUANTITY,
-            save_to = anl.paths.plots.spatial_line(QUANTITY, component, line_index, date)
+            save_to = anl.paths.plots.spatial_line(QUANTITY, component, line_index, date) \
                 if SAVE else None,
             show_plot=SHOW,
         )
