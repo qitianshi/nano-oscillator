@@ -27,7 +27,7 @@ def __validate_date(value: list[str], arg_obj):
             arg_obj, "Ranged dates must be in the format 'DATE_1 ... DATE_2'")
 
 
-def __validate_arg_list(value, arg_obj, accept_vals):
+def __validate_arg_list(value: list, arg_obj, accept_vals: list):
 
     if any(i not in accept_vals for i in value):
 
@@ -41,7 +41,7 @@ def __validate_arg_list(value, arg_obj, accept_vals):
             )
 
 
-def validate_arg_option(value, arg_obj, accept_vals):
+def validate_arg_option(value, arg_obj, accept_vals: str):
 
     if value not in accept_vals:
         raise argparse.ArgumentError(
@@ -66,7 +66,7 @@ def __resolve_dates(values: list[str]) -> list[str]:
         return values
 
 
-def __timed_run(anl_funcs):
+def __timed_run(anl_funcs: list):
     """Runs all analyses."""
 
     t_init = time()
