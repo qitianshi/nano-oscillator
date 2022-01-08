@@ -388,8 +388,7 @@ def __plot_spatial():
 
     for filename in os.listdir(anl.paths.spatial.root(DATE)):
         if not filename.endswith("json"):
-            for component in MAG_VARS:
-                component = component.strip("m")
+            for component in COMPONENTS:
                 try:
                     anl.plot.plot_image(
                         anl.read.read_data(
