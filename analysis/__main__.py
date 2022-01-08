@@ -91,7 +91,14 @@ def __timed_run(anl_funcs):
 
 #region Command line
 
-def __parse_cli_input() -> tuple[str, list[str], int, bool]:
+def __parse_cli_input() -> tuple:
+    """Parses and validates the command line interface.
+
+    Returns:
+        list: A list of length 3. The 0th item is the subcommand. The 1st item
+          is a tuple of arguments for the subcommand. The 2nd item is a tuple
+          of top-level arguments.
+    """
 
     parser = argparse.ArgumentParser(prog="analysis", description="Runs analyses of mumax3 data.")
     subparser = parser.add_subparsers(dest="command", required=True)
