@@ -165,7 +165,7 @@ def __parse_cli_input() -> tuple[str, list[str], int, bool]:
 
     if args.command is None:
         parser.print_help()
-        exit(2)
+        exit(1)
 
     if args.command == "resonance":
 
