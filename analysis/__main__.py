@@ -48,7 +48,7 @@ def __timed_run(anl_funcs):
 
     else:
         print(
-            f"CLI test mode is active.",
+            "CLI test mode is active.",
             f"Analysis functions: {[func.__name__ for func in anl_funcs]}"
         )
 
