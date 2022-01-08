@@ -272,7 +272,8 @@ def plot_image(
     """Plots an image from a given dataset
 
     Args:
-        data (list[str]): 2D scalar data, usually taking the form of a 2D array
+        data (pandas.DataFrame): 2D scalar data, usually taking the form of a
+          2D array.
         (See plot_xy docs for other paramters.)
     """
     fig = plt.figure(figsize=(10, 5))
