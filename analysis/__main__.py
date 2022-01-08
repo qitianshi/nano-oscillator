@@ -8,11 +8,13 @@ from time import time
 
 import analysis as anl
 
+
 #region Internals
 
 class Commands(Enum):
     """CLI commands."""
 
+    PREPARSE = auto()
     RESONANCE = auto()
     SPATIAL = auto()
     SPATIALLINE = auto()
