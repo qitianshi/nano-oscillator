@@ -172,7 +172,7 @@ def __parse_cli_input() -> tuple[str, list[str], int, bool]:
     )
 
     comm_spatialline.add_argument(
-        "--quantity",
+        "quantity",
         type=str,
         help="the quantity to be plotted"
     )
