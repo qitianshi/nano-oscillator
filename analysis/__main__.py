@@ -187,7 +187,7 @@ def __parse_cli_input() -> tuple[str, list[str], int, bool]:
         help="magnetization components to plot and analyze, any of: x y z, defaults to all"
     )
 
-    spatialline_axis_grp = comm_spatialline.add_mutually_exclusive_group()
+    spatialline_axis_grp = comm_spatialline.add_mutually_exclusive_group(required=True)
 
     spatialline_axis_grp.add_argument(
         "-x",
