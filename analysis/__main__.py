@@ -271,7 +271,7 @@ def __parse_cli_input() -> tuple[str, list[str], int, bool]:
     if args.command == "preparse":
 
         __validate_date(args.date, argobj_preparse_dates)
-        __validate_arg_options(args.result_type, argobj_result_type, ("resonance", "spatial"))
+        validate_arg_option(args.result_type, argobj_result_type, ("resonance", "spatial"))
 
         return (Commands.PREPARSE, (args.date, args.result_type), (args.cli_test,))
 
