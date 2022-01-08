@@ -254,7 +254,7 @@ def plot_linearspace(
         )
 
         xlabel = f"{line_index} (" + headers["meshunit"] + ")"
-        ylabel = f"{filename} (" + headers["valueunits"][0] + ")"
+        ylabel = f"{filename} (T)"
 
         plot_data.insert(0, line_index, xvar)
 
