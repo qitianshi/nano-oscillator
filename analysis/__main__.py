@@ -162,15 +162,6 @@ def __parse_cli_input() -> tuple[str, list[str], int, bool]:
 
         return (Commands.SPATIAL, (args.date, args.components), (args.cli_test,))
 
-COMMAND, COMM_ARGS, TOP_ARGS = __parse_cli_input()
-
-CLI_TEST = TOP_ARGS[0]
-
-if COMMAND is Commands.RESONANCE:
-    DATE, MAG_VARS, PLOT_DEPTH = COMM_ARGS              #pylint: disable=unbalanced-tuple-unpacking
-elif COMMAND is Commands.SPATIAL:
-    DATE, COMPONENTS = COMM_ARGS                        #pylint: disable=unbalanced-tuple-unpacking
-
 #endregion
 
 #region Refs
@@ -419,6 +410,15 @@ def __plot_spatial():
 #endregion Spatial
 
 #region Run
+
+COMMAND, COMM_ARGS, TOP_ARGS = __parse_cli_input()
+
+CLI_TEST = TOP_ARGS[0]
+
+if COMMAND is Commands.RESONANCE:
+    DATE, MAG_VARS, PLOT_DEPTH = COMM_ARGS  # pylint: disable=unbalanced-tuple-unpacking
+elif COMMAND is Commands.SPATIAL:
+    DATE, COMPONENTS = COMM_ARGS  # pylint: disable=unbalanced-tuple-unpacking
 
 if COMMAND is Commands.RESONANCE:
 
