@@ -41,6 +41,13 @@ def __validate_arg_options(value, arg_obj, accept_vals):
             )
 
 
+def validate_arg_option(value, arg_obj, accept_vals):
+
+    if value not in accept_vals:
+        raise argparse.ArgumentError(
+            arg_obj, f"'{value}' does not match valid_values: {', '.join(accept_vals)}")
+
+
 def __resolve_dates(values: list[str]) -> list[str]:
 
     # Checks that simulation date exists.
