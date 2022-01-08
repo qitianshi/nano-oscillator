@@ -228,6 +228,20 @@ def __parse_cli_input() -> tuple[str, list[str], int, bool]:
 
         return (Commands.SPATIAL, (args.date, args.components), (args.cli_test,))
 
+    if args.command == "spatialline":
+
+        __validate_date(args.date, argobj_spatialline_dates)
+        __validate_arg_options(args.components, argobj_spatialline_components, ("x", "y", "z"))
+
+        comm_args = [args.date, args.quantity, args.components]
+
+        if args.x_vals is not None:
+            comm_args.extend(("x", args.x_vals))
+        elif args.y_vals is not None:
+            comm_args.extend("y", args.y_vals)
+
+        return (Commands.SPATIALLINE, tuple(comm_args), (args.cli_test,))
+
 #endregion
 
 #region Refs
