@@ -31,6 +31,31 @@ def __validate_arg_options(value, arg_obj, accept_vals):
             )
 
 
+def __validate_date(value: list[str], arg_obj):
+
+    if value.count("...") > 1 or value.index("...") != 1 or len(value) > 3:
+        raise argparse.ArgumentError(
+            arg_obj, "Ranged dates must be in the format 'DATE_1 ... DATE_2'")
+
+
+def __resolve_dates(values: list[str]) -> list[str]:
+
+    # Checks that simulation date exists.
+    for date in values:
+        if date != "..." and (not os.path.exists(anl.paths.top.result_dir(date))):
+            exit(f"Error: no result was found for '{date}'.")
+
+    if "..." in values:
+
+        start_date, end_date = values[0], values[2]
+        all_dates = os.listdir(anl.paths.top.results_root())
+
+        return all_dates[all_dates.index(start_date) : all_dates.index(end_date) + 1]
+
+    else:
+        return values
+
+
 def __timed_run(anl_funcs):
     """Runs all analyses."""
 
@@ -122,10 +147,6 @@ def __parse_cli_input() -> tuple[str, list[str], int, bool]:
     )
 
     args = parser.parse_args()
-
-    # Checks that simulation date exists.
-    if not os.path.exists(anl.paths.top.result_dir(args.date)):
-        exit(f"Error: no result was found for '{args.date}'.")
 
     if args.command == "resonance":
 
@@ -385,7 +406,7 @@ def __plot_spatial():
                         os.listdir(os.path.join(
                             anl.paths.spatial.root(DATE), filename))
                     ) > 0:
-                        #TODO: add in condition to look for x, y or z in the name
+                        #TODO: Add in condition to look for x, y or z in the name
                         print(
                             f"{component} not found for {filename}. Component skipped.")
                     else:
