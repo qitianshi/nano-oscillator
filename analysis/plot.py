@@ -205,7 +205,7 @@ def plot_function(
     )
 
 
-def plot_linearspace(
+def plot_spatial_line(
     date: str,
     xindex: int = None,
     yindex: int = None,
@@ -263,7 +263,7 @@ def plot_linearspace(
         xlabel,
         ylabel,
         xstep=0.2e-06,
-        save_to=paths.plots.linearspace_dir(filename, component, line_index, date)
+        save_to=paths.plots.spatial_line(filename, component, line_index, date)
     )
 
 
