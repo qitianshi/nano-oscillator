@@ -482,6 +482,24 @@ def __plot_spatial():
 
 #endregion Spatial
 
+#region Spatial line
+
+def __plot_spatial_line():
+
+    print("Plotting spatial line...")
+
+    for component in COMPONENTS:
+
+        anl.plot.plot_spatial_line(
+            date=DATE,
+            x_index=AXIS_VAL if AXIS == 'x' else None,
+            y_index=AXIS_VAL if AXIS == 'y' else None,
+            component=component,
+            filename=QUANTITY
+        )
+
+#endregion
+
 #region Run
 
 COMMAND, COMM_ARGS, TOP_ARGS = __parse_cli_input()
