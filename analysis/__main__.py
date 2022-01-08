@@ -20,8 +20,8 @@ class Commands(Enum):
 def __validate_date(value: list[str], arg_obj):
 
     if "..." in value and (value.count("...") > 1 or value.index("...") != 1 or len(value) > 3):
-            raise argparse.ArgumentError(
-                arg_obj, "Ranged dates must be in the format 'DATE_1 ... DATE_2'")
+        raise argparse.ArgumentError(
+            arg_obj, "Ranged dates must be in the format 'DATE_1 ... DATE_2'")
 
 
 def __validate_arg_options(value, arg_obj, accept_vals):
