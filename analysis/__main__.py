@@ -209,6 +209,18 @@ def __parse_cli_input() -> tuple:
         help="magnetization components to plot and analyze, any of: x y z, defaults to all"
     )
 
+    comm_spatialline.add_argument(
+        "--show",
+        action="store_true",
+        help="whether to show the plot in a new window"
+    )
+
+    comm_spatialline.add_argument(
+        "--save",
+        action="store_true",
+        help="whether to save the plot"
+    )
+
     spatialline_axis_grp = comm_spatialline.add_mutually_exclusive_group(required=True)
 
     spatialline_axis_grp.add_argument(
@@ -266,14 +278,14 @@ def __parse_cli_input() -> tuple:
         __validate_date(args.date, argobj_spatialline_dates)
         __validate_arg_list(args.components, argobj_spatialline_components, ("x", "y", "z"))
 
-        comm_args = [args.date, args.quantity, args.components]
+        comm_args = [args.date, args.quantity, args.components, args.show, args.save]
 
         if args.x_val is not None:
             comm_args.extend(("x", args.x_val))
         elif args.y_val is not None:
             comm_args.extend(("y", args.y_val))
 
-        return (Commands.SPATIALLINE, (comm_args,), (args.cli_test,))
+        return (Commands.SPATIALLINE, list(comm_args), (args.cli_test,))
 
     if args.command == "preparse":
 
@@ -531,7 +543,14 @@ def __plot_spatial_line():
             x_index=AXIS_VAL if AXIS == 'x' else None,
             y_index=AXIS_VAL if AXIS == 'y' else None,
             component=component,
-            filename=QUANTITY
+            filename=QUANTITY,
+            save_to = anl.paths.plots.spatial_line(
+                filename=QUANTITY,
+                component=component,
+                index=('y' if AXIS == 'x' else 'x'),
+                date=date
+            ) if SAVE else None,
+            show_plot=SHOW,
         )
 
 #endregion
@@ -557,7 +576,7 @@ if COMMAND is Commands.RESONANCE:
 elif COMMAND is Commands.SPATIAL:
     date_arg, COMPONENTS = COMM_ARGS                                         #pylint: disable=W0632
 elif COMMAND is Commands.SPATIALLINE:
-    date_arg, QUANTITY, COMPONENTS, AXIS, AXIS_VAL = COMM_ARGS               #pylint: disable=W0632
+    date_arg, QUANTITY, COMPONENTS, SHOW, SAVE, AXIS, AXIS_VAL = COMM_ARGS   #pylint: disable=W0632
 elif COMMAND is Commands.PREPARSE:
     date_arg, RESULT_TYPE = COMM_ARGS                                        #pylint: disable=W0632
 
@@ -631,6 +650,8 @@ elif COMMAND is Commands.SPATIALLINE:
             f"date: {DATE.__repr__()}",
             f"quantity: {QUANTITY.__repr__()}",
             f"components: {COMPONENTS.__repr__()}",
+            f"show: {SHOW.__repr__()}",
+            f"save: {SAVE.__repr__()}",
             f"axis: {AXIS.__repr__()}",
             f"axis_val: {AXIS_VAL.__repr__()}",
             sep='\n  ',
