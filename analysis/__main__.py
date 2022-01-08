@@ -209,6 +209,20 @@ def __parse_cli_input() -> tuple:
         help="magnetization components to plot and analyze, any of: x y z, defaults to all"
     )
 
+    comm_spatialline.add_argument(
+        "--show",
+        type=bool,
+        required=False,
+        help="whether to show the plot or not"
+    )
+
+    comm_spatialline.add_argument(
+        "--save",
+        type=bool,
+        required=False,
+        help="whether to save the plot or not"
+    )
+
     spatialline_axis_grp = comm_spatialline.add_mutually_exclusive_group(required=True)
 
     spatialline_axis_grp.add_argument(
@@ -266,7 +280,7 @@ def __parse_cli_input() -> tuple:
         __validate_date(args.date, argobj_spatialline_dates)
         __validate_arg_list(args.components, argobj_spatialline_components, ("x", "y", "z"))
 
-        comm_args = [args.date, args.quantity, args.components]
+        comm_args = [args.date, args.quantity, args.components, args.show, args.save]
 
         if args.x_val is not None:
             comm_args.extend(("x", args.x_val))
@@ -531,7 +545,9 @@ def __plot_spatial_line():
             x_index=AXIS_VAL if AXIS == 'x' else None,
             y_index=AXIS_VAL if AXIS == 'y' else None,
             component=component,
-            filename=QUANTITY
+            filename=QUANTITY,
+            save_to = SAVE,
+            show_plot=SHOW,
         )
 
 #endregion
@@ -557,7 +573,7 @@ if COMMAND is Commands.RESONANCE:
 elif COMMAND is Commands.SPATIAL:
     date_arg, COMPONENTS = COMM_ARGS                                         #pylint: disable=W0632
 elif COMMAND is Commands.SPATIALLINE:
-    date_arg, QUANTITY, COMPONENTS, AXIS, AXIS_VAL = COMM_ARGS               #pylint: disable=W0632
+    date_arg, QUANTITY, COMPONENTS, SHOW, SAVE, AXIS, AXIS_VAL = COMM_ARGS   #pylint: disable=W0632
 elif COMMAND is Commands.PREPARSE:
     date_arg, RESULT_TYPE = COMM_ARGS                                        #pylint: disable=W0632
 
@@ -631,6 +647,8 @@ elif COMMAND is Commands.SPATIALLINE:
             f"date: {DATE.__repr__()}",
             f"quantity: {QUANTITY.__repr__()}",
             f"components: {COMPONENTS.__repr__()}",
+            f"components: {SHOW.__repr__()}",
+            f"components: {SAVE.__repr__()}",
             f"axis: {AXIS.__repr__()}",
             f"axis_val: {AXIS_VAL.__repr__()}",
             sep='\n  ',
