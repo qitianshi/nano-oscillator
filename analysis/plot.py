@@ -291,7 +291,6 @@ def plot_image(
     if yindexes is None:
         yindexes = [0, 511]
 
-
     with open(paths.spatial.header_path(date), 'r', encoding='utf-8') as file:
         headers = json.load(file)
 
@@ -314,7 +313,6 @@ def plot_image(
         ax.set_yticks(yticks, yticks)
 
     data = data.iloc[yindexes[0] : yindexes[1] + 1, xindexes[0] : xindexes[1] + 1]
-    print(data)
 
     plot = plt.imshow(data, cmap=cmap_name,
         extent=[xticks.min(), xticks.max(), yticks.min(), yticks.max()]
