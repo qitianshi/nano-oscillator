@@ -36,13 +36,18 @@ def timed_run(anl_funcs):
 
     t_init = time()
 
-    for func in anl_funcs:
-        t_start = time()
-        func()
-        print(f"  Done in {time() - t_start:.1f}s.")
+    if not CLI_TEST:
 
-    print(f"Finished {len(anl_funcs)} {'analysis' if len(anl_funcs) == 1 else 'analyses'} in", \
-        f"{time() - t_init:.1f}s.")
+        for func in anl_funcs:
+            t_start = time()
+            func()
+            print(f"  Done in {time() - t_start:.1f}s.")
+
+        print(f"Finished {len(anl_funcs)} {'analysis' if len(anl_funcs) == 1 else 'analyses'} in",
+              f"{time() - t_init:.1f}s.")
+
+    else:
+        print(f"CLI test mode is active. Analysis functions: {[func.__name__ for func in anl_funcs]}")
 
 #endregion
 
@@ -54,6 +59,15 @@ def __parse_cli_input() -> tuple[str, list[str], int, bool]:
     subparser = parser.add_subparsers(dest="command")
     comm_resonance = subparser.add_parser("resonance")
     comm_spatial = subparser.add_parser("spatial")
+
+    # Top-level args
+
+    parser.add_argument(
+        "--cli-test",
+        dest="cli_test",
+        action="store_true",
+        help="activates CLI test mode; analysis functions will not be run."
+    )
 
     # Resonance args
 
@@ -114,20 +128,22 @@ def __parse_cli_input() -> tuple[str, list[str], int, bool]:
 
         __validate_arg_options(args.mag_vars, argobj_mag_vars, ("mx", "my", "mz"))
 
-        return (Commands.RESONANCE, (args.date, args.mag_vars, args.plot_depth))
+        return (Commands.RESONANCE, (args.date, args.mag_vars, args.plot_depth), (args.cli_test,))
 
     if args.command == "spatial":
 
         __validate_arg_options(args.components, argobj_components, ("x", "y", "z"))
 
-        return (Commands.SPATIAL, (args.date, args.components))
+        return (Commands.SPATIAL, (args.date, args.components), (args.cli_test,))
 
-COMMAND, ARGS = __parse_cli_input()
+COMMAND, COMM_ARGS, TOP_ARGS = __parse_cli_input()
+
+CLI_TEST = TOP_ARGS[0]
 
 if COMMAND is Commands.RESONANCE:
-    DATE, MAG_VARS, PLOT_DEPTH = ARGS                   #pylint: disable=unbalanced-tuple-unpacking
+    DATE, MAG_VARS, PLOT_DEPTH = COMM_ARGS              #pylint: disable=unbalanced-tuple-unpacking
 elif COMMAND is Commands.SPATIAL:
-    DATE, COMPONENTS = ARGS                             #pylint: disable=unbalanced-tuple-unpacking
+    DATE, COMPONENTS = COMM_ARGS                        #pylint: disable=unbalanced-tuple-unpacking
 
 #endregion
 
