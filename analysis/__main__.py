@@ -48,7 +48,7 @@ def __resolve_dates(values: list[str]) -> list[str]:
     if "..." in values:
 
         start_date, end_date = values[0], values[2]
-        all_dates = os.listdir(anl.paths.top.results_root())
+        all_dates = sorted(os.listdir(anl.paths.top.results_root()))
 
         return all_dates[all_dates.index(start_date) : all_dates.index(end_date) + 1]
 
