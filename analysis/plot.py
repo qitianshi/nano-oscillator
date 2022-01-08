@@ -211,7 +211,7 @@ def plot_spatial_line(
     y_index: int = None,
     component: str = "z",
     filename: str = None,
-    save: bool = True,
+    save_to: str = None,
     show_plot: bool = False,
     slices: int = None
 ):
@@ -260,9 +260,6 @@ def plot_spatial_line(
         ylabel = f"{filename} (" + headers["valueunits"][0] + ")"
 
         plot_data.insert(0, line_index, xvar)
-
-    if save:
-        save_to = paths.plots.spatial_line(filename, component, line_index, date)
 
     plot_xy(
         [read.AttributedData(plot_data, x_var=line_index, y_vars=[str(yvar_name)])],
