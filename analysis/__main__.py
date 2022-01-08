@@ -174,7 +174,6 @@ def __parse_cli_input() -> tuple[str, list[str], int, bool]:
     comm_spatialline.add_argument(
         "--quantity",
         type=str,
-        nargs=1,
         help="the quantity to be plotted"
     )
 
@@ -194,7 +193,6 @@ def __parse_cli_input() -> tuple[str, list[str], int, bool]:
         "-x",
         dest="x_val",
         type=int,
-        nargs=1,
         help="plots a vertical line of values with the given x-value"
     )
 
@@ -202,7 +200,6 @@ def __parse_cli_input() -> tuple[str, list[str], int, bool]:
         "-y",
         dest="y_val",
         type=int,
-        nargs=1,
         help="plots a horizontal line of values with the given y-value"
     )
 
