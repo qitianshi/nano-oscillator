@@ -213,7 +213,15 @@ def plot_linearspace(
     filename: str = None,
     slices: int = None
 ):
-    """Plots the graphs of spatial data against the x or y index of the cells"""
+    """Plots the graphs of spatial data against the x or y index of the cells.
+
+    Args:
+        xindex: the column index of data (starts at 0), equivalent to drawing a line of x=... on
+            the table of values
+        yindex: the row index of data (starts at 0), equivalent to drawing a line of y=... on
+            the table of values
+
+    """
 
     # Creates a Pandas dataframe with the B_ext data as a column
     if yindex is None:
@@ -309,7 +317,7 @@ def plot_image(
         )
         ax.set_yticks(yticks, yticks)
 
-    data = data.iloc[yindexes[0] : yindexes[1], xindexes[0] : xindexes[1]]
+    data = data.iloc[yindexes[0] : yindexes[1] + 1, xindexes[0] : xindexes[1] + 1]
 
     plot = plt.imshow(data, cmap=cmap_name,
         extent=[xticks.min(), xticks.max(), yticks.min(), yticks.max()]
