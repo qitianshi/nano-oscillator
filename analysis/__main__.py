@@ -15,6 +15,7 @@ class Commands(Enum):
 
     RESONANCE = auto()
     SPATIAL = auto()
+    SPATIALLINE = auto()
 
 
 def __validate_date(value: list[str], arg_obj):
@@ -94,7 +95,12 @@ def __parse_cli_input() -> tuple[str, list[str], int, bool]:
 
     comm_spatial = subparser.add_parser(
         "spatial",
-        description=("Analyses of spatial magnetization data.")
+        description="Analyses of spatial magnetization data."
+    )
+
+    comm_spatialline = subparser.add_parser(
+        "spatialline",
+        description="Plots a line of values in spatial data."
     )
 
     # Top-level args
@@ -106,7 +112,7 @@ def __parse_cli_input() -> tuple[str, list[str], int, bool]:
         help="activates CLI test mode; analysis functions will not be run."
     )
 
-    # Resonance args
+    # resonance args
 
     argobj_resonance_dates = comm_resonance.add_argument(
         "date",
@@ -135,7 +141,7 @@ def __parse_cli_input() -> tuple[str, list[str], int, bool]:
         help="the number of split levels to plot, defaults to 1"
     )
 
-    # Spatial args
+    # spatial args
 
     argobj_spatial_dates = comm_spatial.add_argument(
         "date",
