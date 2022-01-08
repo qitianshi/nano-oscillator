@@ -8,6 +8,23 @@ from time import time
 
 import analysis as anl
 
+#region Internal functions
+
+def timed_run(anl_funcs):
+    """Runs all analyses."""
+
+    t_init = time()
+
+    for func in anl_funcs:
+        t_start = time()
+        func()
+        print(f"  Done in {time() - t_start:.1f}s.")
+
+    print(f"Finished {len(anl_funcs)} {'analysis' if len(anl_funcs) == 1 else 'analyses'} in", \
+        f"{time() - t_init:.1f}s.")
+
+#endregion
+
 #region Command line
 
 class Commands(Enum):
@@ -112,29 +129,9 @@ def __parse_cli_input() -> tuple[str, list[str], int, bool]:
 COMMAND, ARGS = __parse_cli_input()
 
 if COMMAND is Commands.RESONANCE:
-
     DATE, MAG_VARS, PLOT_DEPTH = ARGS                   #pylint: disable=unbalanced-tuple-unpacking
-
-    print(
-        "Running analysis (resonance) with parameters:",
-        f"date: {DATE.__repr__()}",
-        f"mag-vars: {MAG_VARS.__repr__()}",
-        f"plot-depth: {PLOT_DEPTH.__repr__()}",
-        sep='\n  ',
-        end='\n\n'
-    )
-
 elif COMMAND is Commands.SPATIAL:
-
     DATE, COMPONENTS = ARGS                             #pylint: disable=unbalanced-tuple-unpacking
-
-    print(
-        "Running analysis (spatial) with parameters:",
-        f"date: {DATE.__repr__()}",
-        f"components: {COMPONENTS.__repr__()}",
-        sep='\n  ',
-        end='\n\n'
-    )
 
 #endregion
 
@@ -385,18 +382,24 @@ def __plot_spatial():
 
 #region Run
 
-def timed_run():
-    """Runs all analyses."""
+if COMMAND is Commands.RESONANCE:
 
-    anl_funcs = [
+    print(
+        "Running analysis (resonance) with parameters:",
+        f"date: {DATE.__repr__()}",
+        f"mag-vars: {MAG_VARS.__repr__()}",
+        f"plot-depth: {PLOT_DEPTH.__repr__()}",
+        sep='\n  ',
+        end='\n\n'
+    )
+
+    timed_run([
         __fetch_raw,
         __convert_table_txt,
         __split_phi,
         __split_phi_fRF,
         __calc_amp,
         __calc_mag_fit,
-        __convert_npy,
-        __create_json,
         __plot_mag,
         __plot_MaxAngle,
         __plot_mag_phi,
@@ -404,20 +407,23 @@ def timed_run():
         __plot_amp,
         __plot_MaxAmp,
         __plot_fitted_amp,
-        __plot_spatial,
         __plotcheck_fitted_amp
-    ]
+    ])
 
-    t_init = time()
+elif COMMAND is Commands.SPATIAL:
 
-    for func in anl_funcs:
-        t_start = time()
-        func()
-        print(f"  Done in {time() - t_start:.1f}s.")
+    print(
+        "Running analysis (spatial) with parameters:",
+        f"date: {DATE.__repr__()}",
+        f"components: {COMPONENTS.__repr__()}",
+        sep='\n  ',
+        end='\n\n'
+    )
 
-    print(f"Finished {len(anl_funcs)} {'analysis' if len(anl_funcs) == 1 else 'analyses'} in", \
-        f"{time() - t_init:.1f}s.")
-
-timed_run()
+    timed_run([
+        __convert_npy,
+        __create_json,
+        __plot_spatial
+    ])
 
 #endregion
