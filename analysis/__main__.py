@@ -103,6 +103,11 @@ def __parse_cli_input() -> tuple[str, list[str], int, bool]:
         description="Plots a line of values in spatial data."
     )
 
+    comm_preparse = subparser.add_parser(
+        "preparse",
+        description="Readies mumax3 output before being uploaded."
+    )
+
     # Top-level args
 
     parser.add_argument(
