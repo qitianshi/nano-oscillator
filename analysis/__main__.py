@@ -235,10 +235,10 @@ def __parse_cli_input() -> tuple[str, list[str], int, bool]:
 
         comm_args = [args.date, args.quantity, args.components]
 
-        if args.x_vals is not None:
-            comm_args.extend(("x", args.x_vals))
-        elif args.y_vals is not None:
-            comm_args.extend("y", args.y_vals)
+        if args.x_val is not None:
+            comm_args.extend(("x", args.x_val))
+        elif args.y_val is not None:
+            comm_args.extend("y", args.y_val)
 
         return (Commands.SPATIALLINE, tuple(comm_args), (args.cli_test,))
 
