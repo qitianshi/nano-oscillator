@@ -2,27 +2,121 @@
 
 import argparse
 import os
+from enum import Enum, auto
 from sys import exit
 from time import time
 
 import analysis as anl
 
+#region Internals
+
+class Commands(Enum):
+    """CLI commands."""
+
+    RESONANCE = auto()
+    SPATIAL = auto()
+
+
+def __validate_date(value: list[str], arg_obj):
+
+    if "..." in value and (value.count("...") > 1 or value.index("...") != 1 or len(value) != 3):
+        raise argparse.ArgumentError(
+            arg_obj, "Ranged dates must be in the format 'DATE_1 ... DATE_2'")
+
+
+def __validate_arg_options(value, arg_obj, accept_vals):
+
+    if any(i not in accept_vals for i in value):
+
+        rejected_mag_vars = list(set(value) - set(accept_vals))
+
+        raise argparse.ArgumentError(
+                arg_obj,
+                f"{', '.join(rejected_mag_vars)}"
+                + f" {'does not' if len(rejected_mag_vars) == 1 else 'do not'}"
+                + f" match valid values: {', '.join(accept_vals)}"
+            )
+
+
+def __resolve_dates(values: list[str]) -> list[str]:
+
+    # Checks that simulation date exists.
+    for val in values:
+        if val != "..." and (not os.path.exists(anl.paths.top.result_dir(val))):
+            exit(f"Error: no result was found for '{val}'.")
+
+    if "..." in values:
+
+        start_date, end_date = values[0], values[2]
+        all_dates = sorted(os.listdir(anl.paths.top.results_root()))
+
+        return all_dates[all_dates.index(start_date) : all_dates.index(end_date) + 1]
+
+    else:
+        return values
+
+
+def __timed_run(anl_funcs):
+    """Runs all analyses."""
+
+    t_init = time()
+
+    if not CLI_TEST:
+
+        for func in anl_funcs:
+            t_start = time()
+            func()
+            print(f"  Done in {time() - t_start:.1f}s.")
+
+        print(f"Finished {len(anl_funcs)} {'analysis' if len(anl_funcs) == 1 else 'analyses'} in",
+              f"{time() - t_init:.1f}s.\n")
+
+    else:
+        print(
+            "CLI test mode is active.",
+            f"Analysis functions: {[func.__name__ for func in anl_funcs]}\n"
+        )
+
+#endregion
 
 #region Command line
 
 def __parse_cli_input() -> tuple[str, list[str], int, bool]:
 
-    cli_parser = argparse.ArgumentParser(prog="analysis", description="Runs all analyses.")
+    parser = argparse.ArgumentParser(prog="analysis", description="Runs analyses of mumax3 data.")
+    subparser = parser.add_subparsers(dest="command")
 
-    cli_parser.add_argument(
-        "date",
-        type=str,
-        nargs='?',
-        default=anl.paths.top.latest_date(),
-        help="the date of the simulation (YYYY-MM-DD_hhmm), defaults to latest"
+    comm_resonance = subparser.add_parser(
+        "resonance",
+        description=(
+            "Analyses for characterizing resonance characteristics of the nano-constriction.")
     )
 
-    cli_arg_mag_vars = cli_parser.add_argument(
+    comm_spatial = subparser.add_parser(
+        "spatial",
+        description=("Analyses of spatial magnetization data.")
+    )
+
+    # Top-level args
+
+    parser.add_argument(
+        "--cli-test",
+        dest="cli_test",
+        action="store_true",
+        help="activates CLI test mode; analysis functions will not be run."
+    )
+
+    # Resonance args
+
+    argobj_resonance_dates = comm_resonance.add_argument(
+        "date",
+        type=str,
+        nargs='*',
+        default=[anl.paths.top.latest_date()],
+        help="the list of dates to analyze (YYYY-MM-DD_hhmm), defaults to latest"
+    )
+
+    argobj_mag_vars = comm_resonance.add_argument(
         "--mag-vars",
         dest="mag_vars",
         type=str,
@@ -32,7 +126,7 @@ def __parse_cli_input() -> tuple[str, list[str], int, bool]:
         help="magnetization components to plot and analyze, any of: mx my mz, defaults to all"
     )
 
-    cli_parser.add_argument(
+    comm_resonance.add_argument(
         "--plot-depth",
         dest="plot_depth",
         type=int,
@@ -41,51 +135,57 @@ def __parse_cli_input() -> tuple[str, list[str], int, bool]:
         help="the number of split levels to plot, defaults to 1"
     )
 
-    cli_parser.add_argument(
-        "--skip-spatial",
-        dest="skip_spatial",
-        action="store_true",
-        help="skips analysis of spatial data"
+    # Spatial args
+
+    argobj_spatial_dates = comm_spatial.add_argument(
+        "date",
+        type=str,
+        nargs='*',
+        default=[anl.paths.top.latest_date()],
+        help="the list of dates to analyze (YYYY-MM-DD_hhmm), defaults to latest"
     )
 
-    cli_args = cli_parser.parse_args()
+    argobj_components = comm_spatial.add_argument(
+        "--components",
+        dest="components",
+        type=str,
+        nargs='+',
+        required=False,
+        default=["x", "y", "z"],
+        help="magnetization components to plot and analyze, any of: x y z, defaults to all"
+    )
 
-    if not os.path.exists(anl.paths.top.result_dir(cli_args.date)):
-        exit(f"Error: no result was found for '{cli_args.date}'.")
+    args = parser.parse_args()
 
-    acceptable_mag_vars = ("mx", "my", "mz")
-    if any(i not in acceptable_mag_vars for i in cli_args.mag_vars):
-        rejected_mag_vars = list(set(cli_args.mag_vars) - set(acceptable_mag_vars))
-        raise argparse.ArgumentError(
-            cli_arg_mag_vars,
-            f"{', '.join(rejected_mag_vars)}"
-            + f" {'does not' if len(rejected_mag_vars) == 1 else 'do not'}"
-            + f" match valid values: {', '.join(acceptable_mag_vars)}"
-        )
+    if args.command is None:
+        parser.print_help()
+        exit(2)
 
-    return (cli_args.date, cli_args.mag_vars, cli_args.plot_depth, cli_args.skip_spatial)
+    if args.command == "resonance":
 
-DATE, MAG_VARS, PLOT_DEPTH, SKIP_SPATIAL = __parse_cli_input()
+        __validate_date(args.date, argobj_resonance_dates)
+        __validate_arg_options(args.mag_vars, argobj_mag_vars, ("mx", "my", "mz"))
 
-print(
-    "Running analysis with parameters:",
-    f"date: {DATE.__repr__()}",
-    f"mag-vars: {MAG_VARS.__repr__()}",
-    f"plot-depth: {PLOT_DEPTH.__repr__()}",
-    f"skip-spatial: {SKIP_SPATIAL.__repr__()}",
-    sep='\n  ',
-    end='\n\n'
-)
+        return (Commands.RESONANCE, (args.date, args.mag_vars, args.plot_depth), (args.cli_test,))
+
+    if args.command == "spatial":
+
+        __validate_date(args.date, argobj_spatial_dates)
+        __validate_arg_options(args.components, argobj_components, ("x", "y", "z"))
+
+        return (Commands.SPATIAL, (args.date, args.components), (args.cli_test,))
 
 #endregion
 
-#region Fetching refs
+#region Refs
 
 def __fetch_raw():
     print("Fetching raw data from Google Drive...")
     anl.fetch.fetch_raw(DATE)
 
 #endregion
+
+#region Resonance
 
 #region Splits and calculations
 
@@ -114,24 +214,6 @@ def __calc_mag_fit():
     print("Calculating curve-fit for amplitudes...")
     for mag in MAG_VARS:
         anl.fit.fit_cauchy(mag_var=mag, xlim=[3.5e9, 6.0e9], date=DATE)
-
-
-def __convert_npy():
-    print("Covnerting all .npy files to .tsv files")
-
-    if not SKIP_SPATIAL:
-        anl.geom.convert_npy(DATE)
-    else:
-        print("Skipped.")
-
-
-def __create_json():
-    print("Creating the json file...")
-
-    if not SKIP_SPATIAL:
-        anl.write.write_json(DATE)
-    else:
-        print("Skipped.")
 
 #endregion
 
@@ -246,44 +328,6 @@ def __plot_fitted_amp():
         )
 
 
-def __plot_spatial():
-    print("Plotting all spatial distribution data...")
-
-    if not SKIP_SPATIAL:
-        for filename in os.listdir(anl.paths.spatial.root(DATE)):
-            if not filename.endswith("json"):
-                for component in MAG_VARS:
-                    component = component.strip("m")
-                    try:
-                        anl.plot.plot_image(
-                            anl.read.read_data(
-                                anl.paths.spatial.spatial_path(filename, component, None, DATE)
-                            ),
-                            xlabel="x (m)",
-                            ylabel="y (m)",
-                            title=filename + " (T)",
-                            save_to=anl.paths.plots.spatial_dir(
-                                filename, component, DATE
-                            ),
-                            xindexes=[150, 362],
-                            yindexes=[150, 362],
-                            show_plot=False,
-                            date=DATE
-                        )
-                    except FileNotFoundError as err:
-                        if len(
-                            os.listdir(os.path.join(anl.paths.spatial.root(DATE), filename))
-                        ) > 0:
-                            #TODO: add in condition to look for x, y or z in the name
-                            print(
-                                f"{component} not found for {filename}. Component skipped.")
-                        else:
-                            raise err
-
-    else:
-        print("Skipped.")
-
-
 #endregion
 
 #region Calibration checks
@@ -320,41 +364,130 @@ def __plotcheck_fitted_amp():
 
 #endregion
 
+#endregion Resonance
+
+#region Spatial
+
+#region Conversions
+
+def __convert_npy():
+    print("Converting all .npy files to .tsv files")
+    anl.geom.convert_npy(DATE)
+
+
+def __create_json():
+    print("Creating the json file...")
+    anl.write.write_json(DATE)
+
+#endregion
+
+#region Plots
+
+def __plot_spatial():
+    print("Plotting all spatial distribution data...")
+
+    for filename in os.listdir(anl.paths.spatial.root(DATE)):
+        if not filename.endswith("json"):
+            for component in COMPONENTS:
+                try:
+                    anl.plot.plot_image(
+                        anl.read.read_data(
+                            anl.paths.spatial.spatial_path(
+                                filename, component, None, DATE)
+                        ),
+                        xlabel="x (m)",
+                        ylabel="y (m)",
+                        title=filename + " (T)",
+                        save_to=anl.paths.plots.spatial_dir(
+                            filename, component, DATE
+                        ),
+                        xindexes=[150, 362],
+                        yindexes=[150, 362],
+                        show_plot=False,
+                        date=DATE
+                    )
+                except FileNotFoundError as err:
+                    if len(
+                        os.listdir(os.path.join(
+                            anl.paths.spatial.root(DATE), filename))
+                    ) > 0:
+                        #TODO: Add in condition to look for x, y or z in the name
+                        print(
+                            f"{component} not found for {filename}. Component skipped.")
+                    else:
+                        raise err
+
+#endregion
+
+#endregion Spatial
+
 #region Run
 
-def timed_run():
-    """Runs all analyses."""
+COMMAND, COMM_ARGS, TOP_ARGS = __parse_cli_input()
 
-    anl_funcs = [
-        __fetch_raw,
-        __convert_table_txt,
-        __split_phi,
-        __split_phi_fRF,
-        __calc_amp,
-        __calc_mag_fit,
-        __convert_npy,
-        __create_json,
-        __plot_mag,
-        __plot_MaxAngle,
-        __plot_mag_phi,
-        __plot_mag_phi_fRF,
-        __plot_amp,
-        __plot_MaxAmp,
-        __plot_fitted_amp,
-        __plot_spatial,
-        __plotcheck_fitted_amp
-    ]
+if COMMAND is Commands.RESONANCE:
+    date_arg, MAG_VARS, PLOT_DEPTH = COMM_ARGS          #pylint: disable=unbalanced-tuple-unpacking
+elif COMMAND is Commands.SPATIAL:
+    date_arg, COMPONENTS = COMM_ARGS                    #pylint: disable=unbalanced-tuple-unpacking
 
-    t_init = time()
+DATES = __resolve_dates(date_arg)
+CLI_TEST = TOP_ARGS[0]
 
-    for func in anl_funcs:
-        t_start = time()
-        func()
-        print(f"  Done in {time() - t_start:.1f}s.")
+if len(DATES) > 1:
+    print(f"Running analysis for {len(DATES)} dates: {DATES}. \n")
 
-    print(f"Finished {len(anl_funcs)} {'analysis' if len(anl_funcs) == 1 else 'analyses'} in", \
-        f"{time() - t_init:.1f}s.")
+if COMMAND is Commands.RESONANCE:
 
-timed_run()
+    #TODO: Modifying DATE directly is very hacky.
+
+    for date in DATES:
+
+        DATE = date
+
+        print(
+            "Running analysis (resonance) with parameters:",
+            f"date: {DATE.__repr__()}",
+            f"mag-vars: {MAG_VARS.__repr__()}",
+            f"plot-depth: {PLOT_DEPTH.__repr__()}",
+            sep='\n  ',
+            end='\n\n'
+        )
+
+        __timed_run([
+            __fetch_raw,
+            __convert_table_txt,
+            __split_phi,
+            __split_phi_fRF,
+            __calc_amp,
+            __calc_mag_fit,
+            __plot_mag,
+            __plot_MaxAngle,
+            __plot_mag_phi,
+            __plot_mag_phi_fRF,
+            __plot_amp,
+            __plot_MaxAmp,
+            __plot_fitted_amp,
+            __plotcheck_fitted_amp
+        ])
+
+elif COMMAND is Commands.SPATIAL:
+
+    for date in DATES:
+
+        DATE = date
+
+        print(
+            "Running analysis (spatial) with parameters:",
+            f"date: {DATE.__repr__()}",
+            f"components: {COMPONENTS.__repr__()}",
+            sep='\n  ',
+            end='\n\n'
+        )
+
+        __timed_run([
+            __convert_npy,
+            __create_json,
+            __plot_spatial
+        ])
 
 #endregion
