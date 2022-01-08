@@ -17,6 +17,13 @@ class Commands(Enum):
     SPATIAL = auto()
 
 
+def __validate_date(value: list[str], arg_obj):
+
+    if "..." in value and (value.count("...") > 1 or value.index("...") != 1 or len(value) > 3):
+            raise argparse.ArgumentError(
+                arg_obj, "Ranged dates must be in the format 'DATE_1 ... DATE_2'")
+
+
 def __validate_arg_options(value, arg_obj, accept_vals):
 
     if any(i not in accept_vals for i in value):
@@ -29,13 +36,6 @@ def __validate_arg_options(value, arg_obj, accept_vals):
                 + f" {'does not' if len(rejected_mag_vars) == 1 else 'do not'}"
                 + f" match valid values: {', '.join(accept_vals)}"
             )
-
-
-def __validate_date(value: list[str], arg_obj):
-
-    if value.count("...") > 1 or value.index("...") != 1 or len(value) > 3:
-        raise argparse.ArgumentError(
-            arg_obj, "Ranged dates must be in the format 'DATE_1 ... DATE_2'")
 
 
 def __resolve_dates(values: list[str]) -> list[str]:
@@ -99,12 +99,12 @@ def __parse_cli_input() -> tuple[str, list[str], int, bool]:
 
     # Resonance args
 
-    comm_resonance.add_argument(
+    argobj_resonance_dates = comm_resonance.add_argument(
         "date",
         type=str,
-        nargs='?',
-        default=anl.paths.top.latest_date(),
-        help="the date of the simulation (YYYY-MM-DD_hhmm), defaults to latest"
+        nargs='*',
+        default=[anl.paths.top.latest_date()],
+        help="the list of dates to analyze (YYYY-MM-DD_hhmm), defaults to latest"
     )
 
     argobj_mag_vars = comm_resonance.add_argument(
@@ -128,12 +128,12 @@ def __parse_cli_input() -> tuple[str, list[str], int, bool]:
 
     # Spatial args
 
-    comm_spatial.add_argument(
+    argobj_spatial_dates = comm_spatial.add_argument(
         "date",
         type=str,
-        nargs='?',
-        default=anl.paths.top.latest_date(),
-        help="the date of the simulation (YYYY-MM-DD_hhmm), defaults to latest"
+        nargs='*',
+        default=[anl.paths.top.latest_date()],
+        help="the list of dates to analyze (YYYY-MM-DD_hhmm), defaults to latest"
     )
 
     argobj_components = comm_spatial.add_argument(
@@ -150,12 +150,14 @@ def __parse_cli_input() -> tuple[str, list[str], int, bool]:
 
     if args.command == "resonance":
 
+        __validate_date(args.date, argobj_resonance_dates)
         __validate_arg_options(args.mag_vars, argobj_mag_vars, ("mx", "my", "mz"))
 
         return (Commands.RESONANCE, (args.date, args.mag_vars, args.plot_depth), (args.cli_test,))
 
     if args.command == "spatial":
 
+        __validate_date(args.date, argobj_spatial_dates)
         __validate_arg_options(args.components, argobj_components, ("x", "y", "z"))
 
         return (Commands.SPATIAL, (args.date, args.components), (args.cli_test,))
