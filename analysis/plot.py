@@ -173,6 +173,10 @@ def plot_function(
         (See plot_xy docs for other parameters.)
     """
 
+    if isinstance(params, str):
+        raise TypeError(
+            f"'str' is an invalid argument type for `params`. Perhaps you meant ['{params}']?")
+
     steps = 100
     x_vals = np.linspace(*domain, steps)
     ind_var = data.columns[0]           # Independent variable

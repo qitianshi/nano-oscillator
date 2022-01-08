@@ -7,6 +7,11 @@ from analysis.paths import top
 
 def plot_dir(date: str = None, subs: list[str] = None) -> str:
     """Returns the path of aggregate plots."""
+
+    if isinstance(subs, str):
+        raise TypeError(
+            f"'str' is an invalid argument type for `subs`. Perhaps you meant ['{subs}']?")
+
     return os.path.join(top.result_dir(date), "plots", *(subs if subs is not None else []))
 
 
