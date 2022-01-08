@@ -537,10 +537,6 @@ def __plot_spatial_line():
     print("Plotting spatial line...")
 
     for component in COMPONENTS:
-        if AXIS == 'x':
-            line_index = 'y'
-        else:
-            line_index = 'x'
 
         anl.plot.plot_spatial_line(
             date=DATE,
@@ -548,8 +544,12 @@ def __plot_spatial_line():
             y_index=AXIS_VAL if AXIS == 'y' else None,
             component=component,
             filename=QUANTITY,
-            save_to = anl.paths.plots.spatial_line(QUANTITY, component, line_index, date) \
-                if SAVE else None,
+            save_to = anl.paths.plots.spatial_line(
+                filename=QUANTITY,
+                component=component,
+                index=('y' if AXIS == 'x' else 'x'),
+                date=date
+            ) if SAVE else None,
             show_plot=SHOW,
         )
 
