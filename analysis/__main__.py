@@ -211,15 +211,13 @@ def __parse_cli_input() -> tuple:
 
     comm_spatialline.add_argument(
         "--show",
-        type=bool,
-        required=False,
+        action="store_true",
         help="whether to show the plot or not"
     )
 
     comm_spatialline.add_argument(
         "--save",
-        type=bool,
-        required=False,
+        action="store_true",
         help="whether to save the plot or not"
     )
 
@@ -287,7 +285,7 @@ def __parse_cli_input() -> tuple:
         elif args.y_val is not None:
             comm_args.extend(("y", args.y_val))
 
-        return (Commands.SPATIALLINE, (comm_args,), (args.cli_test,))
+        return (Commands.SPATIALLINE, list(comm_args,), (args.cli_test,))
 
     if args.command == "preparse":
 
@@ -539,6 +537,10 @@ def __plot_spatial_line():
     print("Plotting spatial line...")
 
     for component in COMPONENTS:
+        if AXIS == 'x':
+            line_index = 'y'
+        else:
+            line_index = 'x'
 
         anl.plot.plot_spatial_line(
             date=DATE,
@@ -546,7 +548,8 @@ def __plot_spatial_line():
             y_index=AXIS_VAL if AXIS == 'y' else None,
             component=component,
             filename=QUANTITY,
-            save = SAVE,
+            save_to = anl.paths.plots.spatial_line(QUANTITY, component, line_index, date)
+                if SAVE else None,
             show_plot=SHOW,
         )
 
@@ -647,8 +650,8 @@ elif COMMAND is Commands.SPATIALLINE:
             f"date: {DATE.__repr__()}",
             f"quantity: {QUANTITY.__repr__()}",
             f"components: {COMPONENTS.__repr__()}",
-            f"components: {SHOW.__repr__()}",
-            f"components: {SAVE.__repr__()}",
+            f"show: {SHOW.__repr__()}",
+            f"save: {SAVE.__repr__()}",
             f"axis: {AXIS.__repr__()}",
             f"axis_val: {AXIS_VAL.__repr__()}",
             sep='\n  ',
