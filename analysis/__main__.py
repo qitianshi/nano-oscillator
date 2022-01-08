@@ -85,7 +85,7 @@ def __timed_run(anl_funcs):
 def __parse_cli_input() -> tuple[str, list[str], int, bool]:
 
     parser = argparse.ArgumentParser(prog="analysis", description="Runs analyses of mumax3 data.")
-    subparser = parser.add_subparsers(dest="command")
+    subparser = parser.add_subparsers(dest="command", required=True)
 
     comm_resonance = subparser.add_parser(
         "resonance",
@@ -207,10 +207,6 @@ def __parse_cli_input() -> tuple[str, list[str], int, bool]:
     # Parsing
 
     args = parser.parse_args()
-
-    if args.command is None:
-        parser.print_help()
-        exit(1)
 
     if args.command == "resonance":
 
