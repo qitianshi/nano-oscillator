@@ -178,7 +178,7 @@ def __parse_cli_input() -> tuple[str, list[str], int, bool]:
         help="the quantity to be plotted"
     )
 
-    argobj_spatialline_components = comm_spatial.add_argument(
+    argobj_spatialline_components = comm_spatialline.add_argument(
         "--components",
         dest="components",
         type=str,
