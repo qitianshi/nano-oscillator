@@ -546,7 +546,7 @@ def __plot_spatial_line():
             y_index=AXIS_VAL if AXIS == 'y' else None,
             component=component,
             filename=QUANTITY,
-            save_to = SAVE,
+            save = SAVE,
             show_plot=SHOW,
         )
 
