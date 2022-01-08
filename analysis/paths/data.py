@@ -1,6 +1,7 @@
 """Data and datasets."""
 
 import os
+import warnings
 
 from analysis.paths import top
 
@@ -35,7 +36,15 @@ def dataset_dir(date: str = None, vals: dict[str, str] = None) -> tuple[str, tup
     """
 
     if vals is None:
+
+        warnings.warn(
+            "Using `dataset_dir` to return the path of the raw data directory is deprecated and"
+            + " will be removed in the future. Use `paths.top.raw` instead.",
+            DeprecationWarning
+        )
+
         return raw(date, datum=None)
+
     else:
         return os.path.join(
             top.result_dir(date),
