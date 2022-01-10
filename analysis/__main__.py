@@ -507,9 +507,11 @@ def __plot_spatial():
 
     plot_files = []
     if QUANTITIES is None:
-        plot_files = [f for f in os.listdir(anl.paths.spatial.root(DATE)) if f.endswith("json")]
+        plot_files = [f for f in os.listdir(anl.paths.spatial.root(DATE))
+            if not f.endswith("json")]
     else:
-        plot_files = [f for f in os.listdir(anl.paths.spatial.root(DATE)) if f in QUANTITIES]
+        plot_files = [f for f in os.listdir(anl.paths.spatial.root(DATE))
+            if not f.endswith("json") and f.strip(".tsv") in QUANTITIES]
 
     # Checks if plot_files is empty.
     if not plot_files:
