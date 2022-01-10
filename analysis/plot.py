@@ -229,16 +229,16 @@ def plot_spatial_line(
     # Creates a Pandas dataframe with the B_ext data as a column
     if y_index is None:
         # Vertical line
-        line_index = "y"
-        yvar_name = x_index
+        line_index_name = "y"
+        line_index = x_index
         plot_data = read.read_data(
                 paths.spatial.spatial_path(filename, component, slices, date)
         ).iloc[:, x_index].to_frame(str(x_index))
 
     elif x_index is None:
         # Horizontal line
-        line_index = "x"
-        yvar_name = y_index
+        line_index_name = "x"
+        line_index = y_index
         plot_data = read.read_data(
                 paths.spatial.spatial_path(filename, component, slices, date)
         ).iloc[y_index, :].to_frame(str(y_index))
@@ -251,24 +251,23 @@ def plot_spatial_line(
         headers = json.load(file)
 
         xvar = np.arange(
-            float(headers[f"{line_index}min"]),
-            float(headers[f"{line_index}max"]),
-            float(headers[f"{line_index}stepsize"])
+            float(headers[f"{line_index_name}min"]),
+            float(headers[f"{line_index_name}max"]),
+            float(headers[f"{line_index_name}stepsize"])
         )
 
-        xlabel = f"{line_index} (" + headers["meshunit"] + ")"
+        xlabel = f"{line_index_name} (" + headers["meshunit"] + ")"
         ylabel = f"{filename} (T)"
         #TODO: make the y axis units an option
 
-        plot_data.insert(0, line_index, xvar)
+        plot_data.insert(0, line_index_name, xvar)
 
     plot_xy(
-        [read.AttributedData(plot_data, x_var=line_index, y_vars=[str(yvar_name)])],
+        [read.AttributedData(plot_data, x_var=line_index_name, y_vars=[str(line_index)])],
         xlabel,
         ylabel,
         xstep=0.2e-06,
-        save_to=save_to,
-        show_plot=show_plot
+        save_to=paths.plots.linearspace_dir(filename, component, line_index_name, line_index, date)
     )
 
 
