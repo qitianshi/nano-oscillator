@@ -505,36 +505,44 @@ def __convert_npy():
 def __plot_spatial():
     print("Plotting all spatial distribution data...")
 
-    for filename in os.listdir(anl.paths.spatial.root(DATE)):
-        if not filename.endswith("json"):
-            for component in COMPONENTS:
-                try:
-                    anl.plot.plot_image(
-                        anl.read.read_data(
-                            anl.paths.spatial.spatial_path(
-                                filename, component, None, DATE)
-                        ),
-                        xlabel="x (m)",
-                        ylabel="y (m)",
-                        title=filename + " (T)",
-                        save_to=anl.paths.plots.spatial_dir(
-                            filename, component, DATE
-                        ),
-                        xindexes=[150, 362],
-                        yindexes=[150, 362],
-                        show_plot=False,
-                        date=DATE
-                    )
-                except FileNotFoundError as err:
-                    if len(
-                        os.listdir(os.path.join(
-                            anl.paths.spatial.root(DATE), filename))
-                    ) > 0:
-                        #TODO: Add in condition to look for x, y or z in the name
-                        print(
-                            f"{component} not found for {filename}. Component skipped.")
-                    else:
-                        raise err
+    plot_files = []
+    if QUANTITIES is None:
+        plot_files = [f for f in os.listdir(anl.paths.spatial.root(DATE)) if f.endswith("json")]
+    else:
+        plot_files = [f for f in os.listdir(anl.paths.spatial.root(DATE)) if f in QUANTITIES]
+
+    # Checks if plot_files is empty.
+    if not plot_files:
+        print("No data matches the requested patterns.")
+
+    for filename in plot_files:
+        for component in COMPONENTS:
+
+            try:
+
+                anl.plot.plot_image(
+                    anl.read.read_data(
+                        anl.paths.spatial.spatial_path(
+                            filename, component, None, DATE)
+                    ),
+                    xlabel="x (m)",
+                    ylabel="y (m)",
+                    title=filename + " (T)",
+                    save_to=anl.paths.plots.spatial_dir(
+                        filename, component, DATE
+                    ),
+                    xindexes=[150, 362],
+                    yindexes=[150, 362],
+                    show_plot=False,
+                    date=DATE
+                )
+
+            except FileNotFoundError:
+
+                print(f"{component} not found for {filename}. Component skipped.")
+
+                #TODO: Check that it's only the singular component that is not found.
+                #      Otherwise the error should still be raised.
 
 #endregion
 
