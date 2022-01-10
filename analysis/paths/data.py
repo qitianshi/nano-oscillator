@@ -32,7 +32,7 @@ def dataset_dir(date: str = None, vals: dict[str, str] = None) -> tuple[str, tup
 
     Returns:
         str: The path of the requested dataset. The path stops at the first
-        item in `vals` whose value is `None`.
+          item in `vals` whose value is `None`.
     """
 
     if vals is None:

@@ -8,13 +8,16 @@ from time import time
 
 import analysis as anl
 
+
 #region Internals
 
 class Commands(Enum):
     """CLI commands."""
 
+    PREPARSE = auto()
     RESONANCE = auto()
     SPATIAL = auto()
+    SPATIALLINE = auto()
 
 
 def __validate_date(value: list[str], arg_obj):
@@ -24,7 +27,7 @@ def __validate_date(value: list[str], arg_obj):
             arg_obj, "Ranged dates must be in the format 'DATE_1 ... DATE_2'")
 
 
-def __validate_arg_options(value, arg_obj, accept_vals):
+def __validate_arg_list(value: list, arg_obj, accept_vals: list):
 
     if any(i not in accept_vals for i in value):
 
@@ -36,6 +39,13 @@ def __validate_arg_options(value, arg_obj, accept_vals):
                 + f" {'does not' if len(rejected_mag_vars) == 1 else 'do not'}"
                 + f" match valid values: {', '.join(accept_vals)}"
             )
+
+
+def __validate_arg_option(value, arg_obj, accept_vals: str):
+
+    if value not in accept_vals:
+        raise argparse.ArgumentError(
+            arg_obj, f"'{value}' does not match valid_values: {', '.join(accept_vals)}")
 
 
 def __resolve_dates(values: list[str]) -> list[str]:
@@ -56,7 +66,7 @@ def __resolve_dates(values: list[str]) -> list[str]:
         return values
 
 
-def __timed_run(anl_funcs):
+def __timed_run(anl_funcs: list):
     """Runs all analyses."""
 
     t_init = time()
@@ -81,10 +91,17 @@ def __timed_run(anl_funcs):
 
 #region Command line
 
-def __parse_cli_input() -> tuple[str, list[str], int, bool]:
+def __parse_cli_input() -> tuple:
+    """Parses and validates the command line interface.
+
+    Returns:
+        list: A list of length 3. The 0th item is the subcommand. The 1st item
+          is a tuple of arguments for the subcommand. The 2nd item is a tuple
+          of top-level arguments.
+    """
 
     parser = argparse.ArgumentParser(prog="analysis", description="Runs analyses of mumax3 data.")
-    subparser = parser.add_subparsers(dest="command")
+    subparser = parser.add_subparsers(dest="command", required=True)
 
     comm_resonance = subparser.add_parser(
         "resonance",
@@ -94,7 +111,17 @@ def __parse_cli_input() -> tuple[str, list[str], int, bool]:
 
     comm_spatial = subparser.add_parser(
         "spatial",
-        description=("Analyses of spatial magnetization data.")
+        description="Analyses of spatial magnetization data."
+    )
+
+    comm_spatialline = subparser.add_parser(
+        "spatialline",
+        description="Plots a line of values in spatial data."
+    )
+
+    comm_preparse = subparser.add_parser(
+        "preparse",
+        description="Readies mumax3 output before being uploaded."
     )
 
     # Top-level args
@@ -106,7 +133,7 @@ def __parse_cli_input() -> tuple[str, list[str], int, bool]:
         help="activates CLI test mode; analysis functions will not be run."
     )
 
-    # Resonance args
+    # resonance args
 
     argobj_resonance_dates = comm_resonance.add_argument(
         "date",
@@ -135,7 +162,7 @@ def __parse_cli_input() -> tuple[str, list[str], int, bool]:
         help="the number of split levels to plot, defaults to 1"
     )
 
-    # Spatial args
+    # spatial args
 
     argobj_spatial_dates = comm_spatial.add_argument(
         "date",
@@ -145,7 +172,44 @@ def __parse_cli_input() -> tuple[str, list[str], int, bool]:
         help="the list of dates to analyze (YYYY-MM-DD_hhmm), defaults to latest"
     )
 
-    argobj_components = comm_spatial.add_argument(
+    argobj_spatial_components = comm_spatial.add_argument(
+        "--components",
+        dest="components",
+        type=str,
+        nargs='+',
+        required=False,
+        default=["x", "y", "z"],
+        help="components to plot and analyze, any of: x y z, defaults to all"
+    )
+
+    comm_spatial.add_argument(
+        "--quantities",
+        dest="quantities",
+        type=str,
+        nargs='+',
+        required=False,
+        default=None,
+        help="quantities to plot, defaults to all"
+    )
+
+    # spatialline args
+
+    argobj_spatialline_dates = comm_spatialline.add_argument(
+        "date",
+        type=str,
+        nargs='*',
+        default=[anl.paths.top.latest_date()],
+        help="the list of dates to analyze (YYYY-MM-DD_hhmm), defaults to latest"
+    )
+
+    comm_spatialline.add_argument(
+        "--quantity",
+        type=str,
+        required=True,
+        help="the quantity to be plotted"
+    )
+
+    argobj_spatialline_components = comm_spatialline.add_argument(
         "--components",
         dest="components",
         type=str,
@@ -155,25 +219,90 @@ def __parse_cli_input() -> tuple[str, list[str], int, bool]:
         help="magnetization components to plot and analyze, any of: x y z, defaults to all"
     )
 
-    args = parser.parse_args()
+    comm_spatialline.add_argument(
+        "--show",
+        action="store_true",
+        help="whether to show the plot in a new window"
+    )
 
-    if args.command is None:
-        parser.print_help()
-        exit(2)
+    comm_spatialline.add_argument(
+        "--save",
+        action="store_true",
+        help="whether to save the plot"
+    )
+
+    spatialline_axis_grp = comm_spatialline.add_mutually_exclusive_group(required=True)
+
+    spatialline_axis_grp.add_argument(
+        "-x",
+        dest="x_val",
+        type=int,
+        help="plots a vertical line of values with the given x-value"
+    )
+
+    spatialline_axis_grp.add_argument(
+        "-y",
+        dest="y_val",
+        type=int,
+        help="plots a horizontal line of values with the given y-value"
+    )
+
+    # preparse args
+
+    argobj_preparse_dates = comm_preparse.add_argument(
+        "date",
+        type=str,
+        nargs='*',
+        default=[anl.paths.top.latest_date()],
+        help="the list of dates to analyze (YYYY-MM-DD_hhmm), defaults to latest"
+    )
+
+    argobj_result_type = comm_preparse.add_argument(
+        "--type",
+        dest="result_type",
+        type=str,
+        required=True,
+        help="the type of simulaton to preparse, e.g. resonance, spatial"
+    )
+
+    # Parsing
+
+    args = parser.parse_args()
 
     if args.command == "resonance":
 
         __validate_date(args.date, argobj_resonance_dates)
-        __validate_arg_options(args.mag_vars, argobj_mag_vars, ("mx", "my", "mz"))
+        __validate_arg_list(args.mag_vars, argobj_mag_vars, ("mx", "my", "mz"))
 
         return (Commands.RESONANCE, (args.date, args.mag_vars, args.plot_depth), (args.cli_test,))
 
     if args.command == "spatial":
 
         __validate_date(args.date, argobj_spatial_dates)
-        __validate_arg_options(args.components, argobj_components, ("x", "y", "z"))
+        __validate_arg_list(args.components, argobj_spatial_components, ("x", "y", "z"))
 
-        return (Commands.SPATIAL, (args.date, args.components), (args.cli_test,))
+        return (Commands.SPATIAL, (args.date, args.components, args.quantities), (args.cli_test,))
+
+    if args.command == "spatialline":
+
+        __validate_date(args.date, argobj_spatialline_dates)
+        __validate_arg_list(args.components, argobj_spatialline_components, ("x", "y", "z"))
+
+        comm_args = [args.date, args.quantity, args.components, args.show, args.save]
+
+        if args.x_val is not None:
+            comm_args.extend(("x", args.x_val))
+        elif args.y_val is not None:
+            comm_args.extend(("y", args.y_val))
+
+        return (Commands.SPATIALLINE, list(comm_args), (args.cli_test,))
+
+    if args.command == "preparse":
+
+        __validate_date(args.date, argobj_preparse_dates)
+        __validate_arg_option(args.result_type, argobj_result_type, ("resonance", "spatial"))
+
+        return (Commands.PREPARSE, (args.date, args.result_type), (args.cli_test,))
 
 #endregion
 
@@ -188,11 +317,6 @@ def __fetch_raw():
 #region Resonance
 
 #region Splits and calculations
-
-def __convert_table_txt():
-    print("Converting table.txt to table.tsv...")
-    anl.read.convert_table_txt(DATE)
-
 
 def __split_phi():
     print("Splitting by phi...")
@@ -374,11 +498,6 @@ def __convert_npy():
     print("Converting all .npy files to .tsv files")
     anl.geom.convert_npy(DATE)
 
-
-def __create_json():
-    print("Creating the json file...")
-    anl.write.write_json(DATE)
-
 #endregion
 
 #region Plots
@@ -386,55 +505,106 @@ def __create_json():
 def __plot_spatial():
     print("Plotting all spatial distribution data...")
 
-    for filename in os.listdir(anl.paths.spatial.root(DATE)):
-        if not filename.endswith("json"):
-            for component in COMPONENTS:
-                try:
-                    anl.plot.plot_image(
-                        anl.read.read_data(
-                            anl.paths.spatial.spatial_path(
-                                filename, component, None, DATE)
-                        ),
-                        xlabel="x (m)",
-                        ylabel="y (m)",
-                        title=filename + " (T)",
-                        save_to=anl.paths.plots.spatial_dir(
-                            filename, component, DATE
-                        ),
-                        xindexes=[150, 362],
-                        yindexes=[150, 362],
-                        show_plot=False,
-                        date=DATE
-                    )
-                except FileNotFoundError as err:
-                    if len(
-                        os.listdir(os.path.join(
-                            anl.paths.spatial.root(DATE), filename))
-                    ) > 0:
-                        #TODO: Add in condition to look for x, y or z in the name
-                        print(
-                            f"{component} not found for {filename}. Component skipped.")
-                    else:
-                        raise err
+    plot_files = []
+    if QUANTITIES is None:
+        plot_files = [f for f in os.listdir(anl.paths.spatial.root(DATE))
+            if not f.endswith("json")]
+    else:
+        plot_files = [f for f in os.listdir(anl.paths.spatial.root(DATE))
+            if not f.endswith("json") and f.strip(".tsv") in QUANTITIES]
+
+    # Checks if plot_files is empty.
+    if not plot_files:
+        print("No data matches the requested patterns.")
+
+    for filename in plot_files:
+        for component in COMPONENTS:
+
+            try:
+
+                anl.plot.plot_image(
+                    anl.read.read_data(
+                        anl.paths.spatial.spatial_path(
+                            filename, component, None, DATE)
+                    ),
+                    xlabel="x (m)",
+                    ylabel="y (m)",
+                    title=filename + " (T)",
+                    save_to=anl.paths.plots.spatial_dir(
+                        filename, component, DATE
+                    ),
+                    xindexes=[150, 362],
+                    yindexes=[150, 362],
+                    show_plot=False,
+                    date=DATE
+                )
+
+            except FileNotFoundError:
+
+                print(f"{component} not found for {filename}. Component skipped.")
+
+                #TODO: Check that it's only the singular component that is not found.
+                #      Otherwise the error should still be raised.
 
 #endregion
 
 #endregion Spatial
+
+#region Spatial line
+
+def __plot_spatial_line():
+
+    print("Plotting spatial line...")
+
+    for component in COMPONENTS:
+
+        anl.plot.plot_spatial_line(
+            date=DATE,
+            x_index=AXIS_VAL if AXIS == 'x' else None,
+            y_index=AXIS_VAL if AXIS == 'y' else None,
+            component=component,
+            filename=QUANTITY,
+            save_to = anl.paths.plots.spatial_line(
+                filename=QUANTITY,
+                component=component,
+                index=('y' if AXIS == 'x' else 'x'),
+                date=date
+            ) if SAVE else None,
+            show_plot=SHOW,
+        )
+
+#endregion
+
+#region Preparse
+
+def __convert_table_txt():
+    print("Converting table.txt to table.tsv...")
+    anl.read.convert_table_txt(DATE)
+
+def __create_json():
+    print("Creating the json file...")
+    anl.write.write_json(DATE)
+
+#endregion
 
 #region Run
 
 COMMAND, COMM_ARGS, TOP_ARGS = __parse_cli_input()
 
 if COMMAND is Commands.RESONANCE:
-    date_arg, MAG_VARS, PLOT_DEPTH = COMM_ARGS          #pylint: disable=unbalanced-tuple-unpacking
+    date_arg, MAG_VARS, PLOT_DEPTH = COMM_ARGS                               #pylint: disable=W0632
 elif COMMAND is Commands.SPATIAL:
-    date_arg, COMPONENTS = COMM_ARGS                    #pylint: disable=unbalanced-tuple-unpacking
+    date_arg, COMPONENTS, QUANTITIES = COMM_ARGS                             #pylint: disable=W0632
+elif COMMAND is Commands.SPATIALLINE:
+    date_arg, QUANTITY, COMPONENTS, SHOW, SAVE, AXIS, AXIS_VAL = COMM_ARGS   #pylint: disable=W0632
+elif COMMAND is Commands.PREPARSE:
+    date_arg, RESULT_TYPE = COMM_ARGS                                        #pylint: disable=W0632
 
 DATES = __resolve_dates(date_arg)
 CLI_TEST = TOP_ARGS[0]
 
 if len(DATES) > 1:
-    print(f"Running analysis for {len(DATES)} dates: {DATES}. \n")
+    print(f"Running analysis for {len(DATES)} results: {DATES}. \n")
 
 if COMMAND is Commands.RESONANCE:
 
@@ -455,7 +625,6 @@ if COMMAND is Commands.RESONANCE:
 
         __timed_run([
             __fetch_raw,
-            __convert_table_txt,
             __split_phi,
             __split_phi_fRF,
             __calc_amp,
@@ -485,9 +654,52 @@ elif COMMAND is Commands.SPATIAL:
         )
 
         __timed_run([
+            __fetch_raw,
             __convert_npy,
-            __create_json,
             __plot_spatial
         ])
+
+elif COMMAND is Commands.SPATIALLINE:
+
+    for date in DATES:
+
+        DATE = date
+
+        print(
+            "Running analysis (spatialline) with parameters:",
+            f"date: {DATE.__repr__()}",
+            f"quantity: {QUANTITY.__repr__()}",
+            f"components: {COMPONENTS.__repr__()}",
+            f"show: {SHOW.__repr__()}",
+            f"save: {SAVE.__repr__()}",
+            f"axis: {AXIS.__repr__()}",
+            f"axis_val: {AXIS_VAL.__repr__()}",
+            sep='\n  ',
+            end='\n\n'
+        )
+
+        __timed_run([
+            __fetch_raw,
+            __plot_spatial_line
+        ])
+
+elif COMMAND is Commands.PREPARSE:
+
+    for date in DATES:
+
+        DATE = date
+
+        print(
+            "Running analysis (preparse) with parameters:",
+            f"date: {DATE.__repr__()}",
+            f"result_type: {RESULT_TYPE.__repr__()}",
+            sep='\n  ',
+            end='\n\n'
+        )
+
+        if RESULT_TYPE == "resonance":
+            __timed_run([__convert_table_txt])
+        elif RESULT_TYPE == "spatial":
+            __timed_run([__create_json])
 
 #endregion

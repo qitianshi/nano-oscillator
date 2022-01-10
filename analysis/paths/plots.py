@@ -25,10 +25,10 @@ def spatial_dir(filename: str, component=str, date: str = None) -> str:
     )
 
 
-def linearspace_dir(filename: str, component=str, index=str, date: str = None) -> str:
-    """Returns the path of the linearspace plots"""
+def spatial_line(filename: str, component=str, index=str, date: str = None) -> str:
+    """Returns the path of the spatial line plots."""
     return os.path.join(
         plot_dir(date),
-        "line_distribution",
+        "spatial_line",
         f"{filename}", f"{filename}_{component} against {index}.pdf"
     )
