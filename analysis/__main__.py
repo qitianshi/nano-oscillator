@@ -179,7 +179,17 @@ def __parse_cli_input() -> tuple:
         nargs='+',
         required=False,
         default=["x", "y", "z"],
-        help="magnetization components to plot and analyze, any of: x y z, defaults to all"
+        help="components to plot and analyze, any of: x y z, defaults to all"
+    )
+
+    comm_spatial.add_argument(
+        "--quantities",
+        dest="quantities",
+        type=str,
+        nargs='+',
+        required=False,
+        default=None,
+        help="quantities to plot, defaults to all"
     )
 
     # spatialline args
@@ -271,7 +281,7 @@ def __parse_cli_input() -> tuple:
         __validate_date(args.date, argobj_spatial_dates)
         __validate_arg_list(args.components, argobj_spatial_components, ("x", "y", "z"))
 
-        return (Commands.SPATIAL, (args.date, args.components), (args.cli_test,))
+        return (Commands.SPATIAL, (args.date, args.components, args.quantities), (args.cli_test,))
 
     if args.command == "spatialline":
 
@@ -495,36 +505,46 @@ def __convert_npy():
 def __plot_spatial():
     print("Plotting all spatial distribution data...")
 
-    for filename in os.listdir(anl.paths.spatial.root(DATE)):
-        if not filename.endswith("json"):
-            for component in COMPONENTS:
-                try:
-                    anl.plot.plot_image(
-                        anl.read.read_data(
-                            anl.paths.spatial.spatial_path(
-                                filename, component, None, DATE)
-                        ),
-                        xlabel="x (m)",
-                        ylabel="y (m)",
-                        title=filename + " (T)",
-                        save_to=anl.paths.plots.spatial_dir(
-                            filename, component, DATE
-                        ),
-                        xindexes=[150, 362],
-                        yindexes=[150, 362],
-                        show_plot=False,
-                        date=DATE
-                    )
-                except FileNotFoundError as err:
-                    if len(
-                        os.listdir(os.path.join(
-                            anl.paths.spatial.root(DATE), filename))
-                    ) > 0:
-                        #TODO: Add in condition to look for x, y or z in the name
-                        print(
-                            f"{component} not found for {filename}. Component skipped.")
-                    else:
-                        raise err
+    plot_files = []
+    if QUANTITIES is None:
+        plot_files = [f for f in os.listdir(anl.paths.spatial.root(DATE))
+            if not f.endswith("json")]
+    else:
+        plot_files = [f for f in os.listdir(anl.paths.spatial.root(DATE))
+            if not f.endswith("json") and f.strip(".tsv") in QUANTITIES]
+
+    # Checks if plot_files is empty.
+    if not plot_files:
+        print("No data matches the requested patterns.")
+
+    for filename in plot_files:
+        for component in COMPONENTS:
+
+            try:
+
+                anl.plot.plot_image(
+                    anl.read.read_data(
+                        anl.paths.spatial.spatial_path(
+                            filename, component, None, DATE)
+                    ),
+                    xlabel="x (m)",
+                    ylabel="y (m)",
+                    title=filename + " (T)",
+                    save_to=anl.paths.plots.spatial_dir(
+                        filename, component, DATE
+                    ),
+                    xindexes=[150, 362],
+                    yindexes=[150, 362],
+                    show_plot=False,
+                    date=DATE
+                )
+
+            except FileNotFoundError:
+
+                print(f"{component} not found for {filename}. Component skipped.")
+
+                #TODO: Check that it's only the singular component that is not found.
+                #      Otherwise the error should still be raised.
 
 #endregion
 
@@ -574,7 +594,7 @@ COMMAND, COMM_ARGS, TOP_ARGS = __parse_cli_input()
 if COMMAND is Commands.RESONANCE:
     date_arg, MAG_VARS, PLOT_DEPTH = COMM_ARGS                               #pylint: disable=W0632
 elif COMMAND is Commands.SPATIAL:
-    date_arg, COMPONENTS = COMM_ARGS                                         #pylint: disable=W0632
+    date_arg, COMPONENTS, QUANTITIES = COMM_ARGS                             #pylint: disable=W0632
 elif COMMAND is Commands.SPATIALLINE:
     date_arg, QUANTITY, COMPONENTS, SHOW, SAVE, AXIS, AXIS_VAL = COMM_ARGS   #pylint: disable=W0632
 elif COMMAND is Commands.PREPARSE:
