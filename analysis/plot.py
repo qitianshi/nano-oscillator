@@ -267,7 +267,8 @@ def plot_spatial_line(
         xlabel,
         ylabel,
         xstep=0.2e-06,
-        save_to=paths.plots.linearspace_dir(filename, component, line_index_name, line_index, date)
+        save_to=save_to,
+        show_plot=show_plot
     )
 
 

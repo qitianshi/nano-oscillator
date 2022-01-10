@@ -567,12 +567,12 @@ def __plot_spatial_line():
             save_to = anl.paths.plots.spatial_line(
                 filename=QUANTITY,
                 component=component,
-                index=('y' if AXIS == 'x' else 'x'),
+                line_index_name=('y' if AXIS == 'x' else 'x'),
+                line_index = AXIS_VAL,
                 date=date
             ) if SAVE else None,
             show_plot=SHOW,
         )
-
 #endregion
 
 #region Preparse

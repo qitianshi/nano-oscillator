@@ -25,7 +25,13 @@ def spatial_dir(filename: str, component=str, date: str = None) -> str:
     )
 
 
-def linearspace_dir(filename: str, component=str, line_index_name=str, line_index=str, date: str = None) -> str:
+def spatial_line(
+    filename: str,
+    component=str,
+    line_index_name=str,
+    line_index=str,
+    date: str = None
+) -> str:
     """Returns the path of the linearspace plots"""
     return os.path.join(
         plot_dir(date),
