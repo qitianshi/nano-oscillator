@@ -182,6 +182,16 @@ def __parse_cli_input() -> tuple:
         help="magnetization components to plot and analyze, any of: x y z, defaults to all"
     )
 
+    comm_spatial.add_argument(
+        "--quantities",
+        dest="quantities",
+        type=str,
+        nargs='+',
+        required=False,
+        default=None,
+        help="magnetization components to plot and analyze, defaults to all"
+    )
+
     # spatialline args
 
     argobj_spatialline_dates = comm_spatialline.add_argument(
@@ -271,7 +281,7 @@ def __parse_cli_input() -> tuple:
         __validate_date(args.date, argobj_spatial_dates)
         __validate_arg_list(args.components, argobj_spatial_components, ("x", "y", "z"))
 
-        return (Commands.SPATIAL, (args.date, args.components), (args.cli_test,))
+        return (Commands.SPATIAL, (args.date, args.components, args.quantities), (args.cli_test,))
 
     if args.command == "spatialline":
 
@@ -574,7 +584,7 @@ COMMAND, COMM_ARGS, TOP_ARGS = __parse_cli_input()
 if COMMAND is Commands.RESONANCE:
     date_arg, MAG_VARS, PLOT_DEPTH = COMM_ARGS                               #pylint: disable=W0632
 elif COMMAND is Commands.SPATIAL:
-    date_arg, COMPONENTS = COMM_ARGS                                         #pylint: disable=W0632
+    date_arg, COMPONENTS, QUANTITIES = COMM_ARGS                             #pylint: disable=W0632
 elif COMMAND is Commands.SPATIALLINE:
     date_arg, QUANTITY, COMPONENTS, SHOW, SAVE, AXIS, AXIS_VAL = COMM_ARGS   #pylint: disable=W0632
 elif COMMAND is Commands.PREPARSE:
