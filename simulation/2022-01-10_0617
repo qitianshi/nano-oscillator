@@ -1,4 +1,5 @@
 // 50nm NC SHNO
+//horizontal ellipse
 
 // Here we generate the effective field (total internal field) profile in the
 // square sample with a nano-constriction at the center.
@@ -111,6 +112,7 @@ relax()
 saveas(m, "initial_m")
 saveas(B_demag, "B_demag")
 saveas(B_eff, "B_eff")
+saveas(B_ext, "B_ext")
 saveas(B_demag.region(2), "B_demag_ROI")
 saveas(B_eff, "B_eff_ROI")
 saveas(Edens_total, "Edens_total")
