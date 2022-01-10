@@ -179,7 +179,7 @@ def __parse_cli_input() -> tuple:
         nargs='+',
         required=False,
         default=["x", "y", "z"],
-        help="magnetization components to plot and analyze, any of: x y z, defaults to all"
+        help="components to plot and analyze, any of: x y z, defaults to all"
     )
 
     comm_spatial.add_argument(
@@ -189,7 +189,7 @@ def __parse_cli_input() -> tuple:
         nargs='+',
         required=False,
         default=None,
-        help="magnetization components to plot and analyze, defaults to all"
+        help="quantities to plot, defaults to all"
     )
 
     # spatialline args
