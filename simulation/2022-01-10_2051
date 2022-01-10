@@ -1,5 +1,5 @@
 // 50nm NC SHNO
-//horizontal ellipse
+//circle
 
 // Here we generate the effective field (total internal field) profile in the
 // square sample with a nano-constriction at the center.
