@@ -27,6 +27,7 @@ def spatial_dir(filename: str, component=str, date: str = None) -> str:
 def spatial_line(
     filename: str,
     component=str,
+    xaxis_name=str,
     line_index_name=str,
     line_index=str,
     date: str = None
@@ -35,5 +36,6 @@ def spatial_line(
     return os.path.join(
         plot_dir(date),
         "spatial_line",
-        f"{filename}", f"{filename}_{component} against {line_index_name}={line_index}.pdf"
+        f"{filename}",
+        f"{filename}_{component} against {xaxis_name} for {line_index_name}={line_index}.pdf"
     )

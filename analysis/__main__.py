@@ -511,7 +511,7 @@ def __plot_spatial():
             if not f.endswith("json")]
     else:
         plot_files = [f for f in os.listdir(anl.paths.spatial.root(DATE))
-            if not f.endswith("json") and f.strip(".tsv") in QUANTITIES]
+            if not f.endswith("json") and f in QUANTITIES]
 
     # Checks if plot_files is empty.
     if not plot_files:
@@ -521,7 +521,6 @@ def __plot_spatial():
         for component in COMPONENTS:
 
             try:
-
                 anl.plot.plot_image(
                     anl.read.read_data(
                         anl.paths.spatial.spatial_path(
@@ -533,8 +532,8 @@ def __plot_spatial():
                     save_to=anl.paths.plots.spatial_dir(
                         filename, component, DATE
                     ),
-                    xindexes=[150, 362],
-                    yindexes=[150, 362],
+                    xindexes=None,
+                    yindexes=None,
                     show_plot=False,
                     date=DATE
                 )
@@ -567,7 +566,8 @@ def __plot_spatial_line():
             save_to = anl.paths.plots.spatial_line(
                 filename=QUANTITY,
                 component=component,
-                line_index_name=('y' if AXIS == 'x' else 'x'),
+                xaxis_name=('y' if AXIS == 'x' else 'x'),
+                line_index_name=AXIS,
                 line_index = AXIS_VAL,
                 date=date
             ) if SAVE else None,
@@ -681,6 +681,7 @@ elif COMMAND is Commands.SPATIALLINE:
 
         __timed_run([
             __fetch_raw,
+            __convert_npy,
             __plot_spatial_line
         ])
 
