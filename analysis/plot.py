@@ -229,7 +229,8 @@ def plot_spatial_line(
     # Creates a Pandas dataframe with the B_ext data as a column
     if y_index is None:
         # Vertical line
-        line_index_name = "y"
+        xaxis_name = "y"
+        line_index_name = "x"
         line_index = x_index
         plot_data = read.read_data(
                 paths.spatial.spatial_path(filename, component, slices, date)
@@ -237,7 +238,8 @@ def plot_spatial_line(
 
     elif x_index is None:
         # Horizontal line
-        line_index_name = "x"
+        xaxis_name = "x"
+        line_index_name = "y"
         line_index = y_index
         plot_data = read.read_data(
                 paths.spatial.spatial_path(filename, component, slices, date)
@@ -251,22 +253,23 @@ def plot_spatial_line(
         headers = json.load(file)
 
         xvar = np.arange(
-            float(headers[f"{line_index_name}min"]),
-            float(headers[f"{line_index_name}max"]),
-            float(headers[f"{line_index_name}stepsize"])
+            float(headers[f"{xaxis_name}min"]),
+            float(headers[f"{xaxis_name}max"]),
+            float(headers[f"{xaxis_name}stepsize"])
         )
 
-        xlabel = f"{line_index_name} (" + headers["meshunit"] + ")"
-        ylabel = f"{filename} (T)"
+        xlabel = f"{xaxis_name} (" + headers["meshunit"] + ")"
+        ylabel = f"{filename}_{component} (T)"
         #TODO: make the y axis units an option
 
-        plot_data.insert(0, line_index_name, xvar)
+        plot_data.insert(0, xaxis_name, xvar)
 
     plot_xy(
-        [read.AttributedData(plot_data, x_var=line_index_name, y_vars=[str(line_index)])],
+        [read.AttributedData(plot_data, x_var=xaxis_name, y_vars=[str(line_index)])],
         xlabel,
         ylabel,
         xstep=0.2e-06,
+        title=f"{filename}_{component} against {xaxis_name} for {line_index_name}={line_index}",
         save_to=save_to,
         show_plot=show_plot
     )
@@ -280,8 +283,8 @@ def plot_image(
     save_to: str,
     xindexes: list[int] = None, #index starts at 0
     yindexes: list[int] = None, #index starts at 0
-    xstep: float = 100e-09,
-    ystep: float = 100e-09,
+    xstep: float = 200e-09,
+    ystep: float = 200e-09,
     cmap_name: str = "winter",
     show_plot: bool = False,
     date: str = None,
@@ -311,7 +314,11 @@ def plot_image(
             all_cells_x[xindexes[1]] + xstep - all_cells_x[xindexes[1]] % xstep,
             xstep
         )
-        ax.set_xticks(xticks, xticks)
+
+        if len(xticks) > 5:
+            ax.tick_params(axis='x', labelsize=6)
+
+        ax.set_xticks(xticks)
 
         yaxis_max = (float(headers["ymax"]) - float(headers["ymin"])) / 2
         all_cells_y = np.arange(-abs(yaxis_max), yaxis_max, float(headers["ystepsize"]))
@@ -320,7 +327,7 @@ def plot_image(
             all_cells_y[yindexes[1]] + ystep - all_cells_y[yindexes[1]] % ystep,
             ystep
         )
-        ax.set_yticks(yticks, yticks)
+        ax.set_yticks(yticks)
 
     data = data.iloc[yindexes[0] : yindexes[1] + 1, xindexes[0] : xindexes[1] + 1]
 
