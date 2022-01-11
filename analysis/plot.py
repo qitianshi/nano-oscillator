@@ -229,8 +229,6 @@ def plot_spatial_line(
     # Creates a Pandas dataframe with the B_ext data as a column
     if y_index is None:
         # Vertical line
-        xaxis_name = "y"
-        line_index_name = "x"
         line_index = x_index
         plot_data = read.read_data(
                 paths.spatial.spatial_path(filename, component, slices, date)
@@ -238,8 +236,6 @@ def plot_spatial_line(
 
     elif x_index is None:
         # Horizontal line
-        xaxis_name = "x"
-        line_index_name = "y"
         line_index = y_index
         plot_data = read.read_data(
                 paths.spatial.spatial_path(filename, component, slices, date)
@@ -248,28 +244,32 @@ def plot_spatial_line(
     else:
         raise ValueError("`xindex` and `yindex` cannot both be `None`.")
 
+    horiz_axis_name = "x" if x_index is None else "y"
+    line_index_name = "y" if x_index is None else "x"
+
     # Create the list of x coordinates and puts it in the Pandas dataframe
     with open(paths.spatial.header_path(date), 'r', encoding='utf-8') as file:
         headers = json.load(file)
 
         xvar = np.arange(
-            float(headers[f"{xaxis_name}min"]),
-            float(headers[f"{xaxis_name}max"]),
-            float(headers[f"{xaxis_name}stepsize"])
+            float(headers[f"{horiz_axis_name}min"]),
+            float(headers[f"{horiz_axis_name}max"]),
+            float(headers[f"{horiz_axis_name}stepsize"])
         )
 
-        xlabel = f"{xaxis_name} (" + headers["meshunit"] + ")"
+        xlabel = f"{horiz_axis_name} (" + headers["meshunit"] + ")"
         ylabel = f"{filename}_{component} (T)"
         #TODO: make the y axis units an option
 
-        plot_data.insert(0, xaxis_name, xvar)
+        plot_data.insert(0, horiz_axis_name, xvar)
 
     plot_xy(
-        [read.AttributedData(plot_data, x_var=xaxis_name, y_vars=[str(line_index)])],
+        [read.AttributedData(plot_data, x_var=horiz_axis_name, y_vars=[str(line_index)])],
         xlabel,
         ylabel,
         xstep=0.2e-06,
-        title=f"{filename}_{component} against {xaxis_name} for {line_index_name}={line_index}",
+        title=
+            f"{filename}_{component} against {horiz_axis_name} for {line_index_name}={line_index}",
         save_to=save_to,
         show_plot=show_plot
     )
