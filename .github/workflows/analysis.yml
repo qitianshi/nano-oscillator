@@ -46,7 +46,7 @@ jobs:
     - name: Commit, push, and create pull request
       uses: peter-evans/create-pull-request@v3
       with:
-        branch: process-result-${{ github.event.inputs.date }}
+        branch: process-result
         branch-suffix: timestamp
         commit-message: 'Process results for ${{ github.event.inputs.date }}'
         committer: GitHub Actions <41898282+github-actions[bot]@users.noreply.github.com>
