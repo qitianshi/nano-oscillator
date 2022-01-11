@@ -1,5 +1,6 @@
 # --------- analysis ---------
 results/**/raw/
+results/**/spatial_data
 results/**/split
 results/**/*.zip
 testbed.py

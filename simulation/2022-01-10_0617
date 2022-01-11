@@ -1,0 +1,120 @@
+// 50nm NC SHNO
+//horizontal ellipse
+
+// Here we generate the effective field (total internal field) profile in the
+// square sample with a nano-constriction at the center.
+
+// There is no external field. Instead there is an uniaxial anisotropy in the
+// material.
+
+// We have specified the anisotropy direction with an anisotropy energy density
+// Ku1 that decides the strength of the anisotropy field. This anisotropy field
+// makes the magnetic moments orient along the anisotropy direction.
+
+// In this simulation the anisotropy direction is specified at 75 degree with
+// respect to the horizontal x axis. We can vary this angle later. Also we can
+// change the anisotropy strength by changing the anisotropy energy density Ku1
+// value.
+
+// In addition there is also an magnetic field (We call it Oersted field) that
+// is generated due to a current flowing through a platinum layer. This
+// platinum layer is assumed to be at the bottom (or top) of this NiFe layer.
+// Since Platinum is not a magnetic material, we cannot simulate this layer in
+// mumax. We are only interested in how the Oersted field influence the
+// magnetization in NiFe layer. So we have explicitly taken this oersted field
+// into the simulation model. The oersted field profile in NiFe layer is
+// computed in COMSOL Multiphysics software.
+
+// Post processing instructions:
+
+// Convert the output .ovf files into numpy arrays and determine how B_eff,
+// B_demag, Edens_total vary in the sample at different spaces on the sample.
+
+// N.B. Edens_total is the total energy density corresponding to the total
+// internal field.
+
+// The derivative of Edens_total with respect to magnetization gives the total
+// internal field.
+
+
+Nx := 512
+Ny := 512
+cSize := 2e-9
+th := 5e-9
+
+setGridsize(Nx, Ny, 1)
+setCellsize(cSize, cSize, th)
+
+// Geometry
+NC_image := Ellipse(800e-9, 600e-9)
+setGeom(NC_image)
+defRegion(1, NC_image)
+// defRegion(2,rect(cSize*500/2, cSize*500/2))   // A square region at the NC
+
+edgesmooth = 8
+
+// Material parameters (NiFe)
+Msat   = 600e3
+Aex    = 10e-12
+alpha  = 0.02
+gammaLL = 1.855e11
+
+// In plane Anisotropy
+Ku1 = 7.5e3           // This anisotropy generate an equivalent field of 0.025 T
+// Ku1 was manually varied from 5.0e3 to 15e3 with steps of 0.5e3
+anisAngle := 75
+anisU = vector(cos(anisAngle*pi/180), sin(anisAngle*pi/180), 0)
+
+// // Absorbing BC
+// // Set up Absorbing boundary layers (ABL). If this section is not needed,
+// // comment next two sections below
+// xEnd := Nx*cSize/2
+// yEnd := Ny*cSize/2
+// alStart := 0.02
+// alStop := 1.
+// NB := 30
+// dx := cSize
+// dy := cSize
+// xStart := xEnd-NB*cSize
+// xStop := xEnd
+// yStart := yEnd-NB*cSize
+// yStop := yEnd
+// n := 2 //Polynomial order
+// a := (alStop - alStart)/pow((xStop-xStart)*1e9,n)
+// print(NB)
+
+// //Set the damping in ABL
+// lR1 := 2*xStart
+// wR1 := 2*yStart
+
+// for i:=1; i<NB+1; i++{
+// lR2 := lR1 + 2*dx
+// wR2 := wR1 + 2*dy
+// ellipseCurr := ellipse(lR2,wR2).sub(ellipse(lR1,wR1))
+// DefRegion(i+2, ellipseCurr)
+// alp := a*pow(i*(dx+dy)*1e9*0.5, n)
+// alpha.setRegion(i+3, alStart+alp)
+// lR1 = lR2
+// wR1 = wR2
+// }
+
+// Initialization
+m = uniform(1,0.1,0)
+
+JVal := 2.25  // Input current magnitude
+
+// Excitation magnetic field parameters
+B_ext = vector(mu0*JVal*1e12*th/2, 0,0)   // Oe field
+
+relax()
+
+// Output quantities
+saveas(m, "initial_m")
+saveas(B_demag, "B_demag")
+saveas(B_eff, "B_eff")
+saveas(B_ext, "B_ext")
+saveas(B_demag.region(2), "B_demag_ROI")
+saveas(B_eff, "B_eff_ROI")
+saveas(Edens_total, "Edens_total")
+saveas(regions, "regions")
+saveas(alpha, "alpha")
