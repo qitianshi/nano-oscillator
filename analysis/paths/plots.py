@@ -24,7 +24,6 @@ def spatial_dir(filename: str, component=str, date: str = None) -> str:
         f"{filename}_{component}.pdf"
     )
 
-
 def spatial_line(
     filename: str,
     component=str,

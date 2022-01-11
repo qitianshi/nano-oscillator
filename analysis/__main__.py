@@ -573,6 +573,7 @@ def __plot_spatial_line():
             ) if SAVE else None,
             show_plot=SHOW,
         )
+
 #endregion
 
 #region Preparse
