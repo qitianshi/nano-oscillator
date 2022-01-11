@@ -1,5 +1,5 @@
 // 50nm NC SHNO
-//square
+//tilted ellipse 2
 
 // Here we generate the effective field (total internal field) profile in the
 // square sample with a nano-constriction at the center.
@@ -46,7 +46,8 @@ setGridsize(Nx, Ny, 1)
 setCellsize(cSize, cSize, th)
 
 // Geometry
-NC_image := square(800e-9)
+NC_image := Ellipse(800e-9, 600e-9)
+NC_image = NC_image.rotz((165*pi)/180)
 setGeom(NC_image)
 defRegion(1, NC_image)
 // defRegion(2,rect(cSize*500/2, cSize*500/2))   // A square region at the NC
