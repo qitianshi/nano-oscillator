@@ -3,9 +3,15 @@ name: Analysis
 on:
   workflow_dispatch:
     inputs:
-      cli-args:
-        description: Args (python3 -m analysis [ARGS])
+      command:
+        description: Command
         required: true
+      date:
+        description: Date
+        required: true
+      options:
+        description: Options
+        required: false
 
 jobs:
   build:
