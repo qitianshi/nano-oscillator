@@ -1,11 +1,17 @@
-name: Process result
+name: Analysis
 
 on:
   workflow_dispatch:
     inputs:
-      cli-args:
-        description: Args (python3 -m analysis [ARGS])
+      command:
+        description: Command
         required: true
+      date:
+        description: Date
+        required: true
+      options:
+        description: Options
+        required: false
 
 jobs:
   build:
@@ -35,17 +41,16 @@ jobs:
 
     - name: Run analysis package
       run: >
-        . ./venv/bin/activate &&
-        python3 -m analysis ${{ github.event.inputs.cli-args }}
+        . ./venv/bin/activate && python3 -m analysis ${{ github.event.inputs.command }} ${{ github.event.inputs.date }} ${{ github.event.inputs.options }}
 
     - name: Commit, push, and create pull request
       uses: peter-evans/create-pull-request@v3
       with:
         branch: process-result-${{ github.event.inputs.date }}
-        commit-message: 'Process result from ${{ github.event.inputs.date }}'
+        commit-message: 'Process results for ${{ github.event.inputs.date }}'
         committer: GitHub Actions <41898282+github-actions[bot]@users.noreply.github.com>
         author: GitHub Actions <41898282+github-actions[bot]@users.noreply.github.com>
         base: main
-        title: Processed results from ${{ github.event.inputs.date }}
+        title: Process results for ${{ github.event.inputs.date }}
         reviewers: qitianshi, anweiteck
         assignees: qitianshi, anweiteck
