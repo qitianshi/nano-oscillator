@@ -681,6 +681,7 @@ elif COMMAND is Commands.SPATIALLINE:
 
         __timed_run([
             __fetch_raw,
+            __convert_npy,
             __plot_spatial_line
         ])
 
