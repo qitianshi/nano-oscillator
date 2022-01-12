@@ -11,7 +11,7 @@
 
 
 	// Geometry
-	NC_image := imageShape("nanoconstriction.png").inverse()
+	NC_image := imageShape("geometries/nanoconstriction.png").inverse()
 	setGeom(NC_image)
 	defRegion(1, NC_image)
 	defRegion(2,rect(500e-9, 500e-9))   // A square region at the NC
@@ -106,10 +106,10 @@
 	tableautosave(2e-12)
 
 
-	J.Add(loadFile("input_current.ovf"),
+	J.Add(loadFile("excitation_parameters/input_current.ovf"),
 		I_input*(abs((2*floor(fSq*(t)) - floor(2*fSq*(t))) - (2*floor(fSq*(t+1*pulWidth)) - floor(2*fSq*(t+1*pulWidth))))))
 
-	B_ext.Add(loadFile("Oersted_field_2.ovf"),
+	B_ext.Add(loadFile("excitation_parameters/Oersted_field_2.ovf"),
 		I_input*(abs((2*floor(fSq*(t)) - floor(2*fSq*(t))) - (2*floor(fSq*(t+1*pulWidth)) - floor(2*fSq*(t+1*pulWidth))))*4*pi*1e-7))   // Oe field
 
 	print(I_input)
