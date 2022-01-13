@@ -24,4 +24,4 @@ Nomenclature used in this package:
 Requires Python 3.10 or later.
 """
 
-from analysis import amplitude, fetch, fit, geom, paths, plot, read, split, write, oscil
+from analysis import amplitude, fetch, fit, geom, oscil, paths, plot, read, split, write
