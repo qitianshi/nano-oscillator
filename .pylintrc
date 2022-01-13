@@ -8,4 +8,4 @@ max-line-length=99
 redefining-builtins-modules=sys
 
 [BASIC]
-good-names-rgxs=.*fRF.*,ax.*
+good-names-rgxs=.*fRF.*,ax.*,.dm.*,.*dt.*
