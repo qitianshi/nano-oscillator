@@ -351,3 +351,38 @@ def plot_image(
         plt.show()
 
     plt.close()
+
+def spectrum_anl(
+    component: str,
+    xlabel: str = "Frequency (GHz)",
+    ylabel: str = "Spectrum (a.u.)",
+    show_plot: bool = False,
+    dt: float = 2e-12,
+    date: str = None
+):
+    """Plots the spectrum analysis of the m components from table.tsv
+
+    Args:
+        dt: the sample time, taken from the simulation script
+    """
+
+    fmax = (1/dt) / 2
+    table = read.read_data(paths.data.data_path(date))
+
+    dm = table[component] - table[component][0]
+    spectr = np.abs(np.fft.fft(dm))
+    freq = np.linspace(0, 1/dt, len(dm))
+
+    xvar_name, yvar_name = "freq", "spectr"
+    plot_data = pd.DataFrame(spectr, columns=[yvar_name])
+    plot_data.insert(1, xvar_name, freq/1e9)
+
+    plot_xy(
+        [read.AttributedData(plot_data, x_var=xvar_name, y_vars=[yvar_name])],
+        xlabel,
+        ylabel,
+        xlim=[0, fmax/1e9],
+        title=f"Spectrum analysis {component}",
+        save_to=paths.plots.fft(f"fft_{component}", date),
+        show_plot=show_plot
+    )
