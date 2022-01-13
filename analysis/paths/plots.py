@@ -39,3 +39,10 @@ def spatial_line(
         f"{filename}",
         f"{filename}_{component} against {xaxis_name} for {line_index_name}={line_index}.pdf"
     )
+
+def fft(
+    name: str,
+    date: str = None
+) -> str:
+    """Returns the path of the fft plots"""
+    return os.path.join(plot_dir(date), "fft", f"{name}.pdf")
