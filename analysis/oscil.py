@@ -15,7 +15,7 @@ def load_npy(date: str = None):
 
     for file in os.listdir(anl.paths.data.raw(date)):
 
-        if file.endswith("700.npy"):
+        if file.endswith(".npy"):
 
             #TODO: raise FileNotFoundError
 
