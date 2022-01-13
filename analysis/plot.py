@@ -386,3 +386,53 @@ def spectrum_anl(
         save_to=paths.plots.fft(f"fft_{component}", date),
         show_plot=show_plot
     )
+
+def spectrum_anl_check(
+    component: str,
+    mode1: int,
+    mode2: int,
+    xlabel: str = "Frequency (GHz)",
+    ylabel: str = "Spectrum (a.u.)",
+    title: str = None,
+    save_to: str = None,
+    show_plot: bool = False,
+    dt: float = 2e-12,
+    date: str = None
+):
+    """Plots the spectrum analysis with dotted lines corrresponding to resonant frequencies"""
+
+    table = read.read_data(paths.data.data_path(date))
+    fmax = (1/dt) / 2
+
+    dm     = table[component] - table[component][0]   # average magnetization deviaton
+    spectr = np.abs(np.fft.fft(dm))         # the absolute value of the FFT of dm
+    freq   = np.linspace(0, 1/dt, len(dm))  # the frequencies for this FFT
+
+    fig = plt.figure(figsize=(10, 5))
+    ax = fig.add_subplot(1, 1, 1)
+
+    mode1_freq = freq[mode1]
+    mode2_freq = freq[mode2]
+    print(f"Mode 1 frequency: {round(mode1_freq/1e9, 2)} GHz")
+    print(f"Mode 2 frequency: {round(mode2_freq/1e9, 2)}GHz")
+
+    ax.plot(freq/1e9, spectr)
+
+    ax.axvline(mode1_freq/1e9, lw=1, ls='--', c='gray')
+    ax.axvline(mode2_freq/1e9, lw=1, ls='--', c='gray')
+
+    ax.set_xlim(0,fmax/1e9)
+
+    ax.set_ylabel(ylabel)
+    ax.set_xlabel(xlabel)
+    ax.set_title(title if title is not None else f"{ylabel} against {xlabel}")
+
+    if save_to is not None:
+
+        write.prep_dir(os.path.split(save_to)[0], clear=False)
+
+        _, save_type = os.path.splitext(save_to)
+        fig.savefig(save_to, format=save_type.strip('.'))
+
+    if save_to is None or show_plot:
+        plt.show()
