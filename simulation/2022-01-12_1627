@@ -20,7 +20,7 @@
 
 
 	// Simulation time
-	tSim := 30e-9
+	tSim := 30e-9 //can change to ~5e-9
 	maxdt = 2.5e-13
 
 	// Material parameters (NiFe)
@@ -76,6 +76,7 @@
 
 	// Spin torque parameters
 	spinHallAngle := 0.08          // Spin Hall angle of Pt
+	//how much of the DC current becomes spin current
 	Pol = spinHallAngle
 	lambda = 1
 	epsilonprime = 0
@@ -84,18 +85,20 @@
 
 	// Current density set up
 	pulStart := 4e-9           // Time when the pulse is switched on
+	//can be changed to 2e-9
 	pulGap := pulStart         // time gap between two consecutive pulses.
 	pulWidth := tSim - pulGap  // pulse Width (How long the current remains turned on)
 	timePeriod := 2*abs(pulWidth + pulGap)
 	fSq := 1/timePeriod
 
 
-	I_input := 2.2      // input current 2.2 mA
+	I_input := 2.2      // input current 2.2 mA to ~6.0mA or even 10mA (current induced switching limit)
 
 
 
 	// Output quantities
 	autoSave(m.region(2), 2e-12)
+	//can be commented out for further geoms
 	tableadd(MaxAngle)
 	tableAdd(Ku1)
 
