@@ -369,7 +369,7 @@ def spectrum_anl(
     fmax = (1/dt) / 2
     table = read.read_data(paths.data.data_path(date))
 
-    dm = table[component] - table[component][0]
+    dm = table[component] - table[component][0]                             #pylint: disable=C0103
     spectr = np.abs(np.fft.fft(dm))
     freq = np.linspace(0, 1/dt, len(dm))
 
@@ -404,7 +404,8 @@ def spectrum_anl_check(
     table = read.read_data(paths.data.data_path(date))
     fmax = (1/dt) / 2
 
-    dm     = table[component] - table[component][0]   # average magnetization deviaton
+    dm     = table[component] - table[component][0]                          #pylint: disable=C0103
+    # average magnetization deviaton
     spectr = np.abs(np.fft.fft(dm))         # the absolute value of the FFT of dm
     freq   = np.linspace(0, 1/dt, len(dm))  # the frequencies for this FFT
 
