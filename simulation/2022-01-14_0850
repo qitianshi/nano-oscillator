@@ -1,4 +1,5 @@
 	// circle
+	//input current = 2.2mA - 6.0mA
 	// Here we observe the effcet of uniaxial anisotropy on magnetization auto-oscillation in a
 	// NiFe nano-constriction geometry in absence of biasing magnetic field.
 
@@ -92,7 +93,7 @@
 	fSq := 1/timePeriod
 
 
-	I_input := 2.2      // input current 2.2 mA to ~6.0mA or even 10mA (current induced switching limit)
+	I_input := 6.0      // input current 2.2 mA to ~6.0mA or even 10mA (current induced switching limit)
 
 
 
