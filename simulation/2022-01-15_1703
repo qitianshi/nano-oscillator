@@ -1,5 +1,5 @@
-	// circle
-	//input current = 2.2mA - 6.0mA
+	// square
+	//input current = 2.2mA - 8.0mA
 	// Here we observe the effcet of uniaxial anisotropy on magnetization auto-oscillation in a
 	// NiFe nano-constriction geometry in absence of biasing magnetic field.
 
@@ -12,7 +12,8 @@
 
 
 	// Geometry
-	NC_image := Circle(800e-9)
+	NC_image := Ellipse(800e-9, 600e-9)
+	NC_image = NC_image.rotz((75*pi)/180)
 	setGeom(NC_image)
 	defRegion(1, NC_image)
 	// defRegion(2,rect(500e-9, 500e-9))   // A square region at the NC
@@ -21,7 +22,7 @@
 
 
 	// Simulation time
-	tSim := 5e-9 //can change to ~5e-9
+	tSim := 15e-9 //can change to ~5e-9
 	maxdt = 2.5e-13
 
 	// Material parameters (NiFe)
@@ -32,7 +33,7 @@
 	gammaLL = 1.855e11   // gamma/2pi = 29.53 GH/T
 
 	// Uniaxial Anisotropy (IPMA)
-	Ku1 = 7.5e3
+	Ku1 = 10e3
 	phiAnis := 75
 	anisU = vector(cos(phiAnis*pi/180), sin(phiAnis*pi/180), 0)
 
