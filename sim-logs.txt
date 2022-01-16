@@ -1,0 +1,113 @@
+[2022-01-12_1627]
+Characterizing spatial fft
+
+[2022-01-11_1006]
+Same as previous, for an ellipse tilted by 165° geometry
+
+[2022-01-10_2301]
+Same as previous, for an ellipse lmajor axis=800nm tilted by 75° geometry
+
+[2022-01-10_2220]
+Same as previous, for a nanoconstriction geometry
+
+[2022-01-10_2207]
+Same as previous, for a square geometry of sides =800nm
+
+[2022-01-10_2051]
+Same as previous, for a horizontal ellipse geometry of lmajor axis=800nm
+
+[2022-01-10_0617]
+Same as previous, for a circular geometry of radius =800nm
+
+[2022-01-09_0313]
+Horizontal elliptical geometry of lmajor axis=1nm
+
+[2022-01-08_1113]
+Same as previous, for Bext=50mT
+
+[2022-01-08_1103]
+Same as previous, for Bext=49.40mT
+
+[2022-01-08_1016]
+Same as previous, for Bext=47.73mT
+
+[2022-01-08_0829]
+Same as previous, for Bext=46.06mT
+
+[2022-01-08_0823]
+Same as previous, for Bext=44.39mT
+
+[2022-01-08_0809]
+Same as previous, for Bext=42.72mT
+
+[2022-01-08_0803]
+Same as previous, for Bext=41.05mT
+
+[2022-01-08_0755]
+Same as previous, for Bext=37.71mT
+
+[2022-01-08_0747]
+Same as previous, for Bext=36.04mT
+
+[2022-01-08_0740]
+Same as previous, for Bext=34.37mT
+
+[2022-01-08_0734]
+Same as previous, for Bext=32.70mT
+
+[2022-01-08_0727]
+Same as previous, for Bext=31.03mT
+
+[2022-01-08_0040]
+Same as previous, for Bext=29.36mT
+
+[2022-01-08_0027]
+Same as previous, for Bext=27.69mT
+
+[2022-01-08_0002]
+Same as previous, for Bext=26.02mT
+
+[2022-01-07_0014]
+Same as previous, for Bext=24.35mT
+
+[2022-01-07_0002]
+Same as previous, for Bext=22.68mT
+
+[2022-01-06_2303]
+Same as previous, for Bext=21.01mT
+
+[2022-01-06_2103]
+Same as previous, for Bext=19.34mT
+
+[2022-01-06_2030]
+Same as previous, for Bext=17.67mT
+
+[2022-01-06_1604]
+Characterizing  the spatial distribution and  magnetic field profiles of the internal magnetic field over the geometry of the nanoconstriction region, for Bext=16mT
+
+[2021-12-30_1849]
+Repeated simulation from 2021-12-06_1845 to implement curve-fitting
+
+[2021-12-30_1828]
+Repeated simulation from 2021-12-06_0610 to implement curve-fitting
+
+[2021-12-30_1243]
+Characterizing the spatial distribution of the internal magnetic field components over the nanoconstriction geometry
+
+[2021-12-17_1845]
+Sweeping the frequency of an external RF field (fRF) for each value, of an out-of-plane external B-field
+
+[2021-12-06_0610]
+Sweeping the frequency of an external RF field (fRF) for each value, of an in-plane external B-field
+
+[2021-12-04_2019]
+Characterizing the ferromagnetic resonance (FMR) of an nanoconstriction-based SHNO
+
+[2021-12-04_1637]
+Characterizing the amplitude of the magnetic oscillations over time
+
+[2021-12-04_0610]
+Varying the value of the B-field relative to the plane of the spin-Hall nano-oscillator (SHNO)
+
+[2021-12-03_2248]
+Characterizing the oscillation of magnetic components against time
