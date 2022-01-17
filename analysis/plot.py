@@ -219,7 +219,7 @@ def plot_spatial_line(
     xlabel: str = None,
     ylabel: str = None,
     xstep: float = 200e-9,
-    xindexes: list[int] = [0, 511],
+    xindexes: list[int, int] = None,
     component: str = "z",
     filename: str = None,
     save_to: str = None,
@@ -257,6 +257,7 @@ def plot_spatial_line(
 
     horiz_axis_name = "x" if x_index is None else "y"
     line_index_name = "y" if x_index is None else "x"
+    xindexes = xindexes if xindexes is not None else [0, 511]
 
     # Create the list of x coordinates and puts it in the Pandas dataframe
     with open(paths.spatial.header_path(date), 'r', encoding='utf-8') as file:
