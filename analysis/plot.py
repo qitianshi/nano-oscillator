@@ -48,7 +48,7 @@ def plot_xy(
         show_plot (bool): Whether to show (`matplotlib.pyplot.show`) the graph.
     """
 
-    fig = plt.figure(figsize=(7.5, 4.5))
+    fig = plt.figure(figsize=(7.5, 5.2))
     ax = fig.add_subplot(1, 1, 1)
 
     colors = plt.get_cmap(cmap_name)
