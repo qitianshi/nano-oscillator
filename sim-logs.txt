@@ -67,7 +67,7 @@ Characterizing spatial fft
 Same as previous, for an ellipse tilted by 165° geometry
 
 [2022-01-10_2301]
-Same as previous, for an ellipse lmajor axis=800nm tilted by 75° geometry
+Same as previous, for an ellipse major axis=800nm tilted by 75° geometry
 
 [2022-01-10_2220]
 Same as previous, for a nanoconstriction geometry
