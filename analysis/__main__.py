@@ -628,6 +628,7 @@ if COMMAND is Commands.RESONANCE:
 
         __timed_run([
             __fetch_raw,
+            __convert_table_txt,
             __split_phi,
             __split_phi_fRF,
             __calc_amp,

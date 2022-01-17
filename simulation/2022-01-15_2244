@@ -1,0 +1,123 @@
+	// square
+	//input current = 2.2mA - 8.0mA
+	// Here we observe the effcet of uniaxial anisotropy on magnetization auto-oscillation in a
+	// NiFe nano-constriction geometry in absence of biasing magnetic field.
+
+	Nx := 512
+	Ny := 512
+	cSize := 2e-9
+
+	setGridsize(Nx, Ny, 1)
+	setCellsize(cSize, cSize, 5e-9)
+
+
+	// Geometry
+	NC_image := Ellipse(800e-9, 600e-9)
+	NC_image = NC_image.rotz((75*pi)/180)
+	setGeom(NC_image)
+	defRegion(1, NC_image)
+	// defRegion(2,rect(500e-9, 500e-9))   // A square region at the NC
+
+	edgesmooth = 8
+
+
+	// Simulation time
+	tSim := 15e-9 //can change to ~5e-9
+	maxdt = 2.5e-13
+
+	// Material parameters (NiFe)
+	// Values taken from M.Dvornik et al., PHYSICAL REVIEW APPLIED 9, 014017 (2018)
+	Msat   = 600e3       // Equivalent 4piMeff = 0.754T
+	Aex    = 10e-12      // Usually 13e-12 is used.
+	alpha  = 0.02
+	gammaLL = 1.855e11   // gamma/2pi = 29.53 GH/T
+
+	// Uniaxial Anisotropy (IPMA)
+	Ku1 = 10e3
+	phiAnis := 75
+	anisU = vector(cos(phiAnis*pi/180), sin(phiAnis*pi/180), 0)
+
+
+	// Absorbing BC
+	// Set up Absorbing boundary layers (ABL). If this section is not needed,
+	// comment next two sections below
+	xEnd := Nx*cSize/2
+	yEnd := Ny*cSize/2
+	alStart := 0.02
+	alStop := 1.
+	NB := 30
+	dx := cSize
+	dy := cSize
+	xStart := xEnd-NB*cSize
+	xStop := xEnd
+	yStart := yEnd-NB*cSize
+	yStop := yEnd
+	n := 2 //Polynomial order
+	a := (alStop - alStart)/pow((xStop-xStart)*1e9,n)
+	print(NB)
+
+	//Set the damping in ABL
+	lR1 := 2*xStart
+	wR1 := 2*yStart
+
+	for i:=1; i<NB+1; i++{
+	lR2 := lR1 + 2*dx
+	wR2 := wR1 + 2*dy
+	rectCurr := rect(lR2,wR2).sub(rect(lR1,wR1))
+	DefRegion(i+2, rectCurr)
+	alp := a*pow(i*(dx+dy)*1e9*0.5, n)
+	alpha.setRegion(i+3, alStart+alp)
+	lR1 = lR2
+	wR1 = wR2
+	}
+
+
+
+	m = uniform(1,0.1,0)
+	relax()
+
+	// Spin torque parameters
+	spinHallAngle := 0.08          // Spin Hall angle of Pt
+	//how much of the DC current becomes spin current
+	Pol = spinHallAngle
+	lambda = 1
+	epsilonprime = 0
+	fixedlayer = vector(0,-1,0)    // Spin polarization angle
+	disableZhangLiTorque = true
+
+	// Current density set up
+	pulStart := 2e-9           // Time when the pulse is switched on
+	//can be changed to 2e-9
+	pulGap := pulStart         // time gap between two consecutive pulses.
+	pulWidth := tSim - pulGap  // pulse Width (How long the current remains turned on)
+	timePeriod := 2*abs(pulWidth + pulGap)
+	fSq := 1/timePeriod
+
+
+	I_input := 2.0      // input current 2.2 mA to ~6.0mA or even 10mA (current induced switching limit)
+
+
+
+	// Output quantities
+	// autoSave(m.region(2), 2e-12)
+	//can be commented out for further geoms
+	saveas(regions, "regions")
+	tableadd(MaxAngle)
+	tableAdd(Ku1)
+
+	// Add user defined parameter in table
+	tableAddVar(I_input, "I_input", "mA")
+
+
+	tableautosave(2e-12)
+
+
+	J.Add(loadFile("excitation_parameters/input_current.ovf"),
+		I_input*(abs((2*floor(fSq*(t)) - floor(2*fSq*(t))) - (2*floor(fSq*(t+1*pulWidth)) - floor(2*fSq*(t+1*pulWidth))))))
+
+	B_ext.Add(loadFile("excitation_parameters/Oersted_field_2.ovf"),
+		I_input*(abs((2*floor(fSq*(t)) - floor(2*fSq*(t))) - (2*floor(fSq*(t+1*pulWidth)) - floor(2*fSq*(t+1*pulWidth))))*4*pi*1e-7))   // Oe field
+
+	print(I_input)
+	run(tSim)
+	// End
