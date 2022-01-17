@@ -556,13 +556,15 @@ def __plot_spatial():
 def __plot_spatial_line():
 
     print("Plotting spatial line...")
-
     for component in COMPONENTS:
 
         anl.plot.plot_spatial_line(
             date=DATE,
             x_index=AXIS_VAL if AXIS == 'x' else None,
             y_index=AXIS_VAL if AXIS == 'y' else None,
+            xlabel="x (\u03BCm)",
+            ylabel=r"$H_{int}$ (T)",
+            # xindexes=[150,360], #TODO: add option for zooming in
             component=component,
             filename=QUANTITY,
             save_to = anl.paths.plots.spatial_line(
@@ -575,6 +577,7 @@ def __plot_spatial_line():
             ) if SAVE else None,
             show_plot=SHOW,
         )
+
 
 #endregion
 
