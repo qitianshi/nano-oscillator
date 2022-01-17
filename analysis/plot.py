@@ -46,7 +46,7 @@ def plot_xy(
         show_plot (bool): Whether to show (`matplotlib.pyplot.show`) the graph.
     """
 
-    fig = plt.figure(figsize=(10, 5))
+    fig = plt.figure(figsize=(7.5, 4.5))
     ax = fig.add_subplot(1, 1, 1)
 
     colors = plt.get_cmap(cmap_name)
@@ -79,6 +79,7 @@ def plot_xy(
 
     if xstep is not None:
         x_vals = attr_data[0].data[attr_data[0].x_var]
+
         ax.set_xticks(np.arange(min(x_vals), max(x_vals) + xstep, xstep))
 
     if save_to is not None:
@@ -296,7 +297,7 @@ def plot_image(
           2D array.
         (See plot_xy docs for other paramters.)
     """
-    fig = plt.figure(figsize=(10, 5))
+    fig = plt.figure(figsize=(5, 4.5))
     ax = fig.add_subplot(1, 1, 1)
 
     if xindexes is None:
