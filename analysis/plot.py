@@ -20,7 +20,9 @@ def plot_xy(
     cmap_name: str = "gist_rainbow",
     title: str = None,
     save_to: str = None,
-    show_plot: bool = False
+    show_plot: bool = False,
+    xticks: list[float] = None,
+    xtick_loc: list[float] = None
 ):
     """Plots a number of dependent variables against an independent variable.
 
@@ -80,7 +82,11 @@ def plot_xy(
     if xstep is not None:
         x_vals = attr_data[0].data[attr_data[0].x_var]
 
-        ax.set_xticks(np.arange(min(x_vals), max(x_vals) + xstep, xstep))
+        if xticks is None:
+            ax.set_xticks(np.arange(min(x_vals), max(x_vals) + xstep, xstep))
+        else:
+            xtick_loc = xtick_loc if xtick_loc is not None else xticks
+            ax.set_xticks(xtick_loc, xticks)
 
     if save_to is not None:
 
@@ -210,6 +216,10 @@ def plot_spatial_line(
     date: str,
     x_index: int = None,
     y_index: int = None,
+    xlabel: str = None,
+    ylabel: str = None,
+    xstep: float = 200e-9,
+    xindexes: list[int] = [0, 511],
     component: str = "z",
     filename: str = None,
     save_to: str = None,
@@ -225,7 +235,7 @@ def plot_spatial_line(
             the table of values
     """
 
-    #TODO: Replace `filename` with `save_to` of full path with extension.
+    plt.rcParams.update({'font.size': 15})
 
     # Creates a Pandas dataframe with the B_ext data as a column
     if y_index is None:
@@ -257,20 +267,31 @@ def plot_spatial_line(
             float(headers[f"{horiz_axis_name}max"]),
             float(headers[f"{horiz_axis_name}stepsize"])
         )
-
-        xlabel = f"{horiz_axis_name} (" + headers["meshunit"] + ")"
-        ylabel = f"{filename}_{component} (T)"
-        #TODO: make the y axis units an option
-
         plot_data.insert(0, horiz_axis_name, xvar)
+
+        xaxis_max = (float(headers["xmax"]) - float(headers["xmin"])) / 2
+        all_cells_x = np.arange(-abs(xaxis_max), xaxis_max, float(headers["xstepsize"]))
+        xticks = np.arange(
+            all_cells_x[xindexes[0]] + xstep - all_cells_x[xindexes[0]] % xstep,
+            all_cells_x[xindexes[1]] + xstep - all_cells_x[xindexes[1]] % xstep,
+            xstep
+        )
+        xtick_loc = np.linspace(
+            xvar[np.where(np.isclose(all_cells_x, xticks[0], atol=1e-9))[0][0]],
+            xvar[np.where(np.isclose(all_cells_x, xticks[-1], atol=1e-9))[0][0]],
+            len(xticks)
+        )
 
     plot_xy(
         [read.AttributedData(plot_data, x_var=horiz_axis_name, y_vars=[str(line_index)])],
-        xlabel,
-        ylabel,
-        xstep=0.2e-06,
+        xlabel=xlabel,
+        ylabel=ylabel,
+        xstep=xstep,
+        xlim=[xvar[xindexes[0]], xvar[xindexes[1]]],
         title=
             f"{filename}_{component} against {horiz_axis_name} for {line_index_name}={line_index}",
+        xticks=xticks,
+        xtick_loc=xtick_loc,
         save_to=save_to,
         show_plot=show_plot
     )
