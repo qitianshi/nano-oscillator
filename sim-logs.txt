@@ -76,7 +76,7 @@ Same as previous, for a nanoconstriction geometry
 Same as previous, for a square geometry of sides =800nm
 
 [2022-01-10_2051]
-Same as previous, for a horizontal ellipse geometry of lmajor axis=800nm
+Same as previous, for a horizontal ellipse geometry of major axis=800nm
 
 [2022-01-10_0617]
 Same as previous, for a circular geometry of radius =800nm
