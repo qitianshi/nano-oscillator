@@ -1,3 +1,65 @@
+[2022-01-16_0501]
+same as previous but for an input current = 2.0mA
+
+[2022-01-16_0358]
+same as previous but for an input current = 4.0mA
+
+[2022-01-16_0244]
+same as previous but for an input current = 6.0mA
+
+[2022-01-16_0018]
+ellipse of major axis = 800e-9 and minor axis = 600e-9, angled by 165deg from the xaxis
+with an input current = 8.0mA
+
+[2022-01-15_2244]
+same as previous but with an input current = 2.0mA
+
+[2022-01-15_1952]
+same as previous but with an input current = 4.0mA
+
+[2022-01-15_1703]
+same as previous but with an input current = 6.0mA
+
+[2022-01-15_1519]
+ellipse of major axis = 800e-9 and minor axis = 600e-9, angled by 75deg from the xaxis
+with an input current = 8.0mA
+
+[2022-01-15_1149]
+square of sides = 800e-9 and input current = 8.0mA
+
+[2022-01-15_0958]
+square of sides = 800e-9 and input current = 6.0mA
+
+[2022-01-15_0901]
+square of sides = 800e-9 and input current = 4.0mA
+
+[2022-01-15_0722]
+square of sides = 800e-9 and input current = 2.0mA
+
+[2022-01-15_0015]
+same as previous but for an input current = 8.0mA
+
+[2022-01-14_2244]
+same as previous but for an input current = 6.0mA
+
+[2022-01-14_2126]
+same as previous but for an input current = 4.0mA
+
+[2022-01-14_2009]
+horizontal ellipse of major axis = 800e-9 and minor axis = 600e-9 and input current = 2.0mA
+
+[2022-01-14_1510]
+same as previous but for an input current = 8.0mA
+
+[2022-01-14_1335]
+same as previous but for an input current = 6.0mA
+
+[2022-01-14_1202]
+same as previous,but for an input current = 4.0mA
+
+[2022-01-14_0850]
+circle of diameter = 800e-9 and input current = 2.0mA
+
 [2022-01-12_1627]
 Characterizing spatial fft
 
@@ -20,7 +82,7 @@ Same as previous, for a horizontal ellipse geometry of lmajor axis=800nm
 Same as previous, for a circular geometry of radius =800nm
 
 [2022-01-09_0313]
-Horizontal elliptical geometry of lmajor axis=1nm
+Horizontal elliptical geometry of major axis=1nm
 
 [2022-01-08_1113]
 Same as previous, for Bext=50mT
