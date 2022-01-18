@@ -50,6 +50,7 @@ def plot_xy(
 
     fig = plt.figure(figsize=(8.8, 6.5))
     ax = fig.add_subplot(1, 1, 1)
+    # ax.ticklabel_format(useOffset=False, style='plain')
 
     colors = plt.get_cmap(cmap_name)
     for datum in attr_data:
@@ -79,7 +80,6 @@ def plot_xy(
     if ylim is not None:
         ax.set_ylim(ylim)
 
-    ax.ticklabel_format(style="scientific")
     if xstep is not None:
         x_vals = attr_data[0].data[attr_data[0].x_var]
 
