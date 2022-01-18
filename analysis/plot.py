@@ -219,6 +219,7 @@ def plot_spatial_line(
     y_index: int = None,
     xlabel: str = None,
     ylabel: str = None,
+    yunits: str = "T",
     xstep: float = 200e-9,
     xindexes: list[int, int] = None,
     component: str = "z",
@@ -252,6 +253,10 @@ def plot_spatial_line(
         plot_data = read.read_data(
                 paths.spatial.spatial_path(filename, component, slices, date)
         ).iloc[y_index, :].to_frame(str(y_index))
+
+    if yunits == "Oe":
+        plot_data = plot_data.multiply(10000)
+    #convert T to Oe
 
     else:
         raise ValueError("`xindex` and `yindex` cannot both be `None`.")

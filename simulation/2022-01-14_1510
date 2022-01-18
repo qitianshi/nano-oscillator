@@ -93,7 +93,7 @@
 	fSq := 1/timePeriod
 
 
-	I_input := 8.0      // input current 2.2 mA to ~6.0mA or even 10mA (current induced switching limit)
+	I_input := 2.0      // input current 2.2 mA to ~6.0mA or even 10mA (current induced switching limit)
 
 
 
@@ -101,6 +101,7 @@
 	// autoSave(m.region(2), 2e-12)
 	//can be commented out for further geoms
 	saveas(regions, "regions")
+	saveas(alpha, "alpha")
 	tableadd(MaxAngle)
 	tableAdd(Ku1)
 
