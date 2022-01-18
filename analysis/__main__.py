@@ -103,6 +103,11 @@ def __parse_cli_input() -> tuple:
     parser = argparse.ArgumentParser(prog="analysis", description="Runs analyses of mumax3 data.")
     subparser = parser.add_subparsers(dest="command", required=True)
 
+    comm_crossplot = subparser.add_parser(
+        "crossplot",
+        description="Plots quantities across multiple results."
+    )
+
     comm_resonance = subparser.add_parser(
         "resonance",
         description=(
