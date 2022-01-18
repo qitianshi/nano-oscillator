@@ -6,6 +6,7 @@ from enum import Enum, auto
 from sys import exit
 from time import time
 
+import pandas as pd
 import analysis as anl
 
 
@@ -454,7 +455,10 @@ def __plot_resonance_amp():
             xlabel=r"$\phi$" + "(deg)",
             ylabel="Resonance amplitude",
             save_to=os.path.join(
-                anl.paths.plots.plot_dir(DATE, ["aggregate"]), f"resonance_amp_{var} against phi.pdf"
+                anl.paths.plots.plot_dir(
+                    DATE,
+                    ["aggregate"]),
+                    f"resonance_amp_{var} against phi.pdf"
             )
         )
 
@@ -493,7 +497,10 @@ def __plot_resonance_freq():
             xlabel=r"$\phi$" + "(deg)",
             ylabel="Resonance frequency (Hz)",
             save_to=os.path.join(
-                anl.paths.plots.plot_dir(DATE, ["aggregate"]), f"resonance_freq_{var} against phi.pdf"
+                anl.paths.plots.plot_dir(
+                    DATE,
+                    ["aggregate"]),
+                    f"resonance_freq_{var} against phi.pdf"
             )
         )
 
