@@ -14,6 +14,7 @@ import analysis as anl
 class Commands(Enum):
     """CLI commands."""
 
+    CROSSPLOT = auto()
     PREPARSE = auto()
     RESONANCE = auto()
     SPATIAL = auto()
