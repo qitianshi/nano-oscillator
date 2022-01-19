@@ -109,6 +109,11 @@ def __parse_cli_input() -> tuple:
         description="Plots quantities across multiple results."
     )
 
+    comm_preparse = subparser.add_parser(
+        "preparse",
+        description="Readies mumax3 output before being uploaded."
+    )
+
     comm_resonance = subparser.add_parser(
         "resonance",
         description=(
@@ -125,11 +130,6 @@ def __parse_cli_input() -> tuple:
         description="Plots a line of values in spatial data."
     )
 
-    comm_preparse = subparser.add_parser(
-        "preparse",
-        description="Readies mumax3 output before being uploaded."
-    )
-
     # Top-level args
 
     parser.add_argument(
@@ -137,6 +137,24 @@ def __parse_cli_input() -> tuple:
         dest="cli_test",
         action="store_true",
         help="activates CLI test mode; analysis functions will not be run."
+    )
+
+    # preparse args
+
+    argobj_preparse_dates = comm_preparse.add_argument(
+        "date",
+        type=str,
+        nargs='*',
+        default=[anl.paths.top.latest_date()],
+        help="the list of dates to analyze (YYYY-MM-DD_hhmm), defaults to latest"
+    )
+
+    argobj_result_type = comm_preparse.add_argument(
+        "--type",
+        dest="result_type",
+        type=str,
+        required=True,
+        help="the type of simulaton to preparse, e.g. resonance, spatial"
     )
 
     # resonance args
@@ -253,24 +271,6 @@ def __parse_cli_input() -> tuple:
         dest="y_val",
         type=int,
         help="plots a horizontal line of values with the given y-value"
-    )
-
-    # preparse args
-
-    argobj_preparse_dates = comm_preparse.add_argument(
-        "date",
-        type=str,
-        nargs='*',
-        default=[anl.paths.top.latest_date()],
-        help="the list of dates to analyze (YYYY-MM-DD_hhmm), defaults to latest"
-    )
-
-    argobj_result_type = comm_preparse.add_argument(
-        "--type",
-        dest="result_type",
-        type=str,
-        required=True,
-        help="the type of simulaton to preparse, e.g. resonance, spatial"
     )
 
     # Parsing
