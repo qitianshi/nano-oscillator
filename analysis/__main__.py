@@ -21,34 +21,6 @@ class Commands(Enum):
     SPATIALLINE = auto()
 
 
-def __validate_date(value: list[str], arg_obj):
-
-    if "..." in value and (value.count("...") > 1 or value.index("...") != 1 or len(value) != 3):
-        raise argparse.ArgumentError(
-            arg_obj, "Ranged dates must be in the format 'DATE_1 ... DATE_2'")
-
-
-def __validate_arg_list(value: list, arg_obj, accept_vals: list):
-
-    if any(i not in accept_vals for i in value):
-
-        rejected_mag_vars = list(set(value) - set(accept_vals))
-
-        raise argparse.ArgumentError(
-                arg_obj,
-                f"{', '.join(rejected_mag_vars)}"
-                + f" {'does not' if len(rejected_mag_vars) == 1 else 'do not'}"
-                + f" match valid values: {', '.join(accept_vals)}"
-            )
-
-
-def __validate_arg_option(value, arg_obj, accept_vals: str):
-
-    if value not in accept_vals:
-        raise argparse.ArgumentError(
-            arg_obj, f"'{value}' does not match valid_values: {', '.join(accept_vals)}")
-
-
 def __resolve_dates(values: list[str]) -> list[str]:
 
     # Checks that simulation date exists.
@@ -91,6 +63,34 @@ def __timed_run(anl_funcs: list):
 #endregion
 
 #region Command line
+
+def __validate_date(value: list[str], arg_obj):
+
+    if "..." in value and (value.count("...") > 1 or value.index("...") != 1 or len(value) != 3):
+        raise argparse.ArgumentError(
+            arg_obj, "Ranged dates must be in the format 'DATE_1 ... DATE_2'")
+
+
+def __validate_arg_list(value: list, arg_obj, accept_vals: list):
+
+    if any(i not in accept_vals for i in value):
+
+        rejected_mag_vars = list(set(value) - set(accept_vals))
+
+        raise argparse.ArgumentError(
+            arg_obj,
+            f"{', '.join(rejected_mag_vars)}"
+            + f" {'does not' if len(rejected_mag_vars) == 1 else 'do not'}"
+            + f" match valid values: {', '.join(accept_vals)}"
+        )
+
+
+def __validate_arg_option(value, arg_obj, accept_vals: str):
+
+    if value not in accept_vals:
+        raise argparse.ArgumentError(
+            arg_obj, f"'{value}' does not match valid_values: {', '.join(accept_vals)}")
+
 
 def __parse_cli_input() -> tuple:
     """Parses and validates the command line interface.
