@@ -600,14 +600,14 @@ def __create_json():
 
 COMMAND, COMM_ARGS, TOP_ARGS = __parse_cli_input()
 
-if COMMAND is Commands.RESONANCE:
+if COMMAND is Commands.PREPARSE:
+    date_arg, RESULT_TYPE = COMM_ARGS                                        #pylint: disable=W0632
+elif COMMAND is Commands.RESONANCE:
     date_arg, MAG_VARS, PLOT_DEPTH = COMM_ARGS                               #pylint: disable=W0632
 elif COMMAND is Commands.SPATIAL:
     date_arg, COMPONENTS, QUANTITIES = COMM_ARGS                             #pylint: disable=W0632
 elif COMMAND is Commands.SPATIALLINE:
     date_arg, QUANTITY, COMPONENTS, SHOW, SAVE, AXIS, AXIS_VAL = COMM_ARGS   #pylint: disable=W0632
-elif COMMAND is Commands.PREPARSE:
-    date_arg, RESULT_TYPE = COMM_ARGS                                        #pylint: disable=W0632
 
 DATES = __resolve_dates(date_arg)
 CLI_TEST = TOP_ARGS[0]
@@ -615,7 +615,26 @@ CLI_TEST = TOP_ARGS[0]
 if len(DATES) > 1:
     print(f"Running analysis for {len(DATES)} results: {DATES}. \n")
 
-if COMMAND is Commands.RESONANCE:
+if COMMAND is Commands.PREPARSE:
+
+    for date in DATES:
+
+        DATE = date
+
+        print(
+            "Running analysis (preparse) with parameters:",
+            f"date: {DATE.__repr__()}",
+            f"result_type: {RESULT_TYPE.__repr__()}",
+            sep='\n  ',
+            end='\n\n'
+        )
+
+        if RESULT_TYPE == "resonance":
+            __timed_run([__convert_table_txt])
+        elif RESULT_TYPE == "spatial":
+            __timed_run([__create_json])
+
+elif COMMAND is Commands.RESONANCE:
 
     #TODO: Modifying DATE directly is very hacky.
 
@@ -693,24 +712,5 @@ elif COMMAND is Commands.SPATIALLINE:
             __convert_npy,
             __plot_spatial_line
         ])
-
-elif COMMAND is Commands.PREPARSE:
-
-    for date in DATES:
-
-        DATE = date
-
-        print(
-            "Running analysis (preparse) with parameters:",
-            f"date: {DATE.__repr__()}",
-            f"result_type: {RESULT_TYPE.__repr__()}",
-            sep='\n  ',
-            end='\n\n'
-        )
-
-        if RESULT_TYPE == "resonance":
-            __timed_run([__convert_table_txt])
-        elif RESULT_TYPE == "spatial":
-            __timed_run([__create_json])
 
 #endregion
