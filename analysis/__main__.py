@@ -136,7 +136,7 @@ def __parse_cli_input() -> tuple:
         "--cli-test",
         dest="cli_test",
         action="store_true",
-        help="activates CLI test mode; analysis functions will not be run."
+        help="activates CLI test mode; analysis functions will be printed but not run."
     )
 
     # preparse args
