@@ -277,6 +277,13 @@ def __parse_cli_input() -> tuple:
 
     args = parser.parse_args()
 
+    if args.command == "preparse":
+
+        __validate_date(args.date, argobj_preparse_dates)
+        __validate_arg_option(args.result_type, argobj_result_type, ("resonance", "spatial"))
+
+        return (Commands.PREPARSE, (args.date, args.result_type), (args.cli_test,))
+
     if args.command == "resonance":
 
         __validate_date(args.date, argobj_resonance_dates)
@@ -304,13 +311,6 @@ def __parse_cli_input() -> tuple:
             comm_args.extend(("y", args.y_val))
 
         return (Commands.SPATIALLINE, list(comm_args), (args.cli_test,))
-
-    if args.command == "preparse":
-
-        __validate_date(args.date, argobj_preparse_dates)
-        __validate_arg_option(args.result_type, argobj_result_type, ("resonance", "spatial"))
-
-        return (Commands.PREPARSE, (args.date, args.result_type), (args.cli_test,))
 
 #endregion
 
