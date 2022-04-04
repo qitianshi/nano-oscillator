@@ -16,7 +16,7 @@ def load_npy(date: str = None):
 
     for file in os.listdir(paths.data.raw(date)):
 
-        if file.endswith(".npy"):
+        if os.path.splitext(file)[1].strip('.') == "npy":
 
             #TODO: raise FileNotFoundError
 
