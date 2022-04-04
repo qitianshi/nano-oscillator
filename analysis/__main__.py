@@ -619,9 +619,9 @@ if COMMAND is Commands.RESONANCE:
 
         print(
             "Running analysis (resonance) with parameters:",
-            f"date: {DATE.__repr__()}",
-            f"mag-vars: {MAG_VARS.__repr__()}",
-            f"plot-depth: {PLOT_DEPTH.__repr__()}",
+            f"date: {repr(DATE)}",
+            f"mag-vars: {repr(MAG_VARS)}",
+            f"plot-depth: {repr(PLOT_DEPTH)}",
             sep='\n  ',
             end='\n\n'
         )
@@ -651,8 +651,8 @@ elif COMMAND is Commands.SPATIAL:
 
         print(
             "Running analysis (spatial) with parameters:",
-            f"date: {DATE.__repr__()}",
-            f"components: {COMPONENTS.__repr__()}",
+            f"date: {repr(DATE)}",
+            f"components: {repr(COMPONENTS)}",
             sep='\n  ',
             end='\n\n'
         )
@@ -671,13 +671,13 @@ elif COMMAND is Commands.SPATIALLINE:
 
         print(
             "Running analysis (spatialline) with parameters:",
-            f"date: {DATE.__repr__()}",
-            f"quantity: {QUANTITY.__repr__()}",
-            f"components: {COMPONENTS.__repr__()}",
-            f"show: {SHOW.__repr__()}",
-            f"save: {SAVE.__repr__()}",
-            f"axis: {AXIS.__repr__()}",
-            f"axis_val: {AXIS_VAL.__repr__()}",
+            f"date: {repr(DATE)}",
+            f"quantity: {repr(QUANTITY)}",
+            f"components: {repr(COMPONENTS)}",
+            f"show: {repr(SHOW)}",
+            f"save: {repr(SAVE)}",
+            f"axis: {repr(AXIS)}",
+            f"axis_val: {repr(AXIS_VAL)}",
             sep='\n  ',
             end='\n\n'
         )
@@ -696,8 +696,8 @@ elif COMMAND is Commands.PREPARSE:
 
         print(
             "Running analysis (preparse) with parameters:",
-            f"date: {DATE.__repr__()}",
-            f"result_type: {RESULT_TYPE.__repr__()}",
+            f"date: {repr(DATE)}",
+            f"result_type: {repr(RESULT_TYPE)}",
             sep='\n  ',
             end='\n\n'
         )
