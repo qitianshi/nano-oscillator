@@ -44,7 +44,7 @@ jobs:
         . ./venv/bin/activate && python3 -m analysis ${{ github.event.inputs.command }} ${{ github.event.inputs.date }} ${{ github.event.inputs.options }}
 
     - name: Commit, push, and create pull request
-      uses: peter-evans/create-pull-request@v4.0.1
+      uses: peter-evans/create-pull-request@v4.0.2
       with:
         branch: process-result
         branch-suffix: timestamp
