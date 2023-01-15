@@ -1,5 +1,5 @@
 # analysis
-matplotlib==3.5.1
+matplotlib==3.6.3
 numpy==1.22.3
 pandas==1.4.2
 PyYAML==6.0
