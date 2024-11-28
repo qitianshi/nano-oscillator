@@ -7,5 +7,5 @@ requests==2.27.1
 scipy==1.8.0
 
 # Dev
-autopep8==1.6.0
+autopep8==2.3.1
 pylint==2.13.4
