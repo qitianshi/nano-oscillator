@@ -6,6 +6,7 @@ from enum import Enum, auto
 from sys import exit
 from time import time
 
+import pandas as pd
 import analysis as anl
 
 
@@ -437,6 +438,31 @@ def __plot_MaxAmp():                                                  #pylint: d
     )
 
 
+def __plot_resonance_amp():
+    print("Plotting resonance amplitude...")
+    for var in MAG_VARS:
+        plot_data = anl.read.read_data(anl.paths.calcvals.fitted_amp_path(var, DATE))
+        plot_data["phi"] = plot_data["phi"].str.strip("deg").apply(pd.to_numeric)
+
+        anl.plot.plot_xy(
+            attr_data=[anl.read.AttributedData(
+                plot_data,
+                x_var="phi",
+                y_vars=["I"],
+                fmt="o-"
+            )],
+            xstep=45,
+            xlabel=r"$\phi$" + "(deg)",
+            ylabel="Resonance amplitude",
+            save_to=os.path.join(
+                anl.paths.plots.plot_dir(
+                    DATE,
+                    ["aggregate"]),
+                    f"resonance_amp_{var} against phi.pdf"
+            )
+        )
+
+
 def __plot_fitted_amp():
     print("Plotting curve-fitted amp against f_RF...")
     for mag in MAG_VARS:
@@ -450,6 +476,54 @@ def __plot_fitted_amp():
             save_to=os.path.join(
                 anl.paths.plots.plot_dir(DATE, ["aggregate"]),
                 f"fitted amp_{mag} against f_RF.pdf"
+            )
+        )
+
+
+def __plot_resonance_freq():
+    print("Plotting resonance frequency...")
+    for var in MAG_VARS:
+        plot_data = anl.read.read_data(anl.paths.calcvals.fitted_amp_path(var, DATE))
+        plot_data["phi"] = plot_data["phi"].str.strip("deg").apply(pd.to_numeric)
+
+        anl.plot.plot_xy(
+            attr_data=[anl.read.AttributedData(
+                plot_data,
+                x_var="phi",
+                y_vars=["x_0"],
+                fmt="o-"
+            )],
+            xstep=45,
+            xlabel=r"$\phi$" + "(deg)",
+            ylabel="Resonance frequency (Hz)",
+            save_to=os.path.join(
+                anl.paths.plots.plot_dir(
+                    DATE,
+                    ["aggregate"]),
+                    f"resonance_freq_{var} against phi.pdf"
+            )
+        )
+
+
+def __plot_linewidth():
+    print("Plotting linewidth...")
+    for var in MAG_VARS:
+        plot_data = anl.read.read_data(anl.paths.calcvals.fitted_amp_path(var, DATE))
+        plot_data["phi"] = plot_data["phi"].str.strip("deg").apply(pd.to_numeric)
+        plot_data["gamma"] *= 2
+
+        anl.plot.plot_xy(
+            attr_data=[anl.read.AttributedData(
+                plot_data,
+                x_var="phi",
+                y_vars=["gamma"],
+                fmt="o-"
+            )],
+            xstep=45,
+            xlabel=r"$\phi$" + "(deg)",
+            ylabel="linewidth",
+            save_to=os.path.join(
+                anl.paths.plots.plot_dir(DATE, ["aggregate"]), f"linewidth_{var} against phi.pdf"
             )
         )
 
@@ -639,8 +713,11 @@ if COMMAND is Commands.RESONANCE:
             __plot_mag_phi_fRF,
             __plot_amp,
             __plot_MaxAmp,
+            __plot_resonance_amp,
             __plot_fitted_amp,
-            __plotcheck_fitted_amp
+            __plotcheck_fitted_amp,
+            __plot_resonance_freq,
+            __plot_linewidth
         ])
 
 elif COMMAND is Commands.SPATIAL:

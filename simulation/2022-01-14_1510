@@ -12,7 +12,8 @@
 
 
 	// Geometry
-	NC_image := Circle(800e-9)
+	D1 = 800e-9
+	NC_image := Circle(D1)
 	setGeom(NC_image)
 	defRegion(1, NC_image)
 	// defRegion(2,rect(500e-9, 500e-9))   // A square region at the NC
@@ -56,18 +57,14 @@
 	print(NB)
 
 	//Set the damping in ABL
-	lR1 := 2*xStart
-	wR1 := 2*yStart
 
 	for i:=1; i<NB+1; i++{
-	lR2 := lR1 + 2*dx
-	wR2 := wR1 + 2*dy
-	rectCurr := rect(lR2,wR2).sub(rect(lR1,wR1))
-	DefRegion(i+2, rectCurr)
-	alp := a*pow(i*(dx+dy)*1e9*0.5, n)
-	alpha.setRegion(i+3, alStart+alp)
-	lR1 = lR2
-	wR1 = wR2
+		D2 = D1 + 2*dx
+		circleCurr := circle(D2).sub(circle(D1))
+		DefRegion(i+2, circleCurr)
+		alp := a*pow(i*(dx+dy)*1e9*0.5, n)
+		alpha.setRegion(i+3, alStart+alp)
+		D1 = D2
 	}
 
 
